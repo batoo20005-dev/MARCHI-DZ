@@ -2,1576 +2,1822 @@
 <html lang="ar" dir="rtl">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>MARCHI DZ | تسوق بثقة، استلم براحة</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, "Tahoma", sans-serif;
-            background: #f8fafb;
-            color: #172033;
-        }
-
-        button,
-        input {
-            font-family: inherit;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        /* =========================
-           HEADER
-        ========================= */
-
-        header {
-            background: white;
-            border-bottom: 1px solid #e9edf1;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .top-header {
-            max-width: 1400px;
-            margin: auto;
-            min-height: 82px;
-            padding: 10px 25px;
-
-            display: flex;
-            align-items: center;
-            gap: 28px;
-        }
-
-        /* LOGO */
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 230px;
-        }
-
-        .logo img {
-            width: 58px;
-            height: 58px;
-            object-fit: contain;
-        }
-
-        .logo-text {
-            display: flex;
-            flex-direction: column;
-            line-height: 1.1;
-        }
-
-        .logo-name {
-            font-size: 26px;
-            font-weight: 900;
-            letter-spacing: 1px;
-        }
-
-        .marchi {
-            color: #102a43;
-        }
-
-        .dz {
-            color: #16a34a;
-        }
-
-        .logo-slogan {
-            font-size: 11px;
-            color: #68737d;
-            margin-top: 5px;
-        }
-
-        /* SEARCH */
-
-        .search {
-            flex: 1;
-            height: 48px;
-            display: flex;
-            border: 1px solid #dfe5e9;
-            border-radius: 10px;
-            overflow: hidden;
-            background: white;
-        }
-
-        .search input {
-            flex: 1;
-            border: none;
-            outline: none;
-            padding: 0 18px;
-            font-size: 15px;
-            color: #333;
-        }
-
-        .search button {
-            width: 60px;
-            border: none;
-            background: #102a43;
-            color: white;
-            font-size: 19px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .search button:hover {
-            background: #16a34a;
-        }
-
-        /* ACTIONS */
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 22px;
-        }
-
-        .header-action {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            cursor: pointer;
-            font-size: 14px;
-            white-space: nowrap;
-            color: #222;
-        }
-
-        .header-action:hover {
-            color: #16a34a;
-        }
-
-        .action-icon {
-            font-size: 22px;
-        }
-
-        .cart {
-            position: relative;
-        }
-
-        .cart-count {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-
-            width: 19px;
-            height: 19px;
-
-            background: #16a34a;
-            color: white;
-
-            border-radius: 50%;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            font-size: 10px;
-        }
-
-        /* =========================
-           NAVIGATION
-        ========================= */
-
-        .navigation {
-            background: white;
-            border-top: 1px solid #f0f2f4;
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: auto;
-            padding: 0 25px;
-
-            min-height: 55px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 50px;
-        }
-
-        .nav-item {
-            height: 55px;
-            display: flex;
-            align-items: center;
-            font-size: 15px;
-            font-weight: 600;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .nav-item:hover {
-            color: #16a34a;
-        }
-
-        .nav-item.active {
-            color: #16a34a;
-        }
-
-        .nav-item.active::after {
-            content: "";
-
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            left: 0;
-
-            height: 3px;
-            background: #16a34a;
-        }
-
-        /* =========================
-           HERO
-        ========================= */
-
-        .hero {
-            max-width: 1400px;
-            margin: 20px auto 0;
-
-            height: 430px;
-
-            border-radius: 16px;
-            overflow: hidden;
-
-            position: relative;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    rgba(8, 20, 32, 0.78),
-                    rgba(8, 20, 32, 0.20),
-                    rgba(8, 20, 32, 0.05)
-                ),
-                url("https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1800&q=85");
-
-            background-size: cover;
-            background-position: center;
-        }
-
-        .hero-content {
-            position: absolute;
-
-            right: 80px;
-            top: 50%;
-
-            transform: translateY(-50%);
-
-            color: white;
-
-            max-width: 550px;
-        }
-
-        .hero-content h1 {
-            font-size: 48px;
-            line-height: 1.25;
-            margin-bottom: 18px;
-        }
-
-        .hero-content p {
-            font-size: 18px;
-            line-height: 1.8;
-            margin-bottom: 28px;
-            color: #f0f5f8;
-        }
-
-        .hero-button {
-            background: #16a34a;
-            color: white;
-
-            border: none;
-            border-radius: 8px;
-
-            padding: 15px 32px;
-
-            font-size: 16px;
-            font-weight: bold;
-
-            cursor: pointer;
-
-            transition: 0.2s;
-        }
-
-        .hero-button:hover {
-            background: #12813b;
-            transform: translateY(-2px);
-        }
-
-        .slider-dots {
-            position: absolute;
-            bottom: 22px;
-            left: 50%;
-
-            transform: translateX(-50%);
-
-            display: flex;
-            gap: 8px;
-        }
-
-        .slider-dot {
-            width: 9px;
-            height: 9px;
-
-            border-radius: 50%;
-
-            background: white;
-            opacity: 0.7;
-        }
-
-        .slider-dot.active {
-            background: #16a34a;
-            opacity: 1;
-        }
-
-        /* =========================
-           FEATURES
-        ========================= */
-
-        .features {
-            max-width: 1100px;
-            margin: -1px auto 0;
-
-            background: white;
-
-            border-radius: 0 0 15px 15px;
-
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.06);
-
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-
-            padding: 22px;
-        }
-
-        .feature {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-
-            border-left: 1px solid #e8ecef;
-        }
-
-        .feature:last-child {
-            border-left: none;
-        }
-
-        .feature-icon {
-            font-size: 30px;
-        }
-
-        .feature-text strong {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-
-        .feature-text span {
-            font-size: 12px;
-            color: #78838c;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MARCHI DZ | تسوق بثقة، استلم براحة</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,Tahoma,sans-serif;
+    background:#f7f9fa;
+    color:#172033;
+}
+
+button,input{
+    font-family:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+/* ================= HEADER ================= */
+
+header{
+    background:white;
+    border-bottom:1px solid #e5e9ec;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.top-header{
+    max-width:1400px;
+    margin:auto;
+    min-height:82px;
+    padding:10px 25px;
 
-        /* =========================
-           MAIN
-        ========================= */
+    display:flex;
+    align-items:center;
+    gap:25px;
+}
 
-        .container {
-            max-width: 1400px;
-            margin: auto;
-            padding: 55px 25px 0;
-        }
+/* LOGO */
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:220px;
+}
+
+.logo img{
+    width:58px;
+    height:58px;
+    object-fit:contain;
+}
 
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+.logo-text{
+    display:flex;
+    flex-direction:column;
+}
 
-            margin-bottom: 22px;
-        }
+.logo-name{
+    font-size:25px;
+    font-weight:900;
+    letter-spacing:1px;
+}
 
-        .section-title {
-            font-size: 25px;
-            font-weight: 800;
-        }
+.marchi{
+    color:#102a43;
+}
 
-        .view-all {
-            color: #16a34a;
-            font-size: 14px;
-            font-weight: bold;
-        }
+.dz{
+    color:#16a34a;
+}
 
-        /* =========================
-           CATEGORIES
-        ========================= */
+.logo-slogan{
+    font-size:11px;
+    color:#777;
+    margin-top:4px;
+}
 
-        .categories {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 12px;
-        }
+/* SEARCH */
 
-        .category {
-            background: white;
+.search{
+    flex:1;
+    height:48px;
 
-            border: 1px solid #e8ecef;
-            border-radius: 12px;
+    display:flex;
 
-            padding: 16px 8px;
+    border:1px solid #dfe5e9;
+    border-radius:10px;
 
-            text-align: center;
+    overflow:hidden;
+}
 
-            cursor: pointer;
+.search input{
+    flex:1;
+    border:none;
+    outline:none;
 
-            transition: 0.2s;
-        }
+    padding:0 18px;
 
-        .category:hover {
-            transform: translateY(-4px);
-            border-color: #16a34a;
-            box-shadow: 0 7px 18px rgba(0, 0, 0, 0.06);
-        }
+    font-size:15px;
+}
 
-        .category-icon {
-            height: 70px;
+.search button{
+    width:60px;
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+    border:none;
 
-            font-size: 42px;
+    background:#102a43;
+    color:white;
 
-            margin-bottom: 8px;
-        }
+    font-size:19px;
+}
 
-        .category-name {
-            font-size: 13px;
-            font-weight: 600;
-        }
+.search button:hover{
+    background:#16a34a;
+}
 
-        /* =========================
-           PRODUCTS
-        ========================= */
+/* HEADER ACTIONS */
 
-        .products {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 18px;
-        }
+.header-actions{
+    display:flex;
+    gap:22px;
+    align-items:center;
+}
 
-        .product {
-            background: white;
+.header-action{
+    display:flex;
+    align-items:center;
+    gap:6px;
 
-            border: 1px solid #e7ebee;
+    font-size:14px;
 
-            border-radius: 13px;
+    cursor:pointer;
+    white-space:nowrap;
+}
 
-            overflow: hidden;
+.header-action:hover{
+    color:#16a34a;
+}
 
-            position: relative;
+.action-icon{
+    font-size:21px;
+}
 
-            transition: 0.25s;
-        }
+.cart{
+    position:relative;
+}
 
-        .product:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
-        }
+.cart-count{
+    position:absolute;
 
-        .discount {
-            position: absolute;
+    top:-10px;
+    right:-10px;
 
-            top: 12px;
-            right: 12px;
+    width:19px;
+    height:19px;
 
-            background: #16a34a;
-            color: white;
+    background:#16a34a;
+    color:white;
 
-            padding: 5px 8px;
+    border-radius:50%;
 
-            border-radius: 5px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-            font-size: 11px;
-            font-weight: bold;
+    font-size:10px;
+}
 
-            z-index: 2;
-        }
+/* ================= NAV ================= */
 
-        .favorite {
-            position: absolute;
+.navigation{
+    background:white;
+    border-top:1px solid #f0f2f4;
+}
 
-            top: 10px;
-            left: 10px;
+.nav-container{
+    max-width:1400px;
+    margin:auto;
 
-            width: 35px;
-            height: 35px;
+    min-height:55px;
 
-            border: 1px solid #e5e8ea;
-            border-radius: 50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 
-            background: white;
+    gap:50px;
+}
 
-            cursor: pointer;
+.nav-item{
+    height:55px;
 
-            font-size: 18px;
+    display:flex;
+    align-items:center;
 
-            z-index: 2;
-        }
+    font-size:15px;
+    font-weight:bold;
 
-        .favorite:hover {
-            color: #16a34a;
-        }
+    position:relative;
 
-        .product-image {
-            height: 220px;
+    cursor:pointer;
+}
 
-            background: #f5f6f7;
+.nav-item:hover{
+    color:#16a34a;
+}
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+.nav-item.active{
+    color:#16a34a;
+}
 
-            overflow: hidden;
-        }
+.nav-item.active::after{
+    content:"";
 
-        .product-image img {
-            width: 100%;
-            height: 100%;
+    position:absolute;
 
-            object-fit: cover;
+    bottom:0;
+    right:0;
+    left:0;
 
-            transition: 0.3s;
-        }
+    height:3px;
 
-        .product:hover .product-image img {
-            transform: scale(1.05);
-        }
+    background:#16a34a;
+}
 
-        .product-info {
-            padding: 16px;
-        }
+/* ================= HERO ================= */
 
-        .product-name {
-            font-size: 15px;
-            margin-bottom: 8px;
+.hero{
+    max-width:1400px;
 
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+    height:430px;
 
-        .rating {
-            color: #f5a623;
-            font-size: 13px;
-            margin-bottom: 10px;
-        }
+    margin:20px auto 0;
 
-        .price {
-            font-size: 19px;
-            font-weight: 800;
+    border-radius:16px;
 
-            color: #102a43;
+    overflow:hidden;
 
-            margin-bottom: 12px;
-        }
+    position:relative;
 
-        .old-price {
-            color: #9ca3a8;
-            text-decoration: line-through;
-            font-size: 12px;
-            margin-right: 7px;
-        }
+    background:
+    linear-gradient(
+        90deg,
+        rgba(5,15,25,.80),
+        rgba(5,15,25,.25),
+        rgba(5,15,25,.05)
+    ),
+    url("https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1800&q=85");
 
-        .add-cart {
-            width: 100%;
+    background-size:cover;
+    background-position:center;
+}
 
-            border: none;
+.hero-content{
+    position:absolute;
 
-            background: #102a43;
-            color: white;
+    right:80px;
+    top:50%;
 
-            padding: 11px;
+    transform:translateY(-50%);
 
-            border-radius: 7px;
+    color:white;
 
-            cursor: pointer;
+    max-width:550px;
+}
 
-            font-weight: bold;
+.hero-content h1{
+    font-size:48px;
+    line-height:1.25;
 
-            transition: 0.2s;
-        }
+    margin-bottom:18px;
+}
 
-        .add-cart:hover {
-            background: #16a34a;
-        }
+.hero-content p{
+    font-size:18px;
+    line-height:1.8;
 
-        /* =========================
-           FOOTER
-        ========================= */
+    margin-bottom:28px;
+}
 
-        footer {
-            background: #102a43;
+.hero-button{
+    background:#16a34a;
+    color:white;
 
-            color: white;
+    border:none;
+    border-radius:8px;
 
-            margin-top: 70px;
+    padding:15px 32px;
 
-            padding: 50px 25px 25px;
-        }
+    font-size:16px;
+    font-weight:bold;
+}
 
-        .footer-container {
-            max-width: 1400px;
-            margin: auto;
+.hero-button:hover{
+    background:#12813b;
+}
 
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
+.slider-dots{
+    position:absolute;
 
-            gap: 50px;
-        }
+    bottom:20px;
+    left:50%;
 
-        .footer-logo {
-            font-size: 28px;
-            font-weight: 900;
+    transform:translateX(-50%);
 
-            margin-bottom: 12px;
-        }
+    display:flex;
+    gap:8px;
+}
 
-        .footer-about {
-            color: #ccd6df;
-            line-height: 1.8;
-            max-width: 400px;
-        }
+.slider-dot{
+    width:9px;
+    height:9px;
 
-        .footer-title {
-            font-size: 17px;
-            margin-bottom: 18px;
-        }
+    border-radius:50%;
 
-        .footer-links {
-            list-style: none;
-        }
+    background:white;
+}
 
-        .footer-links li {
-            margin-bottom: 11px;
-            color: #ccd6df;
-            font-size: 14px;
-            cursor: pointer;
-        }
+.slider-dot.active{
+    background:#16a34a;
+}
 
-        .footer-links li:hover {
-            color: #4ade80;
-        }
+/* ================= FEATURES ================= */
 
-        .copyright {
-            max-width: 1400px;
-            margin: 40px auto 0;
+.features{
+    max-width:1100px;
 
-            padding-top: 20px;
+    margin:auto;
 
-            border-top: 1px solid rgba(255,255,255,0.12);
+    background:white;
 
-            text-align: center;
+    border-radius:0 0 15px 15px;
 
-            color: #aebbc6;
+    box-shadow:0 5px 25px rgba(0,0,0,.06);
 
-            font-size: 13px;
-        }
+    display:grid;
 
-        /* =========================
-           RESPONSIVE
-        ========================= */
+    grid-template-columns:repeat(4,1fr);
 
-        @media (max-width: 1100px) {
+    padding:22px;
+}
 
-            .categories {
-                grid-template-columns: repeat(5, 1fr);
-            }
+.feature{
+    display:flex;
 
-            .products {
-                grid-template-columns: repeat(4, 1fr);
-            }
+    justify-content:center;
+    align-items:center;
 
-            .header-actions {
-                gap: 10px;
-            }
+    gap:12px;
 
-            .logo {
-                min-width: auto;
-            }
+    border-left:1px solid #e5e9ec;
+}
 
-            .logo-slogan {
-                display: none;
-            }
+.feature:last-child{
+    border-left:none;
+}
 
-        }
+.feature-icon{
+    font-size:30px;
+}
 
-        @media (max-width: 800px) {
+.feature-text strong{
+    display:block;
+    margin-bottom:5px;
+}
 
-            .top-header {
-                flex-wrap: wrap;
-                padding: 12px 15px;
-            }
+.feature-text span{
+    color:#777;
+    font-size:12px;
+}
 
-            .logo {
-                width: 100%;
-            }
+/* ================= MAIN ================= */
 
-            .search {
-                order: 3;
-                width: 100%;
-                flex: auto;
-            }
+.container{
+    max-width:1400px;
 
-            .header-actions {
-                position: absolute;
-                top: 20px;
-                left: 15px;
-            }
+    margin:auto;
 
-            .header-action span:not(.action-icon) {
-                display: none;
-            }
+    padding:50px 25px 0;
+}
 
-            .nav-container {
-                overflow-x: auto;
-                justify-content: flex-start;
-                gap: 28px;
-                padding: 0 15px;
-            }
+.section-header{
+    display:flex;
 
-            .hero {
-                margin: 10px;
-                height: 380px;
-            }
+    justify-content:space-between;
+    align-items:center;
 
-            .hero-content {
-                right: 30px;
-                left: 30px;
-            }
+    margin-bottom:22px;
+}
 
-            .hero-content h1 {
-                font-size: 34px;
-            }
+.section-title{
+    font-size:25px;
+    font-weight:800;
+}
 
-            .features {
-                margin: 0 10px;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
-            }
+.view-all{
+    color:#16a34a;
+    font-size:14px;
+    font-weight:bold;
+}
 
-            .feature {
-                border-left: none;
-            }
+/* ================= CATEGORIES ================= */
 
-            .categories {
-                grid-template-columns: repeat(4, 1fr);
-            }
+.categories{
+    display:grid;
 
-            .products {
-                grid-template-columns: repeat(2, 1fr);
-            }
+    grid-template-columns:repeat(10,1fr);
 
-            .footer-container {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
+    gap:12px;
+}
 
-        @media (max-width: 500px) {
+.category{
+    background:white;
 
-            .logo-name {
-                font-size: 22px;
-            }
+    border:1px solid #e5e9ec;
 
-            .logo img {
-                width: 50px;
-                height: 50px;
-            }
+    border-radius:12px;
 
-            .hero {
-                height: 350px;
-            }
+    padding:15px 7px;
 
-            .hero-content h1 {
-                font-size: 28px;
-            }
+    text-align:center;
 
-            .hero-content p {
-                font-size: 14px;
-            }
+    transition:.2s;
 
-            .categories {
-                grid-template-columns: repeat(2, 1fr);
-            }
+    cursor:pointer;
+}
 
-            .products {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
+.category:hover,
+.category.selected{
+    transform:translateY(-3px);
 
-            .product-image {
-                height: 160px;
-            }
+    border-color:#16a34a;
 
-            .product-info {
-                padding: 10px;
-            }
+    box-shadow:0 6px 18px rgba(0,0,0,.07);
+}
 
-            .product-name {
-                font-size: 13px;
-            }
+.category-icon{
+    font-size:38px;
 
-            .price {
-                font-size: 16px;
-            }
+    height:60px;
 
-            .footer-container {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.category-name{
+    font-size:13px;
+    font-weight:bold;
+}
+
+/* ================= PRODUCTS ================= */
+
+.products{
+    display:grid;
+
+    grid-template-columns:repeat(5,1fr);
+
+    gap:18px;
+}
+
+.product{
+    background:white;
+
+    border:1px solid #e5e9ec;
+
+    border-radius:13px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    transition:.2s;
+}
+
+.product:hover{
+    transform:translateY(-5px);
+
+    box-shadow:0 12px 28px rgba(0,0,0,.08);
+}
+
+.discount{
+    position:absolute;
+
+    top:12px;
+    right:12px;
+
+    background:#16a34a;
+    color:white;
+
+    padding:5px 8px;
+
+    border-radius:5px;
+
+    font-size:11px;
+
+    z-index:2;
+}
+
+.favorite{
+    position:absolute;
+
+    top:10px;
+    left:10px;
+
+    width:35px;
+    height:35px;
+
+    border:1px solid #ddd;
+
+    border-radius:50%;
+
+    background:white;
+
+    font-size:19px;
+
+    z-index:2;
+}
+
+.favorite.liked{
+    color:#16a34a;
+}
+
+.product-image{
+    height:220px;
+
+    background:#f1f3f4;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    overflow:hidden;
+}
+
+.product-image img{
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    transition:.3s;
+}
+
+.product:hover img{
+    transform:scale(1.05);
+}
+
+.product-info{
+    padding:16px;
+}
+
+.product-name{
+    font-size:15px;
+
+    margin-bottom:8px;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+}
+
+.rating{
+    color:#f5a623;
+
+    font-size:13px;
+
+    margin-bottom:10px;
+}
+
+.price{
+    font-size:19px;
+
+    font-weight:bold;
+
+    color:#102a43;
+
+    margin-bottom:12px;
+}
+
+.old-price{
+    color:#999;
+
+    text-decoration:line-through;
+
+    font-size:12px;
+
+    margin-right:7px;
+}
+
+.add-cart{
+    width:100%;
+
+    border:none;
+
+    background:#102a43;
+
+    color:white;
+
+    padding:11px;
+
+    border-radius:7px;
+
+    font-weight:bold;
+}
+
+.add-cart:hover{
+    background:#16a34a;
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+    margin-top:70px;
+
+    background:#102a43;
+
+    color:white;
+
+    padding:50px 25px 25px;
+}
+
+.footer-container{
+    max-width:1400px;
+    margin:auto;
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr 1fr 1fr;
+
+    gap:50px;
+}
+
+.footer-logo{
+    font-size:28px;
+    font-weight:900;
+
+    margin-bottom:12px;
+}
+
+.footer-about{
+    color:#ccd6df;
+
+    line-height:1.8;
+
+    max-width:400px;
+}
+
+.footer-title{
+    margin-bottom:18px;
+}
+
+.footer-links{
+    list-style:none;
+}
+
+.footer-links li{
+    margin-bottom:11px;
+
+    color:#ccd6df;
+
+    font-size:14px;
+
+    cursor:pointer;
+}
+
+.footer-links li:hover{
+    color:#4ade80;
+}
+
+.copyright{
+    max-width:1400px;
+
+    margin:40px auto 0;
+
+    padding-top:20px;
+
+    border-top:1px solid rgba(255,255,255,.12);
+
+    text-align:center;
+
+    color:#aebbc6;
+
+    font-size:13px;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:1100px){
+
+    .categories{
+        grid-template-columns:repeat(5,1fr);
+    }
+
+    .products{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+}
+
+@media(max-width:800px){
+
+    .top-header{
+        flex-wrap:wrap;
+        padding:12px 15px;
+    }
+
+    .logo{
+        width:100%;
+    }
+
+    .search{
+        order:3;
+        width:100%;
+        flex:auto;
+    }
+
+    .header-actions{
+        position:absolute;
+        top:20px;
+        left:15px;
+    }
+
+    .header-action span:not(.action-icon){
+        display:none;
+    }
+
+    .nav-container{
+        overflow-x:auto;
+
+        justify-content:flex-start;
+
+        gap:28px;
+
+        padding:0 15px;
+    }
+
+    .hero{
+        margin:10px;
+
+        height:380px;
+    }
+
+    .hero-content{
+        right:30px;
+        left:30px;
+    }
+
+    .hero-content h1{
+        font-size:34px;
+    }
+
+    .features{
+        margin:0 10px;
+
+        grid-template-columns:repeat(2,1fr);
+
+        gap:20px;
+    }
+
+    .feature{
+        border:none;
+    }
+
+    .categories{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .products{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .footer-container{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:500px){
+
+    .categories{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .products{
+        grid-template-columns:repeat(2,1fr);
+
+        gap:10px;
+    }
+
+    .product-image{
+        height:160px;
+    }
+
+    .footer-container{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
 </head>
 
 
 <body>
 
-    <!-- =========================
-         HEADER
-    ========================= -->
 
-    <header>
+<!-- ================= HEADER ================= -->
 
-        <div class="top-header">
+<header>
 
-            <!-- LOGO -->
-            <a href="#" class="logo">
+<div class="top-header">
 
-                <img src="logo.png" alt="MARCHI DZ">
 
-                <div class="logo-text">
+<a href="#" class="logo">
 
-                    <div class="logo-name">
-                        <span class="marchi">MARCHI</span>
-                        <span class="dz">DZ</span>
-                    </div>
+<img src="logo.png" alt="MARCHI DZ">
 
-                    <div class="logo-slogan">
-                        تسوق بثقة، استلم براحة
-                    </div>
+<div class="logo-text">
 
-                </div>
+<div class="logo-name">
 
-            </a>
+<span class="marchi">MARCHI</span>
+<span class="dz"> DZ</span>
 
+</div>
 
-            <!-- SEARCH -->
+<div class="logo-slogan">
+تسوق بثقة، استلم براحة
+</div>
 
-            <div class="search">
+</div>
 
-                <input
-                    id="searchInput"
-                    type="text"
-                    placeholder="ابحث عن أي منتج..."
-                >
+</a>
 
-                <button onclick="searchProduct()">
-                    🔍
-                </button>
 
-            </div>
+<!-- SEARCH -->
 
+<div class="search">
 
-            <!-- ACTIONS -->
+<input
+id="searchInput"
+type="text"
+placeholder="ابحث عن أي منتج..."
+>
 
-            <div class="header-actions">
+<button onclick="searchProducts()">
+🔍
+</button>
 
-                <div class="header-action">
-                    <span class="action-icon">👤</span>
-                    <span>تسجيل الدخول</span>
-                </div>
+</div>
 
-                <div class="header-action">
-                    <span class="action-icon">❓</span>
-                    <span>الدعم</span>
-                </div>
 
-                <div class="header-action cart">
-                    <span class="action-icon">🛒</span>
-                    <span>السلة</span>
+<!-- ACTIONS -->
 
-                    <span class="cart-count" id="cartCount">
-                        0
-                    </span>
-                </div>
+<div class="header-actions">
 
-            </div>
+<div class="header-action">
 
-        </div>
+<span class="action-icon">👤</span>
+<span>تسجيل الدخول</span>
 
+</div>
 
-        <!-- NAVIGATION -->
+<div class="header-action">
 
-        <nav class="navigation">
+<span class="action-icon">❓</span>
+<span>الدعم</span>
 
-            <div class="nav-container">
+</div>
 
-                <a class="nav-item active" href="#">
-                    الرئيسية
-                </a>
+<div class="header-action cart">
 
-                <a class="nav-item" href="#categories">
-                    الفئات
-                </a>
+<span class="action-icon">🛒</span>
+<span>السلة</span>
 
-                <a class="nav-item" href="#products">
-                    العروض
-                </a>
+<span
+class="cart-count"
+id="cartCount"
+>
+0
+</span>
 
-                <a class="nav-item" href="#">
-                    المتاجر
-                </a>
+</div>
 
-                <a class="nav-item" href="#">
-                    تتبع الطلب
-                </a>
+</div>
 
-                <a class="nav-item" href="#">
-                    من نحن
-                </a>
+</div>
 
-                <a class="nav-item" href="#categories">
-                    ☰ كل الفئات
-                </a>
 
-            </div>
+<!-- NAV -->
 
-        </nav>
+<nav class="navigation">
 
-    </header>
+<div class="nav-container">
 
+<a class="nav-item active" href="#">
+الرئيسية
+</a>
 
-    <!-- =========================
-         HERO
-    ========================= -->
+<a class="nav-item" href="#categories">
+الفئات
+</a>
 
-    <section class="hero">
+<a class="nav-item" href="#products">
+العروض
+</a>
 
-        <div class="hero-content">
+<a class="nav-item" href="#">
+المتاجر
+</a>
 
-            <h1>
-                كل ما تحتاجه
-                <br>
-                في مكان واحد
-            </h1>
+<a class="nav-item" href="#">
+تتبع الطلب
+</a>
 
-            <p>
-                آلاف المنتجات، أفضل الأسعار،
-                وتوصيل سريع إلى جميع الولايات الجزائرية 🇩🇿
-            </p>
+<a class="nav-item" href="#">
+من نحن
+</a>
 
-            <button
-                class="hero-button"
-                onclick="document.getElementById('products').scrollIntoView()"
-            >
-                تسوق الآن
-            </button>
+<a class="nav-item" href="#categories">
+☰ كل الفئات
+</a>
 
-        </div>
+</div>
 
+</nav>
 
-        <div class="slider-dots">
+</header>
 
-            <span class="slider-dot active"></span>
-            <span class="slider-dot"></span>
-            <span class="slider-dot"></span>
-            <span class="slider-dot"></span>
 
-        </div>
+<!-- ================= HERO ================= -->
 
-    </section>
+<section class="hero">
 
+<div class="hero-content">
 
-    <!-- =========================
-         FEATURES
-    ========================= -->
+<h1>
+كل ما تحتاجه
+<br>
+في مكان واحد
+</h1>
 
-    <section class="features">
+<p>
+آلاف المنتجات، أفضل الأسعار،
+وتوصيل سريع إلى جميع الولايات الجزائرية 🇩🇿
+</p>
 
-        <div class="feature">
+<button
+class="hero-button"
+onclick="scrollToProducts()"
+>
+تسوق الآن
+</button>
 
-            <div class="feature-icon">
-                🛡️
-            </div>
+</div>
 
-            <div class="feature-text">
 
-                <strong>
-                    تسوق بأمان
-                </strong>
+<div class="slider-dots">
 
-                <span>
-                    حماية طلبك
-                </span>
+<span class="slider-dot active"></span>
+<span class="slider-dot"></span>
+<span class="slider-dot"></span>
+<span class="slider-dot"></span>
 
-            </div>
+</div>
 
-        </div>
+</section>
 
 
-        <div class="feature">
+<!-- ================= FEATURES ================= -->
 
-            <div class="feature-icon">
-                🚚
-            </div>
+<section class="features">
 
-            <div class="feature-text">
+<div class="feature">
 
-                <strong>
-                    توصيل سريع
-                </strong>
+<div class="feature-icon">🛡️</div>
 
-                <span>
-                    إلى جميع الولايات
-                </span>
+<div class="feature-text">
 
-            </div>
+<strong>تسوق بأمان</strong>
 
-        </div>
+<span>حماية طلبك</span>
 
+</div>
 
-        <div class="feature">
+</div>
 
-            <div class="feature-icon">
-                ⭐
-            </div>
 
-            <div class="feature-text">
+<div class="feature">
 
-                <strong>
-                    منتجات موثوقة
-                </strong>
+<div class="feature-icon">🚚</div>
 
-                <span>
-                    جودة مضمونة
-                </span>
+<div class="feature-text">
 
-            </div>
+<strong>توصيل سريع</strong>
 
-        </div>
+<span>إلى جميع الولايات</span>
 
+</div>
 
-        <div class="feature">
+</div>
 
-            <div class="feature-icon">
-                🎧
-            </div>
 
-            <div class="feature-text">
+<div class="feature">
 
-                <strong>
-                    دعم العملاء
-                </strong>
+<div class="feature-icon">⭐</div>
 
-                <span>
-                    متواجدون لمساعدتك
-                </span>
+<div class="feature-text">
 
-            </div>
+<strong>منتجات موثوقة</strong>
 
-        </div>
+<span>جودة مضمونة</span>
 
-    </section>
+</div>
 
+</div>
 
-    <!-- =========================
-         CATEGORIES
-    ========================= -->
 
-    <section class="container" id="categories">
+<div class="feature">
 
-        <div class="section-header">
+<div class="feature-icon">🎧</div>
 
-            <h2 class="section-title">
-                تصفح الفئات
-            </h2>
+<div class="feature-text">
 
-            <a href="#" class="view-all">
-                عرض الكل ←
-            </a>
+<strong>دعم العملاء</strong>
 
-        </div>
+<span>متواجدون لمساعدتك</span>
 
+</div>
 
-        <div class="categories">
+</div>
 
-            <div class="category">
-                <div class="category-icon">🚗</div>
-                <div class="category-name">السيارات</div>
-            </div>
+</section>
 
-            <div class="category">
-                <div class="category-icon">🎮</div>
-                <div class="category-name">الألعاب</div>
-            </div>
 
-            <div class="category">
-                <div class="category-icon">⌚</div>
-                <div class="category-name">الساعات</div>
-            </div>
+<!-- ================= CATEGORIES ================= -->
 
-            <div class="category">
-                <div class="category-icon">👟</div>
-                <div class="category-name">الأحذية</div>
-            </div>
+<section class="container" id="categories">
 
-            <div class="category">
-                <div class="category-icon">👕</div>
-                <div class="category-name">الملابس</div>
-            </div>
+<div class="section-header">
 
-            <div class="category">
-                <div class="category-icon">🏋️</div>
-                <div class="category-name">الرياضة</div>
-            </div>
+<h2 class="section-title">
+تصفح الفئات
+</h2>
 
-            <div class="category">
-                <div class="category-icon">💄</div>
-                <div class="category-name">الجمال</div>
-            </div>
+<a
+href="#"
+class="view-all"
+onclick="showAllProducts();return false;"
+>
+عرض الكل ←
+</a>
 
-            <div class="category">
-                <div class="category-icon">🏠</div>
-                <div class="category-name">المنزل</div>
-            </div>
+</div>
 
-            <div class="category">
-                <div class="category-icon">📱</div>
-                <div class="category-name">الهواتف</div>
-            </div>
 
-            <div class="category">
-                <div class="category-icon">🎧</div>
-                <div class="category-name">إلكترونيات</div>
-            </div>
+<div class="categories">
 
-        </div>
 
-    </section>
+<div
+class="category"
+onclick="filterCategory('سيارات',this)"
+>
 
+<div class="category-icon">🚗</div>
 
-    <!-- =========================
-         PRODUCTS
-    ========================= -->
+<div class="category-name">
+السيارات
+</div>
 
-    <section class="container" id="products">
+</div>
 
-        <div class="section-header">
 
-            <h2 class="section-title">
-                منتجات مميزة 🔥
-            </h2>
+<div
+class="category"
+onclick="filterCategory('ألعاب',this)"
+>
 
-            <a href="#" class="view-all">
-                عرض الكل ←
-            </a>
+<div class="category-icon">🎮</div>
 
-        </div>
+<div class="category-name">
+الألعاب
+</div>
 
+</div>
 
-        <div class="products">
 
+<div
+class="category"
+onclick="filterCategory('ساعات',this)"
+>
 
-            <!-- PRODUCT 1 -->
+<div class="category-icon">⌚</div>
 
-            <div class="product">
+<div class="category-name">
+الساعات
+</div>
 
-                <span class="discount">
-                    -15%
-                </span>
+</div>
 
-                <button class="favorite">
-                    ♡
-                </button>
 
-                <div class="product-image">
+<div
+class="category"
+onclick="filterCategory('أحذية',this)"
+>
 
-                    <img
-                        src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80"
-                        alt="سماعات"
-                    >
+<div class="category-icon">👟</div>
 
-                </div>
+<div class="category-name">
+الأحذية
+</div>
 
-                <div class="product-info">
+</div>
 
-                    <div class="product-name">
-                        سماعات لاسلكية احترافية
-                    </div>
 
-                    <div class="rating">
-                        ★★★★★
-                    </div>
+<div
+class="category"
+onclick="filterCategory('ملابس',this)"
+>
 
-                    <div class="price">
-                        4,500 دج
-                        <span class="old-price">
-                            5,300 دج
-                        </span>
-                    </div>
+<div class="category-icon">👕</div>
 
-                    <button class="add-cart" onclick="addToCart()">
-                        🛒 أضف للسلة
-                    </button>
+<div class="category-name">
+الملابس
+</div>
 
-                </div>
+</div>
 
-            </div>
 
+<div
+class="category"
+onclick="filterCategory('رياضة',this)"
+>
 
-            <!-- PRODUCT 2 -->
+<div class="category-icon">🏋️</div>
 
-            <div class="product">
+<div class="category-name">
+الرياضة
+</div>
 
-                <span class="discount">
-                    -20%
-                </span>
+</div>
 
-                <button class="favorite">
-                    ♡
-                </button>
 
-                <div class="product-image">
+<div
+class="category"
+onclick="filterCategory('جمال',this)"
+>
 
-                    <img
-                        src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80"
-                        alt="ساعة ذكية"
-                    >
+<div class="category-icon">💄</div>
 
-                </div>
+<div class="category-name">
+الجمال
+</div>
 
-                <div class="product-info">
+</div>
 
-                    <div class="product-name">
-                        ساعة ذكية رياضية
-                    </div>
 
-                    <div class="rating">
-                        ★★★★★
-                    </div>
+<div
+class="category"
+onclick="filterCategory('منزل',this)"
+>
 
-                    <div class="price">
-                        6,900 دج
-                        <span class="old-price">
-                            8,500 دج
-                        </span>
-                    </div>
+<div class="category-icon">🏠</div>
 
-                    <button class="add-cart" onclick="addToCart()">
-                        🛒 أضف للسلة
-                    </button>
+<div class="category-name">
+المنزل
+</div>
 
-                </div>
+</div>
 
-            </div>
 
+<div
+class="category"
+onclick="filterCategory('هواتف',this)"
+>
 
-            <!-- PRODUCT 3 -->
+<div class="category-icon">📱</div>
 
-            <div class="product">
+<div class="category-name">
+الهواتف
+</div>
 
-                <button class="favorite">
-                    ♡
-                </button>
+</div>
 
-                <div class="product-image">
 
-                    <img
-                        src="https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=600&q=80"
-                        alt="سماعات"
-                    >
+<div
+class="category"
+onclick="filterCategory('إلكترونيات',this)"
+>
 
-                </div>
+<div class="category-icon">🎧</div>
 
-                <div class="product-info">
+<div class="category-name">
+إلكترونيات
+</div>
 
-                    <div class="product-name">
-                        سماعات AirPods لاسلكية
-                    </div>
+</div>
 
-                    <div class="rating">
-                        ★★★★☆
-                    </div>
+</div>
 
-                    <div class="price">
-                        8,500 دج
-                    </div>
+</section>
 
-                    <button class="add-cart" onclick="addToCart()">
-                        🛒 أضف للسلة
-                    </button>
 
-                </div>
+<!-- ================= PRODUCTS ================= -->
 
-            </div>
+<section class="container" id="products">
 
+<div class="section-header">
 
-            <!-- PRODUCT 4 -->
+<h2
+class="section-title"
+id="productsTitle"
+>
+منتجات مميزة 🔥
+</h2>
 
-            <div class="product">
+</div>
 
-                <span class="discount">
-                    -10%
-                </span>
 
-                <button class="favorite">
-                    ♡
-                </button>
+<div
+class="products"
+id="productGrid"
+>
 
-                <div class="product-image">
 
-                    <img
-                        src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80"
-                        alt="هاتف"
-                    >
+<!-- PRODUCT -->
 
-                </div>
+<div
+class="product"
+data-category="إلكترونيات"
+data-name="سماعات لاسلكية"
+>
 
-                <div class="product-info">
+<span class="discount">
+-15%
+</span>
 
-                    <div class="product-name">
-                        هاتف ذكي حديث
-                    </div>
+<button
+class="favorite"
+onclick="toggleFavorite(this)"
+>
+♡
+</button>
 
-                    <div class="rating">
-                        ★★★★★
-                    </div>
+<div class="product-image">
 
-                    <div class="price">
-                        48,000 دج
-                        <span class="old-price">
-                            53,000 دج
-                        </span>
-                    </div>
+<img
+src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80"
+alt="سماعات"
+>
 
-                    <button class="add-cart" onclick="addToCart()">
-                        🛒 أضف للسلة
-                    </button>
+</div>
 
-                </div>
+<div class="product-info">
 
-            </div>
+<div class="product-name">
+سماعات لاسلكية احترافية
+</div>
 
+<div class="rating">
+★★★★★
+</div>
 
-            <!-- PRODUCT 5 -->
+<div class="price">
+4,500 دج
+<span class="old-price">
+5,300 دج
+</span>
+</div>
 
-            <div class="product">
+<button
+class="add-cart"
+onclick="addToCart('سماعات لاسلكية')"
+>
+🛒 أضف للسلة
+</button>
 
-                <span class="discount">
-                    -25%
-                </span>
+</div>
 
-                <button class="favorite">
-                    ♡
-                </button>
+</div>
 
-                <div class="product-image">
 
-                    <img
-                        src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80"
-                        alt="حذاء"
-                    >
+<!-- PRODUCT -->
 
-                </div>
+<div
+class="product"
+data-category="ساعات"
+data-name="ساعة ذكية"
+>
 
-                <div class="product-info">
+<span class="discount">
+-20%
+</span>
 
-                    <div class="product-name">
-                        حذاء رياضي عصري
-                    </div>
+<button
+class="favorite"
+onclick="toggleFavorite(this)"
+>
+♡
+</button>
 
-                    <div class="rating">
-                        ★★★★★
-                    </div>
+<div class="product-image">
 
-                    <div class="price">
-                        5,500 دج
-                        <span class="old-price">
-                            7,300 دج
-                        </span>
-                    </div>
+<img
+src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80"
+alt="ساعة"
+>
 
-                    <button class="add-cart" onclick="addToCart()">
-                        🛒 أضف للسلة
-                    </button>
+</div>
 
-                </div>
+<div class="product-info">
 
-            </div>
+<div class="product-name">
+ساعة ذكية رياضية
+</div>
 
-        </div>
+<div class="rating">
+★★★★★
+</div>
 
-    </section>
+<div class="price">
+6,900 دج
+<span class="old-price">
+8,500 دج
+</span>
+</div>
 
+<button
+class="add-cart"
+onclick="addToCart('ساعة ذكية')"
+>
+🛒 أضف للسلة
+</button>
 
-    <!-- =========================
-         FOOTER
-    ========================= -->
+</div>
 
-    <footer>
+</div>
 
-        <div class="footer-container">
 
-            <div>
+<!-- PRODUCT -->
 
-                <div class="footer-logo">
-                    <span class="marchi">MARCHI</span>
-                    <span class="dz">DZ</span>
-                </div>
+<div
+class="product"
+data-category="إلكترونيات"
+data-name="سماعات ايربودز"
+>
 
-                <p class="footer-about">
-                    سوق إلكتروني جزائري يجمع المنتجات والبائعين
-                    في مكان واحد، لتجربة تسوق سهلة وآمنة.
-                </p>
+<button
+class="favorite"
+onclick="toggleFavorite(this)"
+>
+♡
+</button>
 
-            </div>
+<div class="product-image">
 
+<img
+src="https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=600&q=80"
+alt="سماعات"
+>
 
-            <div>
+</div>
 
-                <h3 class="footer-title">
-                    روابط مهمة
-                </h3>
+<div class="product-info">
 
-                <ul class="footer-links">
+<div class="product-name">
+سماعات AirPods لاسلكية
+</div>
 
-                    <li>الرئيسية</li>
-                    <li>من نحن</li>
-                    <li>تواصل معنا</li>
-                    <li>الأسئلة الشائعة</li>
+<div class="rating">
+★★★★☆
+</div>
 
-                </ul>
+<div class="price">
+8,500 دج
+</div>
 
-            </div>
+<button
+class="add-cart"
+onclick="addToCart('AirPods')"
+>
+🛒 أضف للسلة
+</button>
 
+</div>
 
-            <div>
+</div>
 
-                <h3 class="footer-title">
-                    التسوق
-                </h3>
 
-                <ul class="footer-links">
+<!-- PRODUCT -->
 
-                    <li>الفئات</li>
-                    <li>العروض</li>
-                    <li>المنتجات الجديدة</li>
-                    <li>المتاجر</li>
+<div
+class="product"
+data-category="هواتف"
+data-name="هاتف ذكي"
+>
 
-                </ul>
+<span class="discount">
+-10%
+</span>
 
-            </div>
+<button
+class="favorite"
+onclick="toggleFavorite(this)"
+>
+♡
+</button>
 
+<div class="product-image">
 
-            <div>
+<img
+src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80"
+alt="هاتف"
+>
 
-                <h3 class="footer-title">
-                    المساعدة
-                </h3>
+</div>
 
-                <ul class="footer-links">
+<div class="product-info">
 
-                    <li>الدعم</li>
-                    <li>تتبع الطلب</li>
-                    <li>سياسة الاسترجاع</li>
-                    <li>الشروط والأحكام</li>
+<div class="product-name">
+هاتف ذكي حديث
+</div>
 
-                </ul>
+<div class="rating">
+★★★★★
+</div>
 
-            </div>
+<div class="price">
+48,000 دج
+<span class="old-price">
+53,000 دج
+</span>
+</div>
 
-        </div>
+<button
+class="add-cart"
+onclick="addToCart('هاتف ذكي')"
+>
+🛒 أضف للسلة
+</button>
 
+</div>
 
-        <div class="copyright">
-            © 2026 MARCHI DZ — جميع الحقوق محفوظة 🇩🇿
-        </div>
+</div>
 
-    </footer>
 
+<!-- PRODUCT -->
 
-    <!-- =========================
-         JAVASCRIPT
-    ========================= -->
+<div
+class="product"
+data-category="أحذية"
+data-name="حذاء رياضي"
+>
 
-    <script>
+<span class="discount">
+-25%
+</span>
 
-        let cartCount = 0;
+<button
+class="favorite"
+onclick="toggleFavorite(this)"
+>
+♡
+</button>
 
+<div class="product-image">
 
-        function addToCart() {
+<img
+src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80"
+alt="حذاء"
+>
 
-            cartCount++;
+</div>
 
-            document.getElementById("cartCount").textContent =
-                cartCount;
+<div class="product-info">
 
-            alert("تمت إضافة المنتج إلى السلة 🛒");
+<div class="product-name">
+حذاء رياضي عصري
+</div>
+
+<div class="rating">
+★★★★★
+</div>
+
+<div class="price">
+5,500 دج
+<span class="old-price">
+7,300 دج
+</span>
+</div>
+
+<button
+class="add-cart"
+onclick="addToCart('حذاء رياضي')"
+>
+🛒 أضف للسلة
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+<div class="footer-container">
+
+<div>
+
+<div class="footer-logo">
+
+<span class="marchi">MARCHI</span>
+<span class="dz"> DZ</span>
+
+</div>
+
+<p class="footer-about">
+سوق إلكتروني جزائري يجمع المنتجات والبائعين
+في مكان واحد، لتجربة تسوق سهلة وآمنة.
+</p>
+
+</div>
+
+
+<div>
+
+<h3 class="footer-title">
+روابط مهمة
+</h3>
+
+<ul class="footer-links">
+
+<li>الرئيسية</li>
+<li>من نحن</li>
+<li>تواصل معنا</li>
+<li>الأسئلة الشائعة</li>
+
+</ul>
+
+</div>
+
+
+<div>
+
+<h3 class="footer-title">
+التسوق
+</h3>
+
+<ul class="footer-links">
+
+<li>الفئات</li>
+<li>العروض</li>
+<li>المنتجات الجديدة</li>
+<li>المتاجر</li>
+
+</ul>
+
+</div>
+
+
+<div>
+
+<h3 class="footer-title">
+المساعدة
+</h3>
+
+<ul class="footer-links">
+
+<li>الدعم</li>
+<li>تتبع الطلب</li>
+<li>سياسة الاسترجاع</li>
+<li>الشروط والأحكام</li>
+
+</ul>
+
+</div>
+
+</div>
+
+
+<div class="copyright">
+
+© 2026 MARCHI DZ — جميع الحقوق محفوظة 🇩🇿
+
+</div>
+
+</footer>
+
+
+<script>
+
+/* =========================
+   CART
+========================= */
+
+let cartCount = 0;
+
+function addToCart(productName){
+
+    cartCount++;
+
+    document.getElementById("cartCount").textContent =
+        cartCount;
+
+    alert(
+        "تمت إضافة " +
+        productName +
+        " إلى السلة 🛒"
+    );
+}
+
+
+/* =========================
+   FAVORITE
+========================= */
+
+function toggleFavorite(button){
+
+    button.classList.toggle("liked");
+
+    if(button.classList.contains("liked")){
+
+        button.textContent = "♥";
+
+    }else{
+
+        button.textContent = "♡";
+
+    }
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+function searchProducts(){
+
+    const search =
+        document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
+
+    const products =
+        document.querySelectorAll(".product");
+
+    let found = 0;
+
+    products.forEach(function(product){
+
+        const name =
+            product.dataset.name.toLowerCase();
+
+        const category =
+            product.dataset.category.toLowerCase();
+
+        if(
+            name.includes(search) ||
+            category.includes(search)
+        ){
+
+            product.style.display = "";
+
+            found++;
+
+        }else{
+
+            product.style.display = "none";
 
         }
 
+    });
 
-        function searchProduct() {
+    document.getElementById("productsTitle").textContent =
+        search
+        ? "نتائج البحث 🔎"
+        : "منتجات مميزة 🔥";
 
-            const input =
-                document.getElementById("searchInput").value.trim();
+    document
+    .getElementById("products")
+    .scrollIntoView({
+        behavior:"smooth"
+    });
 
-            if (input === "") {
+}
 
-                alert("اكتب اسم المنتج الذي تبحث عنه 🔎");
 
-                return;
-            }
+/* SEARCH WITH ENTER */
 
-            alert("جاري البحث عن: " + input);
+document
+.getElementById("searchInput")
+.addEventListener("keydown",function(event){
+
+    if(event.key === "Enter"){
+
+        searchProducts();
+
+    }
+
+});
+
+
+/* =========================
+   CATEGORY FILTER
+========================= */
+
+function filterCategory(category,element){
+
+    const products =
+        document.querySelectorAll(".product");
+
+    document
+    .querySelectorAll(".category")
+    .forEach(function(cat){
+
+        cat.classList.remove("selected");
+
+    });
+
+    element.classList.add("selected");
+
+    products.forEach(function(product){
+
+        if(product.dataset.category === category){
+
+            product.style.display = "";
+
+        }else{
+
+            product.style.display = "none";
 
         }
 
+    });
 
-        /* FAVORITES */
+    document.getElementById("productsTitle").textContent =
+        "منتجات " + category;
 
-        const favorites =
-            document.querySelectorAll(".favorite");
+    document
+    .getElementById("products")
+    .scrollIntoView({
+        behavior:"smooth"
+    });
 
-        favorites.forEach(function(button) {
+}
 
-            button.addEventListener("click", function() {
 
-                if (button.textContent === "♡") {
+/* =========================
+   SHOW ALL
+========================= */
 
-                    button.textContent = "♥";
-                    button.style.color = "#16a34a";
+function showAllProducts(){
 
-                } else {
+    document
+    .querySelectorAll(".product")
+    .forEach(function(product){
 
-                    button.textContent = "♡";
-                    button.style.color = "";
+        product.style.display = "";
 
-                }
+    });
 
-            });
+    document
+    .querySelectorAll(".category")
+    .forEach(function(category){
 
-        });
+        category.classList.remove("selected");
 
-    </script>
+    });
+
+    document.getElementById("productsTitle").textContent =
+        "منتجات مميزة 🔥";
+
+}
+
+
+/* =========================
+   HERO BUTTON
+========================= */
+
+function scrollToProducts(){
+
+    document
+    .getElementById("products")
+    .scrollIntoView({
+        behavior:"smooth"
+    });
+
+}
+
+</script>
 
 </body>
-
 </html>
