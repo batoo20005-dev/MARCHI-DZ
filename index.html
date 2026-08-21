@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>سوق الجزائر | Marketplace DZ</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: auto;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #e63946;
+            white-space: nowrap;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: #e63946;
+        }
+
+        .nav-actions {
+            margin-right: auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .login {
+            background: #f1f1f1;
+        }
+
+        .cart {
+            background: #e63946;
+            color: white;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #e63946, #b91c1c);
+            color: white;
+            padding: 70px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            max-width: 700px;
+            margin: auto;
+            display: flex;
+            background: white;
+            padding: 6px;
+            border-radius: 12px;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 15px;
+            font-size: 16px;
+        }
+
+        .search-box button {
+            background: #222;
+            color: white;
+            border: none;
+            padding: 0 25px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Sections */
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 45px 20px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 25px;
+        }
+
+        /* Categories */
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .category {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .category:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        .category .icon {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        .category h3 {
+            font-size: 17px;
+        }
+
+        /* Products */
+        .products {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .product {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: 0.2s;
+        }
+
+        .product:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        .product-image {
+            height: 180px;
+            background: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 60px;
+        }
+
+        .product-info {
+            padding: 18px;
+        }
+
+        .product-info h3 {
+            margin-bottom: 10px;
+        }
+
+        .price {
+            color: #e63946;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .buy-btn {
+            width: 100%;
+            background: #222;
+            color: white;
+            border: none;
+            padding: 11px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        /* Footer */
+        footer {
+            background: #171717;
+            color: white;
+            margin-top: 30px;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        footer p {
+            color: #bbb;
+            margin-top: 10px;
+        }
+
+        /* Mobile */
+        @media (max-width: 800px) {
+            .navbar {
+                height: auto;
+                padding: 15px;
+                flex-wrap: wrap;
+            }
+
+            .nav-links {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 30px;
+            }
+
+            .categories {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .products {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .products {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .search-box button {
+                height: 45px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header>
+        <nav class="navbar">
+
+            <div class="logo">
+                🇩🇿 سوق الجزائر
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="#">الرئيسية</a></li>
+                <li><a href="#categories">الفئات</a></li>
+                <li><a href="#products">المنتجات</a></li>
+                <li><a href="#">الدعم</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="btn login">تسجيل الدخول</button>
+                <button class="btn cart">🛒 السلة</button>
+            </div>
+
+        </nav>
+    </header>
+
+
+    <!-- Hero -->
+    <section class="hero">
+
+        <h1>كل ما تحتاجه في مكان واحد 🇩🇿</h1>
+
+        <p>
+            اكتشف المنتجات، قارن الأسعار وتسوق بسهولة داخل الجزائر
+        </p>
+
+        <div class="search-box">
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="🔎 ابحث عن أي شيء..."
+            >
+
+            <button onclick="searchProduct()">
+                بحث
+            </button>
+        </div>
+
+    </section>
+
+
+    <!-- Categories -->
+    <section class="container" id="categories">
+
+        <h2 class="section-title">
+            🏷️ تصفح الفئات
+        </h2>
+
+        <div class="categories">
+
+            <div class="category">
+                <div class="icon">👕</div>
+                <h3>الملابس</h3>
+            </div>
+
+            <div class="category">
+                <div class="icon">📱</div>
+                <h3>الإلكترونيات</h3>
+            </div>
+
+            <div class="category">
+                <div class="icon">🏠</div>
+                <h3>المنزل</h3>
+            </div>
+
+            <div class="category">
+                <div class="icon">💄</div>
+                <h3>الجمال</h3>
+            </div>
+
+            <div class="category">
+                <div class="icon">⚽</div>
+                <h3>الرياضة</h3>
+            </div>
+
+            <div class="category">
+                <div class="icon">🎮</div>
+                <h3>الألعاب</h3>
+            </div>
+
+            <div class="category">
+                <div class="icon">🚗</div>
+                <h3>السيارات</h3>
+            </div>
+
+            <div class="category">
+                <div class="icon">📦</div>
+                <h3>أخرى</h3>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Products -->
+    <section class="container" id="products">
+
+        <h2 class="section-title">
+            🔥 منتجات مميزة
+        </h2>
+
+        <div class="products">
+
+            <div class="product">
+
+                <div class="product-image">
+                    👟
+                </div>
+
+                <div class="product-info">
+                    <h3>حذاء رياضي</h3>
+
+                    <div class="price">
+                        3,500 دج
+                    </div>
+
+                    <button class="buy-btn">
+                        🛒 أضف للسلة
+                    </button>
+                </div>
+
+            </div>
+
+
+            <div class="product">
+
+                <div class="product-image">
+                    🎧
+                </div>
+
+                <div class="product-info">
+                    <h3>سماعات لاسلكية</h3>
+
+                    <div class="price">
+                        2,500 دج
+                    </div>
+
+                    <button class="buy-btn">
+                        🛒 أضف للسلة
+                    </button>
+                </div>
+
+            </div>
+
+
+            <div class="product">
+
+                <div class="product-image">
+                    📱
+                </div>
+
+                <div class="product-info">
+                    <h3>هاتف ذكي</h3>
+
+                    <div class="price">
+                        45,000 دج
+                    </div>
+
+                    <button class="buy-btn">
+                        🛒 أضف للسلة
+                    </button>
+                </div>
+
+            </div>
+
+
+            <div class="product">
+
+                <div class="product-image">
+                    ⌚
+                </div>
+
+                <div class="product-info">
+                    <h3>ساعة ذكية</h3>
+
+                    <div class="price">
+                        4,500 دج
+                    </div>
+
+                    <button class="buy-btn">
+                        🛒 أضف للسلة
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <h2>🇩🇿 سوق الجزائر</h2>
+
+        <p>
+            منصة جزائرية للتسوق والبيع عبر الإنترنت
+        </p>
+
+        <p>
+            © 2026 جميع الحقوق محفوظة
+        </p>
+
+    </footer>
+
+
+    <script>
+
+        function searchProduct() {
+
+            const input =
+                document.getElementById("searchInput").value;
+
+            if (input.trim() === "") {
+
+                alert("اكتب اسم المنتج أولاً 🔎");
+
+            } else {
+
+                alert("جاري البحث عن: " + input);
+
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>
