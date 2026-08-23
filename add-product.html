@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>إضافة منتج | MARCHI DZ</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,Tahoma,sans-serif;
+    background:#f7f9fa;
+    color:#172033;
+}
+
+header{
+    background:white;
+    border-bottom:1px solid #e5e9ec;
+}
+
+.header{
+    max-width:1200px;
+    margin:auto;
+    min-height:75px;
+    padding:10px 20px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+}
+
+.logo img{
+    width:55px;
+    height:55px;
+    object-fit:contain;
+}
+
+.logo-name{
+    font-size:24px;
+    font-weight:900;
+}
+
+.marchi{
+    color:#102a43;
+}
+
+.dz{
+    color:#16a34a;
+}
+
+.back{
+    color:#16a34a;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+
+/* PAGE */
+
+.container{
+    max-width:850px;
+    margin:45px auto;
+    padding:0 20px;
+}
+
+.title{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.title h1{
+    font-size:32px;
+    margin-bottom:10px;
+}
+
+.title p{
+    color:#777;
+}
+
+
+/* FORM */
+
+.form-box{
+    background:white;
+    padding:30px;
+    border-radius:15px;
+
+    box-shadow:0 5px 25px rgba(0,0,0,.06);
+}
+
+.form-group{
+    margin-bottom:22px;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:bold;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+
+    padding:13px 15px;
+
+    border:1px solid #dfe5e9;
+    border-radius:8px;
+
+    outline:none;
+
+    font-size:15px;
+
+    background:white;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#16a34a;
+}
+
+textarea{
+    min-height:130px;
+    resize:vertical;
+}
+
+
+/* IMAGE */
+
+.image-box{
+    border:2px dashed #dfe5e9;
+    border-radius:10px;
+
+    padding:25px;
+
+    text-align:center;
+}
+
+.image-box p{
+    color:#777;
+    margin-bottom:12px;
+}
+
+.image-preview{
+    display:none;
+
+    width:180px;
+    height:180px;
+
+    object-fit:cover;
+
+    border-radius:10px;
+
+    margin:15px auto 0;
+}
+
+
+/* PRICE */
+
+.price-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+
+    gap:15px;
+}
+
+
+/* BUTTON */
+
+.submit-btn{
+    width:100%;
+
+    padding:16px;
+
+    border:none;
+    border-radius:9px;
+
+    background:#16a34a;
+    color:white;
+
+    font-size:17px;
+    font-weight:bold;
+
+    cursor:pointer;
+}
+
+.submit-btn:hover{
+    background:#12813b;
+}
+
+
+/* MESSAGE */
+
+.message{
+    display:none;
+
+    margin-top:20px;
+
+    padding:15px;
+
+    border-radius:8px;
+
+    text-align:center;
+
+    background:#dcfce7;
+    color:#166534;
+}
+
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+    .price-row{
+        grid-template-columns:1fr;
+    }
+
+    .form-box{
+        padding:20px;
+    }
+
+    .title h1{
+        font-size:26px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<div class="header">
+
+<a href="index.html" class="logo">
+
+<img src="logo.png" alt="MARCHI DZ">
+
+<div class="logo-name">
+
+<span class="marchi">MARCHI</span>
+<span class="dz"> DZ</span>
+
+</div>
+
+</a>
+
+
+<a href="index.html" class="back">
+← العودة للرئيسية
+</a>
+
+</div>
+
+</header>
+
+
+
+<main class="container">
+
+
+<div class="title">
+
+<h1>➕ إضافة منتج</h1>
+
+<p>
+أضف منتجك ليظهر في سوق MARCHI DZ
+</p>
+
+</div>
+
+
+
+<div class="form-box">
+
+
+<!-- اسم المنتج -->
+
+<div class="form-group">
+
+<label>
+اسم المنتج
+</label>
+
+<input
+type="text"
+id="productName"
+placeholder="مثال: سماعات لاسلكية"
+>
+
+</div>
+
+
+
+<!-- الفئة -->
+
+<div class="form-group">
+
+<label>
+الفئة
+</label>
+
+<select id="productCategory">
+
+<option value="">
+اختر الفئة
+</option>
+
+<option value="سيارات">
+🚗 السيارات
+</option>
+
+<option value="ألعاب">
+🎮 الألعاب
+</option>
+
+<option value="ساعات">
+⌚ الساعات
+</option>
+
+<option value="أحذية">
+👟 الأحذية
+</option>
+
+<option value="ملابس">
+👕 الملابس
+</option>
+
+<option value="رياضة">
+🏋️ الرياضة
+</option>
+
+<option value="جمال">
+💄 الجمال
+</option>
+
+<option value="منزل">
+🏠 المنزل
+</option>
+
+<option value="هواتف">
+📱 الهواتف
+</option>
+
+<option value="إلكترونيات">
+🎧 الإلكترونيات
+</option>
+
+</select>
+
+</div>
+
+
+
+<!-- السعر -->
+
+<div class="price-row">
+
+
+<div class="form-group">
+
+<label>
+السعر بالدج
+</label>
+
+<input
+type="number"
+id="productPrice"
+placeholder="4500"
+min="0"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+السعر القديم بالدج
+</label>
+
+<input
+type="number"
+id="oldPrice"
+placeholder="5300"
+min="0"
+>
+
+</div>
+
+
+</div>
+
+
+
+<!-- الصورة -->
+
+<div class="form-group">
+
+<label>
+صورة المنتج
+</label>
+
+<div class="image-box">
+
+<p>
+اختر صورة من جهازك
+</p>
+
+<input
+type="file"
+id="productImage"
+accept="image/*"
+>
+
+<img
+id="imagePreview"
+class="image-preview"
+alt="معاينة المنتج"
+>
+
+</div>
+
+</div>
+
+
+
+<!-- الوصف -->
+
+<div class="form-group">
+
+<label>
+وصف المنتج
+</label>
+
+<textarea
+id="productDescription"
+placeholder="اكتب وصفًا مختصرًا للمنتج..."
+></textarea>
+
+</div>
+
+
+
+<!-- الكمية -->
+
+<div class="form-group">
+
+<label>
+الكمية المتوفرة
+</label>
+
+<input
+type="number"
+id="productQuantity"
+placeholder="10"
+min="1"
+>
+
+</div>
+
+
+
+<button
+class="submit-btn"
+onclick="addProduct()"
+>
+➕ إضافة المنتج
+</button>
+
+
+<div
+class="message"
+id="message"
+>
+تمت إضافة المنتج بنجاح ✅
+</div>
+
+
+</div>
+
+</main>
+
+
+
+<script>
+
+
+/* =========================
+   IMAGE PREVIEW
+========================= */
+
+document
+.getElementById("productImage")
+.addEventListener("change",function(){
+
+    const file = this.files[0];
+
+    if(!file){
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(event){
+
+        const preview =
+            document.getElementById("imagePreview");
+
+        preview.src = event.target.result;
+
+        preview.style.display = "block";
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+
+
+/* =========================
+   ADD PRODUCT
+========================= */
+
+function addProduct(){
+
+    const name =
+        document
+        .getElementById("productName")
+        .value
+        .trim();
+
+    const category =
+        document
+        .getElementById("productCategory")
+        .value;
+
+    const price =
+        document
+        .getElementById("productPrice")
+        .value;
+
+    const oldPrice =
+        document
+        .getElementById("oldPrice")
+        .value;
+
+    const description =
+        document
+        .getElementById("productDescription")
+        .value
+        .trim();
+
+    const quantity =
+        document
+        .getElementById("productQuantity")
+        .value;
+
+    const image =
+        document
+        .getElementById("productImage")
+        .files[0];
+
+
+    /* التحقق */
+
+    if(
+        !name ||
+        !category ||
+        !price ||
+        !description ||
+        !quantity ||
+        !image
+    ){
+
+        alert(
+            "من فضلك أكمل جميع المعلومات المطلوبة ❗"
+        );
+
+        return;
+
+    }
+
+
+    /* إنشاء المنتج */
+
+    const product = {
+
+        id: Date.now(),
+
+        name: name,
+
+        category: category,
+
+        price: Number(price),
+
+        oldPrice: Number(oldPrice) || 0,
+
+        description: description,
+
+        quantity: Number(quantity),
+
+        image: image.name
+
+    };
+
+
+    console.log(product);
+
+
+    /* رسالة النجاح */
+
+    document
+    .getElementById("message")
+    .style.display = "block";
+
+
+    alert(
+        "تم تجهيز المنتج بنجاح ✅"
+    );
+
+}
+
+
+</script>
+
+
+</body>
+</html>
