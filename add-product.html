@@ -183,7 +183,6 @@ textarea{
 
 
 /* BUTTON */
-
 .submit-btn{
     width:100%;
 
@@ -382,7 +381,7 @@ placeholder="مثال: سماعات لاسلكية"
 <div class="form-group">
 
 <label>
-السعر بالدج
+السعر بالدينار 
 </label>
 
 <input
@@ -398,7 +397,7 @@ min="0"
 <div class="form-group">
 
 <label>
-السعر القديم بالدج
+السعر القديم بالدينار
 </label>
 
 <input
@@ -483,13 +482,37 @@ min="1"
 
 
 
-<button
-class="submit-btn"
-onclick="addProduct()"
->
-➕ إضافة المنتج
-</button>
+<div class="rules-box">
 
+    <h3>📜 قوانين بيع المنتجات</h3>
+
+    <ul>
+        <li>🚫 يمنع بيع أي منتج غير قانوني أو محظور.</li>
+        <li>🚫 يمنع بيع الأسلحة والمخدرات والمواد الخطرة أو الممنوعة.</li>
+        <li>🚫 يمنع بيع المنتجات المسروقة أو المقلدة.</li>
+        <li>🚫 يمنع وضع معلومات أو صور مضللة عن المنتج.</li>
+        <li>💰 يجب أن يكون سعر المنتج أكبر من 0 دج.</li>
+        <li>📝 يجب أن تكون معلومات المنتج صحيحة.</li>
+        <li>📦 البائع مسؤول عن توفر المنتج وجودته.</li>
+        <li>💰 رسوم MARCHI DZ هي <strong>50 دج عن كل عملية بيع مكتملة</strong>.</li>
+        <li>⚠️ يحق لـ MARCHI DZ إزالة المنتجات المخالفة وتعليق الحساب.</li>
+    </ul>
+
+    <label class="agree-rules">
+
+        <input
+        type="checkbox"
+        id="agreeRules"
+        >
+
+        <span>
+        أوافق على قوانين MARCHI DZ وأتعهد بأن المنتج قانوني
+        والمعلومات التي قدمتها صحيحة.
+        </span>
+
+    </label>
+
+</div>
 
 <div
 class="message"
@@ -607,25 +630,37 @@ function addProduct(){
 
     /* إنشاء المنتج */
 
-    const product = {
+    const agreeRules =
+    document.getElementById("agreeRules").checked;
 
-        id: Date.now(),
+if(
+    !name ||
+    !category ||
+    !price ||
+    Number(price) <= 0 ||
+    !description ||
+    !quantity ||
+    Number(quantity) <= 0 ||
+    !image
+){
 
-        name: name,
+    alert(
+        "❌ أكمل جميع المعلومات وتأكد أن السعر والكمية أكبر من 0."
+    );
 
-        category: category,
+    return;
 
-        price: Number(price),
+}
 
-        oldPrice: Number(oldPrice) || 0,
+if(!agreeRules){
 
-        description: description,
+    alert(
+        "❌ يجب الموافقة على قوانين MARCHI DZ قبل إضافة المنتج."
+    );
 
-        quantity: Number(quantity),
+    return;
 
-        image: image.name
-
-    };
+}
 
 
     console.log(product);
