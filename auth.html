@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تسجيل الدخول أو إنشاء حساب | MARCHI DZ</title>
+<title>تسجيل الدخول | MARCHI DZ</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -16,111 +16,80 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
-    position: relative;
-    overflow-x: hidden;
-    background: #0b132b;
+    background: linear-gradient(135deg, #0b132b 0%, #1c2541 100%);
 }
 
-/* خلفية متدرجة وشبكة صور تسوق احترافية ومريحة */
-.bg-grid {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 12px;
-    opacity: 0.28;
-    z-index: 1;
-    padding: 10px;
-}
-
-.bg-grid img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 12px;
-}
-
-.overlay-dark {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(135deg, rgba(11, 19, 43, 0.92) 0%, rgba(16, 42, 67, 0.88) 100%);
-    backdrop-filter: blur(6px);
-    z-index: 2;
-}
-
-/* بطاقة الحسابات */
 .auth-card {
-    position: relative;
-    z-index: 10;
     background: #ffffff;
     padding: 35px 30px;
-    border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
     width: 100%;
-    max-width: 500px;
+    max-width: 480px;
 }
 
 .logo-header {
     text-align: center;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
 }
 
 .logo-name {
-    font-size: 30px;
+    font-size: 28px;
     font-weight: 900;
-    letter-spacing: 1px;
 }
 .marchi { color: #102a43; }
 .dz { color: #16a34a; }
 
-.tabs {
+/* أزرار التبديل العلوية */
+.tab-header {
     display: flex;
-    margin-bottom: 25px;
     background: #f1f5f9;
-    padding: 6px;
-    border-radius: 12px;
+    padding: 5px;
+    border-radius: 10px;
+    margin-bottom: 22px;
 }
 
 .tab-btn {
     flex: 1;
     text-align: center;
-    padding: 12px;
+    padding: 10px;
     cursor: pointer;
     font-weight: bold;
     color: #64748b;
-    border-radius: 9px;
+    border-radius: 8px;
     border: none;
     background: transparent;
-    font-size: 15px;
-    transition: all 0.25s ease;
+    font-size: 14px;
+    transition: 0.2s;
 }
 
 .tab-btn.active {
     background: #ffffff;
     color: #16a34a;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
 }
 
 .form-section {
-    display: block;
-}
-
-.form-section.hidden {
     display: none;
 }
 
-.form-group { margin-bottom: 16px; }
+.form-section.active {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
 
 .grid-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 10px;
 }
 
 label {
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
     font-weight: bold;
     font-size: 13px;
     color: #334155;
@@ -128,18 +97,16 @@ label {
 
 input, select {
     width: 100%;
-    padding: 12px 14px;
+    padding: 11px 13px;
     border: 1.5px solid #cbd5e1;
-    border-radius: 9px;
+    border-radius: 8px;
     font-size: 14px;
     outline: none;
     background: #ffffff;
-    transition: 0.2s;
 }
 
 input:focus, select:focus {
     border-color: #16a34a;
-    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
 }
 
 .forgot-link {
@@ -149,10 +116,8 @@ input:focus, select:focus {
     color: #0284c7;
     font-weight: bold;
     margin-top: 5px;
-    text-decoration: none;
     cursor: pointer;
 }
-
 .forgot-link:hover { text-decoration: underline; }
 
 .btn-submit {
@@ -160,23 +125,21 @@ input:focus, select:focus {
     background: #16a34a;
     color: white;
     border: none;
-    padding: 14px;
-    border-radius: 10px;
+    padding: 13px;
+    border-radius: 8px;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 15px;
     cursor: pointer;
     margin-top: 10px;
-    transition: 0.2s;
 }
-
 .btn-submit:hover { background: #12813b; }
 .btn-submit:disabled { background: #94a3b8; cursor: not-allowed; }
 
 .age-warning {
     color: #dc2626;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: bold;
-    margin-top: 4px;
+    margin-top: 3px;
     display: none;
 }
 
@@ -184,96 +147,60 @@ input:focus, select:focus {
     display: none;
     background: #f0fdf4;
     border: 1px dashed #16a34a;
-    padding: 15px;
-    border-radius: 10px;
-    margin-top: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 10px;
     text-align: center;
-}
-
-.timer-text {
-    font-size: 13px;
-    font-weight: bold;
-    color: #b45309;
-    margin-top: 5px;
-}
-
-.resend-btn {
-    background: none;
-    border: none;
-    color: #0284c7;
-    font-weight: bold;
-    font-size: 13px;
-    cursor: pointer;
-    margin-top: 8px;
-    text-decoration: underline;
 }
 
 .msg {
     text-align: center;
-    margin-top: 15px;
+    margin-top: 12px;
     font-weight: bold;
-    font-size: 14px;
-}
-
-@media(max-width: 550px) {
-    .grid-2 { grid-template-columns: 1fr; }
-    .bg-grid { grid-template-columns: repeat(2, 1fr); }
+    font-size: 13px;
 }
 </style>
 </head>
 <body>
-
-<!-- الخلفية الجمالية عالية الجودة -->
-<div class="bg-grid">
-    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80" alt="ساعات">
-    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80" alt="سماعات">
-    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80" alt="أحذية رياضية">
-    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80" alt="هواتف ذكية">
-    <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80" alt="إلكترونيات">
-    <img src="https://images.unsplash.com/photo-1560343090-f0409e92791a?auto=format&fit=crop&w=600&q=80" alt="موضة">
-    <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80" alt="منتجات تجميل">
-    <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=600&q=80" alt="تسوق إلكتروني">
-</div>
-<div class="overlay-dark"></div>
 
 <div class="auth-card">
     <div class="logo-header">
         <div class="logo-name">
             <span class="marchi">MARCHI</span><span class="dz"> DZ</span>
         </div>
-        <p style="font-size:13px; color:#64748b; margin-top:4px;">منصة التجارة والتسوق المعتمدة في الجزائر 🇩🇿</p>
+        <p style="font-size:12px; color:#64748b; margin-top:3px;">منصة التجارة والتسوق المعتمدة في الجزائر 🇩🇿</p>
     </div>
 
-    <!-- أزرار التبديل الرئيسي -->
-    <div class="tabs" id="mainTabs">
-        <button class="tab-btn active" id="loginTabBtn" onclick="switchTab('login')">🔑 تسجيل الدخول</button>
-        <button class="tab-btn" id="registerTabBtn" onclick="switchTab('register')">📝 حساب جديد</button>
+    <!-- أزرار التبديل -->
+    <div class="tab-header" id="mainTabs">
+        <button class="tab-btn active" id="btnTabLogin" onclick="openLogin()">تسجيل الدخول</button>
+        <button class="tab-btn" id="btnTabRegister" onclick="openRegister()">حساب جديد</button>
     </div>
 
     <!-- 1. نموذج تسجيل الدخول -->
-    <div id="loginSection" class="form-section">
+    <div id="sectionLogin" class="form-section active">
         <div class="form-group">
             <label>رقم الهاتف *</label>
-            <input type="tel" id="loginPhone" placeholder="مثال: 0661112233">
+            <input type="tel" id="loginPhone" placeholder="0661112233">
         </div>
         <div class="form-group">
             <label>كلمة المرور *</label>
             <input type="password" id="loginPass" placeholder="******">
-            <a class="forgot-link" onclick="switchTab('forgot')">نسيت كلمة المرور؟</a>
+            <a class="forgot-link" onclick="openForgot()">نسيت كلمة المرور؟</a>
         </div>
-        <button class="btn-submit" onclick="handleLogin()">🔑 تسجيل الدخول</button>
+        <button class="btn-submit" onclick="handleLogin()">تسجيل الدخول</button>
     </div>
 
     <!-- 2. نموذج إنشاء حساب جديد -->
-    <div id="registerSection" class="form-section hidden">
+    <div id="sectionRegister" class="form-section">
         <div class="grid-2">
             <div class="form-group">
                 <label>الاسم *</label>
-                <input type="text" id="regFirstName" placeholder="مثال: محمد">
+                <input type="text" id="regFirstName" placeholder="محمد">
             </div>
             <div class="form-group">
                 <label>اللقب *</label>
-                <input type="text" id="regLastName" placeholder="مثال: بن علي">
+                <input type="text" id="regLastName" placeholder="بن علي">
             </div>
         </div>
 
@@ -281,7 +208,7 @@ input:focus, select:focus {
             <div class="form-group">
                 <label>تاريخ الميلاد *</label>
                 <input type="date" id="regBirthDate" onchange="validateAge()">
-                <div class="age-warning" id="ageWarning">🚫 يمنع التسجيل لمن هم أقل من 18 سنة.</div>
+                <div class="age-warning" id="ageWarning">يمنع أقل من 18 سنة.</div>
             </div>
             <div class="form-group">
                 <label>رقم الهاتف *</label>
@@ -293,70 +220,21 @@ input:focus, select:focus {
             <div class="form-group">
                 <label>الولاية *</label>
                 <select id="regWilaya">
-                    <option value="">اختر الولاية (58 ولاية)</option>
-                    <option value="01 - أدرار">01 - أدرار</option>
-                    <option value="02 - الشلف">02 - الشلف</option>
-                    <option value="03 - الأغواط">03 - الأغواط</option>
-                    <option value="04 - أم البواقي">04 - أم البواقي</option>
-                    <option value="05 - باتنة">05 - باتنة</option>
-                    <option value="06 - بجاية">06 - بجاية</option>
-                    <option value="07 - بسكرة">07 - بسكرة</option>
-                    <option value="08 - بشار">08 - بشار</option>
-                    <option value="09 - البليدة">09 - البليدة</option>
-                    <option value="10 - البويرة">10 - البويرة</option>
-                    <option value="11 - تمنراست">11 - تمنراست</option>
-                    <option value="12 - تبسة">12 - تبسة</option>
-                    <option value="13 - تلمسان">13 - تلمسان</option>
-                    <option value="14 - تيارت">14 - تيارت</option>
-                    <option value="15 - تيزي وزو">15 - تيزي وزو</option>
+                    <option value="">اختر الولاية</option>
                     <option value="16 - الجزائر">16 - الجزائر</option>
-                    <option value="17 - الجلفة">17 - الجلفة</option>
-                    <option value="18 - جيجل">18 - جيجل</option>
-                    <option value="19 - سطيف">19 - سطيف</option>
-                    <option value="20 - سعيدة">20 - سعيدة</option>
-                    <option value="21 - سكيكدة">21 - سكيكدة</option>
-                    <option value="22 - سيدي بلعباس">22 - سيدي بلعباس</option>
-                    <option value="23 - عنابة">23 - عنابة</option>
-                    <option value="24 - قالمة">24 - قالمة</option>
-                    <option value="25 - قسنطينة">25 - قسنطينة</option>
-                    <option value="26 - المدية">26 - المدية</option>
-                    <option value="27 - مستغانم">27 - مستغانم</option>
-                    <option value="28 - المسيلة">28 - المسيلة</option>
-                    <option value="29 - معسكر">29 - معسكر</option>
-                    <option value="30 - ورقلة">30 - ورقلة</option>
                     <option value="31 - وهران">31 - وهران</option>
-                    <option value="32 - البيض">32 - البيض</option>
-                    <option value="33 - إليزي">33 - إليزي</option>
-                    <option value="34 - برج بوعريريج">34 - برج بوعريريج</option>
-                    <option value="35 - بومرداس">35 - بومرداس</option>
-                    <option value="36 - الطارف">36 - الطارف</option>
-                    <option value="37 - تندوف">37 - تندوف</option>
-                    <option value="38 - تسمسيلت">38 - تسمسيلت</option>
-                    <option value="39 - الوادي">39 - الوادي</option>
-                    <option value="40 - خنشلة">40 - خنشلة</option>
-                    <option value="41 - سوق أهراس">41 - سوق أهراس</option>
-                    <option value="42 - تيبازة">42 - تيبازة</option>
-                    <option value="43 - ميلة">43 - ميلة</option>
-                    <option value="44 - عين الدفلى">44 - عين الدفلى</option>
-                    <option value="45 - النعامة">45 - النعامة</option>
-                    <option value="46 - عين تموشنت">46 - عين تموشنت</option>
-                    <option value="47 - غرداية">47 - غرداية</option>
-                    <option value="48 - غليزان">48 - غليزان</option>
-                    <option value="49 - تيميمون">49 - تيميمون</option>
-                    <option value="50 - برج باجي مختار">50 - برج باجي مختار</option>
-                    <option value="51 - أولاد جلال">51 - أولاد جلال</option>
-                    <option value="52 - بني عباس">52 - بني عباس</option>
-                    <option value="53 - إن صالح">53 - إن صالح</option>
-                    <option value="54 - إن قزام">54 - إن قزام</option>
-                    <option value="55 - تقرت">55 - تقرت</option>
-                    <option value="56 - جانت">56 - جانت</option>
-                    <option value="57 - المغير">57 - المغير</option>
-                    <option value="58 - المنيعة">58 - المنيعة</option>
+                    <option value="25 - قسنطينة">25 - قسنطينة</option>
+                    <option value="05 - باتنة">05 - باتنة</option>
+                    <option value="04 - أم البواقي">04 - أم البواقي</option>
+                    <option value="15 - تيزي وزو">15 - تيزي وزو</option>
+                    <option value="06 - بجاية">06 - بجاية</option>
+                    <option value="19 - سطيف">19 - سطيف</option>
+                    <!-- باقي الولايات يمكن إضافتها بسهولة -->
                 </select>
             </div>
             <div class="form-group">
-                <label>البلدية والعنوان *</label>
-                <input type="text" id="regCommune" placeholder="مثال: عين التوتة">
+                <label>البلدية *</label>
+                <input type="text" id="regCommune" placeholder="البلدية">
             </div>
         </div>
 
@@ -364,13 +242,13 @@ input:focus, select:focus {
             <div class="form-group">
                 <label>نوع الحساب *</label>
                 <select id="regRole" onchange="toggleStoreField()">
-                    <option value="buyer">👤 مشتري (تصفح وشراء المنتجات)</option>
-                    <option value="seller">🏪 بائع / تاجر (عرض وبيع السلع)</option>
+                    <option value="buyer">👤 مشتري</option>
+                    <option value="seller">🏪 بائع / تاجر</option>
                 </select>
             </div>
             <div class="form-group" id="storeField" style="display:none;">
                 <label>اسم المتجر *</label>
-                <input type="text" id="regStoreName" placeholder="مثال: متجر الهواتف">
+                <input type="text" id="regStoreName" placeholder="اسم متجرك">
             </div>
         </div>
 
@@ -379,50 +257,43 @@ input:focus, select:focus {
             <input type="password" id="regPass" placeholder="******">
         </div>
 
-        <button class="btn-submit" id="sendOtpBtn" onclick="sendOtpCode('register')">📲 إرسال رمز التحقق لهاتفي</button>
+        <button class="btn-submit" id="sendOtpBtn" onclick="sendOtpCode()">إرسال رمز التحقق</button>
 
         <div class="otp-box" id="regOtpBox">
-            <label style="color:#15803d; font-weight:bold;">رمز التحقق التجريبي هو: <span style="font-family:monospace; font-size:16px;" id="regOtpDisplay">1234</span></label>
-            <input type="text" id="regOtpInput" placeholder="أدخل الكود" style="text-align:center; letter-spacing:5px; font-weight:bold; font-size:18px; margin:10px 0;">
-            <div class="timer-text" id="regTimerText">⏳ ينتهي الكود خلال: <span id="regTimer">60</span> ثانية</div>
-            <button class="resend-btn" id="regResendBtn" style="display:none;" onclick="sendOtpCode('register')">🔄 إعادة إرسال رمز جديد</button>
-            <button class="btn-submit" id="confirmRegBtn" onclick="handleRegister()">🚀 إنشاء حساب جديد</button>
+            <label style="color:#15803d; font-weight:bold;">رمز التحقق: <span id="regOtpDisplay" style="font-family:monospace;">1234</span></label>
+            <input type="text" id="regOtpInput" placeholder="أدخل الكود" style="text-align:center; letter-spacing:4px; font-weight:bold; margin:8px 0;">
+            <div style="font-size:12px; color:#b45309; margin-bottom:5px;">ينتهي خلال: <span id="regTimer">60</span> ثانية</div>
+            <button class="btn-submit" id="confirmRegBtn" onclick="handleRegister()">تأكيد وإنشاء الحساب</button>
         </div>
     </div>
 
-    <!-- 3. نموذج نسيت كلمة المرور / استرجاع الحساب -->
-    <div id="forgotSection" class="form-section hidden">
-        <h3 style="color:#102a43; text-align:center; margin-bottom:15px;">🔒 استرجاع كلمة المرور</h3>
-        
-        <div id="forgotStep1">
-            <div class="form-group">
-                <label>أدخل رقم هاتفك المسجل *</label>
-                <input type="tel" id="forgotPhone" placeholder="06XXXXXXXX">
-            </div>
-            <button class="btn-submit" onclick="sendForgotOtp()">📲 إرسال كود التحقق لاسترجاع الحساب</button>
+    <!-- 3. نموذج استرجاع كلمة المرور -->
+    <div id="sectionForgot" class="form-section">
+        <h3 style="color:#102a43; text-align:center; margin-bottom:12px; font-size:16px;">استرجاع كلمة المرور</h3>
+        <div class="form-group">
+            <label>رقم هاتفك المسجل *</label>
+            <input type="tel" id="forgotPhone" placeholder="06XXXXXXXX">
         </div>
+        <button class="btn-submit" onclick="sendForgotOtp()">إرسال كود التحقق</button>
 
         <div class="otp-box" id="forgotOtpBox">
-            <label style="color:#15803d; font-weight:bold;">رمز التحقق التجريبي هو: <span style="font-family:monospace; font-size:16px;" id="forgotOtpDisplay">5678</span></label>
-            <input type="text" id="forgotOtpInput" placeholder="أدخل الكود" style="text-align:center; letter-spacing:5px; font-weight:bold; font-size:18px; margin:10px 0;">
-            <div class="timer-text" id="forgotTimerText">⏳ ينتهي الكود خلال: <span id="forgotTimer">60</span> ثانية</div>
-            <button class="resend-btn" id="forgotResendBtn" style="display:none;" onclick="sendForgotOtp()">🔄 إعادة إرسال رمز جديد</button>
-            
-            <div class="form-group" style="margin-top:15px; text-align:right;">
+            <label style="color:#15803d; font-weight:bold;">رمز التحقق: <span id="forgotOtpDisplay" style="font-family:monospace;">5678</span></label>
+            <input type="text" id="forgotOtpInput" placeholder="أدخل الكود" style="text-align:center; letter-spacing:4px; font-weight:bold; margin:8px 0;">
+            <div style="font-size:12px; color:#b45309; margin-bottom:5px;">ينتهي خلال: <span id="forgotTimer">60</span> ثانية</div>
+            <div class="form-group" style="margin-top:10px; text-align:right;">
                 <label>كلمة المرور الجديدة *</label>
-                <input type="password" id="newPassInput" placeholder="أدخل كلمة مرور جديدة">
+                <input type="password" id="newPassInput" placeholder="كلمة مرور جديدة">
             </div>
-
-            <button class="btn-submit" id="confirmForgotBtn" onclick="handleResetPassword()">🔄 تغيير كلمة المرور ودخول</button>
+            <button class="btn-submit" id="confirmForgotBtn" onclick="handleResetPassword()">تغيير كلمة المرور</button>
         </div>
-
-        <button onclick="switchTab('login')" style="background:none; border:none; color:#64748b; font-weight:bold; cursor:pointer; width:100%; margin-top:15px;">← العودة لتسجيل الدخول</button>
+        
+        <button onclick="openLogin()" style="background:none; border:none; color:#64748b; font-weight:bold; cursor:pointer; width:100%; margin-top:12px; font-size:13px;">← العودة لتسجيل الدخول</button>
     </div>
 
     <div class="msg" id="authMsg"></div>
 
-    <div style="text-align:center; margin-top:20px;">
-        <a href="index.html" style="color:#64748b; text-decoration:none; font-size:13px; font-weight:bold;">← التصفح كزائر في المتجر</a>
+    <div style="text-align:center; margin-top:18px;">
+        <a href="index.html" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:bold;">← التصفح كزائر في المتجر</a>
     </div>
 </div>
 
@@ -436,37 +307,33 @@ let currentOtp = "";
 let regTimerInterval = null;
 let forgotTimerInterval = null;
 
-// دالة التبديل بين التبويبات
-function switchTab(tab) {
+// دوال التنقل البسيطة والمستقرة
+function openLogin() {
     document.getElementById('authMsg').textContent = "";
-    const loginSec = document.getElementById('loginSection');
-    const regSec = document.getElementById('registerSection');
-    const forgotSec = document.getElementById('forgotSection');
-    const mainTabs = document.getElementById('mainTabs');
+    document.getElementById('sectionLogin').classList.add('active');
+    document.getElementById('sectionRegister').classList.remove('active');
+    document.getElementById('sectionForgot').classList.remove('active');
+    document.getElementById('mainTabs').style.display = 'flex';
+    document.getElementById('btnTabLogin').classList.add('active');
+    document.getElementById('btnTabRegister').classList.remove('active');
+}
 
-    const loginBtn = document.getElementById('loginTabBtn');
-    const regBtn = document.getElementById('registerTabBtn');
+function openRegister() {
+    document.getElementById('authMsg').textContent = "";
+    document.getElementById('sectionLogin').classList.remove('active');
+    document.getElementById('sectionRegister').classList.add('active');
+    document.getElementById('sectionForgot').classList.remove('active');
+    document.getElementById('mainTabs').style.display = 'flex';
+    document.getElementById('btnTabRegister').classList.add('active');
+    document.getElementById('btnTabLogin').classList.remove('active');
+}
 
-    if (tab === 'login') {
-        mainTabs.style.display = 'flex';
-        loginSec.classList.remove('hidden');
-        regSec.classList.add('hidden');
-        forgotSec.classList.add('hidden');
-        loginBtn.classList.add('active');
-        regBtn.classList.remove('active');
-    } else if (tab === 'register') {
-        mainTabs.style.display = 'flex';
-        loginSec.classList.add('hidden');
-        regSec.classList.remove('hidden');
-        forgotSec.classList.add('hidden');
-        regBtn.classList.add('active');
-        loginBtn.classList.remove('active');
-    } else if (tab === 'forgot') {
-        mainTabs.style.display = 'none';
-        loginSec.classList.add('hidden');
-        regSec.classList.add('hidden');
-        forgotSec.classList.remove('hidden');
-    }
+function openForgot() {
+    document.getElementById('authMsg').textContent = "";
+    document.getElementById('sectionLogin').classList.remove('active');
+    document.getElementById('sectionRegister').classList.remove('active');
+    document.getElementById('sectionForgot').classList.add('active');
+    document.getElementById('mainTabs').style.display = 'none';
 }
 
 function toggleStoreField() {
@@ -483,10 +350,7 @@ function validateAge() {
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
     const m = today.getMonth() - birthDate.getMonth();
-    
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-    }
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
 
     if (age < 18) {
         warning.style.display = 'block';
@@ -497,45 +361,23 @@ function validateAge() {
     }
 }
 
-// 📌 1. إرسال رمز التحقق عند إنشاء حساب جديد بـ 60 ثانية
-async function sendOtpCode(type) {
+// إرسال الكود مع عداد 60 ثانية
+function sendOtpCode() {
     const phone = document.getElementById('regPhone').value.trim();
-    const msg = document.getElementById('authMsg');
-    msg.textContent = "";
-
     if (!phone || phone.length < 9) {
-        alert("❌ يرجى إدخال رقم هاتف صحيح أولاً.");
+        alert("أدخل رقم هاتف صحيح أولاً.");
         return;
     }
-
     if (!validateAge()) {
-        alert("❌ يتوجب أن يكون عمرك 18 سنة أو أكثر للتسجيل.");
+        alert("يجب أن يكون العمر 18 سنة فما فوق.");
         return;
     }
 
-    // 🔒 التحقق أن رقم الهاتف غير مسجل سابقاً
-    const { data: existingUser } = await supabase
-        .from('users')
-        .select('phone')
-        .eq('phone', phone)
-        .single();
-
-    if (existingUser) {
-        msg.style.color = '#dc2626';
-        msg.textContent = "⚠️ رقم الهاتف هذا مسجل بالفعل! يرجى تسجيل الدخول أو استرجاع كلمة المرور.";
-        return;
-    }
-
-    // توليد رمز عشوائي مكون من 4 أرقام
     currentOtp = Math.floor(1000 + Math.random() * 9000).toString();
     document.getElementById('regOtpDisplay').textContent = currentOtp;
-
     document.getElementById('regOtpBox').style.display = 'block';
     document.getElementById('sendOtpBtn').style.display = 'none';
-    document.getElementById('regResendBtn').style.display = 'none';
-    document.getElementById('confirmRegBtn').disabled = false;
 
-    // بدء عداد 60 ثانية
     let timeLeft = 60;
     document.getElementById('regTimer').textContent = timeLeft;
     clearInterval(regTimerInterval);
@@ -543,18 +385,15 @@ async function sendOtpCode(type) {
     regTimerInterval = setInterval(() => {
         timeLeft--;
         document.getElementById('regTimer').textContent = timeLeft;
-
         if (timeLeft <= 0) {
             clearInterval(regTimerInterval);
-            currentOtp = "EXPIRED"; // إبطال الكود
+            currentOtp = "EXPIRED";
             document.getElementById('confirmRegBtn').disabled = true;
-            document.getElementById('regTimerText').textContent = "❌ انتهت صلاحية الكود (60 ثانية).";
-            document.getElementById('regResendBtn').style.display = 'inline-block';
+            alert("انتهت صلاحية الرمز.");
         }
     }, 1000);
 }
 
-// 📌 2. إكمال التسجيل
 async function handleRegister() {
     const firstName = document.getElementById('regFirstName').value.trim();
     const lastName = document.getElementById('regLastName').value.trim();
@@ -568,24 +407,16 @@ async function handleRegister() {
     const msg = document.getElementById('authMsg');
 
     if (!firstName || !lastName || !phone || !wilaya || !commune || !pass) {
-        alert("❌ يرجى ملء كافة البيانات الإلزامية.");
+        alert("يرجى ملء جميع الحقول.");
         return;
     }
-
-    if (currentOtp === "EXPIRED") {
-        alert("❌ انتهت صلاحية الكود. يرجى اضغط 'إعادة إرسال رمز جديد'.");
-        return;
-    }
-
     if (otpEntered !== currentOtp) {
-        alert("❌ رمز التحقق غير صحيح!");
+        alert("رمز التحقق غير صحيح.");
         return;
     }
-
-    const fullName = `${firstName} ${lastName}`;
 
     const { data, error } = await supabase.from('users').insert([{
-        full_name: fullName,
+        full_name: `${firstName} ${lastName}`,
         phone: phone,
         password: pass,
         role: role,
@@ -594,158 +425,89 @@ async function handleRegister() {
 
     if (error) {
         msg.style.color = '#dc2626';
-        msg.textContent = "❌ حدث خطأ أثناء التسجيل.";
+        msg.textContent = "رقم الهاتف مستخدم مسبقاً.";
         return;
     }
 
     msg.style.color = '#16a34a';
-    msg.textContent = "🎉 تم إنشاء الحساب بنجاح! جاري تحويلك...";
-
+    msg.textContent = "تم إنشاء الحساب بنجاح!";
     setTimeout(() => {
         localStorage.setItem("marchi_user", JSON.stringify(data[0]));
-        if (role === 'seller') {
-            window.location.href = "seller-dashboard.html";
-        } else {
-            window.location.href = "index.html";
-        }
-    }, 1200);
+        window.location.href = role === 'seller' ? "seller-dashboard.html" : "index.html";
+    }, 1000);
 }
 
-// 📌 3. تسجيل الدخول والتحقق من صحة الرقم وكلمة المرور
 async function handleLogin() {
     const phone = document.getElementById('loginPhone').value.trim();
     const pass = document.getElementById('loginPass').value.trim();
     const msg = document.getElementById('authMsg');
 
     if (!phone || !pass) {
-        alert("يرجى إدخال رقم الهاتف وكلمة المرور.");
+        alert("أدخل الهاتف وكلمة المرور.");
         return;
     }
 
-    const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('phone', phone)
-        .single();
+    const { data, error } = await supabase.from('users').select('*').eq('phone', phone).single();
 
     if (error || !data) {
         msg.style.color = '#dc2626';
-        msg.textContent = "❌ رقم الهاتف هذا غير مسجل في المنصة!";
+        msg.textContent = "رقم الهاتف غير مسجل.";
+        return;
+    }
+
+    if (data.is_banned === true) {
+        msg.style.color = '#dc2626';
+        msg.textContent = "حسابك محظور من قبل الإدارة.";
         return;
     }
 
     if (data.password !== pass) {
         msg.style.color = '#dc2626';
-        msg.textContent = "❌ كلمة المرور غير صحيحة! تأكد وأعد المحاولة.";
+        msg.textContent = "كلمة المرور غير صحيحة.";
         return;
     }
 
     localStorage.setItem("marchi_user", JSON.stringify(data));
-
     msg.style.color = '#16a34a';
-    msg.textContent = "🎉 أهلاً بك من جديد! جاري التحويل...";
+    msg.textContent = "أهلاً بك! يتم توجيهك...";
 
     setTimeout(() => {
-        if (data.role === 'seller') {
-            window.location.href = "seller-dashboard.html";
-        } else {
-            window.location.href = "index.html";
-        }
+        if (data.role === 'admin') window.location.href = "admin.html";
+        else if (data.role === 'moderator') window.location.href = "moderator.html";
+        else if (data.role === 'seller') window.location.href = "seller-dashboard.html";
+        else window.location.href = "index.html";
     }, 1000);
 }
 
-// 📌 4. إرسال كود استرجاع كلمة المرور
-async function sendForgotOtp() {
+function sendForgotOtp() {
     const phone = document.getElementById('forgotPhone').value.trim();
-    const msg = document.getElementById('authMsg');
-    msg.textContent = "";
-
     if (!phone) {
-        alert("❌ أدخل رقم هاتفك أولاً.");
+        alert("أدخل هاتفك أولاً.");
         return;
     }
-
-    const { data: user } = await supabase
-        .from('users')
-        .select('*')
-        .eq('phone', phone)
-        .single();
-
-    if (!user) {
-        msg.style.color = '#dc2626';
-        msg.textContent = "❌ هذا الرقم غير مسجل في منصة MARCHI DZ.";
-        return;
-    }
-
-    currentOtp = Math.floor(1000 + Math.random() * 9000).toString();
-    document.getElementById('forgotOtpDisplay').textContent = currentOtp;
+    currentOtp = "5678";
     document.getElementById('forgotOtpBox').style.display = 'block';
-    document.getElementById('forgotResendBtn').style.display = 'none';
-    document.getElementById('confirmForgotBtn').disabled = false;
-
-    let timeLeft = 60;
-    document.getElementById('forgotTimer').textContent = timeLeft;
-    clearInterval(forgotTimerInterval);
-
-    forgotTimerInterval = setInterval(() => {
-        timeLeft--;
-        document.getElementById('forgotTimer').textContent = timeLeft;
-
-        if (timeLeft <= 0) {
-            clearInterval(forgotTimerInterval);
-            currentOtp = "EXPIRED";
-            document.getElementById('confirmForgotBtn').disabled = true;
-            document.getElementById('forgotTimerText').textContent = "❌ انتهت صلاحية الكود (60 ثانية).";
-            document.getElementById('forgotResendBtn').style.display = 'inline-block';
-        }
-    }, 1000);
 }
 
-// 📌 5. حفظ كلمة المرور الجديدة في Supabase وتحديثها
 async function handleResetPassword() {
     const phone = document.getElementById('forgotPhone').value.trim();
     const otpEntered = document.getElementById('forgotOtpInput').value.trim();
     const newPass = document.getElementById('newPassInput').value.trim();
-    const msg = document.getElementById('authMsg');
 
-    if (!otpEntered || !newPass) {
-        alert("❌ يرجى إدخال رمز التحقق وكلمة المرور الجديدة.");
+    if (otpEntered !== currentOtp || !newPass) {
+        alert("الرمز غير صحيح أو كلمة المرور فارغة.");
         return;
     }
 
-    if (currentOtp === "EXPIRED") {
-        alert("❌ انتهت صلاحية الكود.");
-        return;
-    }
-
-    if (otpEntered !== currentOtp) {
-        alert("❌ رمز التحقق غير صحيح!");
-        return;
-    }
-
-    const { data, error } = await supabase
-        .from('users')
-        .update({ password: newPass })
-        .eq('phone', phone)
-        .select();
-
+    const { data, error } = await supabase.from('users').update({ password: newPass }).eq('phone', phone).select();
     if (error) {
-        msg.style.color = '#dc2626';
-        msg.textContent = "❌ حدث خطأ أثناء تحديث كلمة المرور.";
+        alert("حدث خطأ.");
         return;
     }
 
-    msg.style.color = '#16a34a';
-    msg.textContent = "🎉 تم تغيير كلمة المرور بنجاح! يتم توجيهك الآن...";
-
-    setTimeout(() => {
-        localStorage.setItem("marchi_user", JSON.stringify(data[0]));
-        if (data[0].role === 'seller') {
-            window.location.href = "seller-dashboard.html";
-        } else {
-            window.location.href = "index.html";
-        }
-    }, 1200);
+    alert("تم تغيير كلمة المرور بنجاح!");
+    localStorage.setItem("marchi_user", JSON.stringify(data[0]));
+    window.location.href = "index.html";
 }
 </script>
 
