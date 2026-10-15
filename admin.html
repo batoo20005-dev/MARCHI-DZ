@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة إدارة المنصة | MARCHI DZ Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{ font-family:Arial, sans-serif; background:#0f172a; color:white; padding:20px; }
+header{ background:#1e293b; padding:20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; border:1px solid #334155; }
+.logo{ font-size:24px; font-weight:900; }
+.dz{ color:#16a34a; }
+.stats-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:15px; margin-bottom:25px; }
+.stat-card{ background:#1e293b; padding:20px; border-radius:12px; border:1px solid #334155; text-align:center; }
+.stat-card h3{ font-size:13px; color:#94a3b8; margin-bottom:8px; }
+.stat-card .val{ font-size:26px; font-weight:bold; color:#4ade80; }
+.table-box{ background:#1e293b; padding:20px; border-radius:12px; border:1px solid #334155; margin-bottom:25px; }
+h2{ font-size:18px; margin-bottom:15px; color:#f8fafc; }
+table{ width:100%; border-collapse:collapse; text-align:right; font-size:14px; }
+th, td{ padding:12px; border-bottom:1px solid #334155; }
+th{ color:#94a3b8; background:#0f172a; }
+.btn-action{ padding:6px 12px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; }
+.btn-green{ background:#16a34a; color:white; }
+.btn-red{ background:#dc2626; color:white; }
+@media(max-width:768px){ .stats-grid{ grid-template-columns:1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">MARCHI<span class="dz"> DZ</span> | 👑 لوحة الإدارة والتحكم</div>
+<div>
+    <a href="index.html" style="color:#4ade80; text-decoration:none; font-weight:bold; margin-left:15px;">🏪 المعاينة كمتجر</a>
+    <button onclick="logoutAdmin()" style="background:#dc2626; color:white; border:none; padding:8px 15px; border-radius:6px; font-weight:bold; cursor:pointer;">خروج</button>
+</div>
+</header>
+
+<main>
+    <!-- الإحصائيات العامة للمنصة -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>👥 إجمالي المستخدمين</h3>
+            <div class="val" id="totalUsers">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>🏪 المتاجر المسجلة</h3>
+            <div class="val" id="totalSellers">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>📦 الطلبيات الإجمالية</h3>
+            <div class="val" id="totalOrders">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>💳 ديون التجار للمنصة</h3>
+            <div class="val" id="totalDebts" style="color:#ef4444;">0 دج</div>
+        </div>
+    </div>
+
+    <!-- قائمة جميع التجار والمتاجر -->
+    <div class="table-box">
+        <h2>🏪 إدارة التجار والمتاجر</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>اسم البائع</th>
+                    <th>اسم المتجر</th>
+                    <th>الهاتف</th>
+                    <th>الديون المستحقة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="sellersTableBody">
+                <tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+const supabase = window.supabase.createClient(
+    "https://lifxjoofdlcmbuskvsbg.supabase.co",
+    "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
+);
+
+// 🔒 حماية صارمة: التأكد من أن الحساب الحالي هو admin فقط
+const currentUser = JSON.parse(localStorage.getItem("marchi_user"));
+
+if (!currentUser || currentUser.role !== 'admin') {
+    alert("⚠️ هذه اللوحة مخصصة لمدير المنصة فقط!");
+    window.location.href = "index.html";
+}
+
+async function loadAdminData() {
+    try {
+        // جلب المستخدمين والتجار
+        const { data: users } = await supabase.from('users').select('*');
+        const { data: orders } = await supabase.from('orders').select('*');
+
+        if (users) {
+            document.getElementById("totalUsers").textContent = users.length;
+            
+            const sellers = users.filter(u => u.role === 'seller');
+            document.getElementById("totalSellers").textContent = sellers.length;
+
+            let sumDebt = sellers.reduce((acc, s) => acc + (s.debt || 0), 0);
+            document.getElementById("totalDebts").textContent = sumDebt.toLocaleString() + " دج";
+
+            // عرض جدول التجار
+            const tbody = document.getElementById("sellersTableBody");
+            tbody.innerHTML = "";
+
+            sellers.forEach(s => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${s.full_name}</td>
+                        <td><strong>${s.store_name || 'بدون اسم'}</strong></td>
+                        <td>${s.phone}</td>
+                        <td style="color:${(s.debt || 0) >= 500 ? '#ef4444' : '#4ade80'}; font-weight:bold;">${s.debt || 0} دج</td>
+                        <td>
+                            <button class="btn-action btn-green" onclick="resetSellerDebt(${s.id})">⚡ تصفير الدين</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        if (orders) {
+            document.getElementById("totalOrders").textContent = orders.length;
+        }
+
+    } catch (err) {
+        console.error("Admin Load Error:", err);
+    }
+}
+
+async function resetSellerDebt(sellerId) {
+    if (confirm("هل تريد تصفير ديون هذا التاجر فورياً؟")) {
+        await supabase.from('users').update({ debt: 0 }).eq('id', sellerId);
+        alert("✅ تم تصفير الدين بنجاح.");
+        loadAdminData();
+    }
+}
+
+function logoutAdmin() {
+    localStorage.removeItem("marchi_user");
+    window.location.href = "index.html";
+}
+
+loadAdminData();
+</script>
+</body>
+</html>
