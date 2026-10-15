@@ -271,7 +271,7 @@ textarea{
 <div class="form-group">
 <label>صورة المنتج *</label>
 <div class="image-box">
-<p>اختر صورة من جهازك أو ضع رابط صورة مباشر</p>
+<p>اختر صورة من جهازك (سيتم رفعها لسيرفر المبادلة) أو ضع رابط صورة مباشر</p>
 <input type="file" id="productImageFile" accept="image/*" style="margin-bottom: 10px;">
 <div style="font-size: 12px; color: #888; margin: 5px 0;">أو</div>
 <input type="url" id="productImageUrl" placeholder="https://example.com/image.jpg">
@@ -345,16 +345,15 @@ const supabase = window.supabase.createClient(
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
-// 🔒 حماية الصفحة: التأكد من تسجيل الدخول كتاجر
+// 🔒 حماية الصفحة: التأكد من تسجيل الدخول كتاجر أو مدير
 let currentUser = JSON.parse(localStorage.getItem("marchi_user"));
 
-if (!currentUser || currentUser.role !== 'seller') {
+if (!currentUser || (currentUser.role !== 'seller' && currentUser.role !== 'admin')) {
     alert("⚠️ هذه الصفحة خاصة بالتجار المعتمدين فقط! يرجى تسجيل الدخول كتاجر.");
     window.location.href = "auth.html";
 }
 
-let uploadedBase64Image = "";
-
+// معاينة الصورة عند اختيار ملف من جهاز البائع
 document.getElementById("productImageFile").addEventListener("change", function(){
     const file = this.files[0];
     if(!file) return;
@@ -363,8 +362,7 @@ document.getElementById("productImageFile").addEventListener("change", function(
     const reader = new FileReader();
     
     reader.onload = function(e){ 
-        uploadedBase64Image = e.target.result;
-        preview.src = uploadedBase64Image; 
+        preview.src = e.target.result; 
         preview.style.display = "block"; 
     };
     reader.readAsDataURL(file);
@@ -375,16 +373,40 @@ function toggleDepositFields(){
     document.getElementById("depositFields").style.display = val === 'yes' ? 'block' : 'none';
 }
 
+// 📌 دالة رفع الصورة الحقيقية إلى Supabase Storage Bucket (product-images)
+async function uploadImageToStorage(file) {
+    if (!file) return null;
+
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}_${Math.floor(Math.random() * 10000)}.${fileExt}`;
+
+    const { data, error } = await supabase.storage
+        .from('product-images')
+        .upload(fileName, file);
+
+    if (error) {
+        console.error("Storage Upload Error:", error);
+        return null;
+    }
+
+    const { data: publicUrlData } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(fileName);
+
+    return publicUrlData.publicUrl;
+}
+
 async function addProduct(){
     const name = document.getElementById("productName").value.trim();
-    const storeName = currentUser.store_name || 'متجر معتمد';
+    const storeName = currentUser.store_name || currentUser.full_name || 'متجر معتمد';
     const category = document.getElementById("productCategory").value;
     const price = Number(document.getElementById("productPrice").value);
     const oldPrice = Number(document.getElementById("oldPrice").value) || null;
     const description = document.getElementById("productDescription").value.trim();
     
+    const fileInput = document.getElementById("productImageFile");
+    const imageFile = fileInput.files[0];
     const directUrl = document.getElementById("productImageUrl").value.trim();
-    const finalImageUrl = uploadedBase64Image || directUrl || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80';
 
     const homePrice = Number(document.getElementById("homePrice").value) || 600;
     const deskPrice = Number(document.getElementById("deskPrice").value) || 400;
@@ -402,6 +424,11 @@ async function addProduct(){
         return;
     }
 
+    if(!imageFile && !directUrl){
+        alert("❌ يرجى رفع صورة من جهازك أو وضع رابط صورة مباشر للمنتج.");
+        return;
+    }
+
     if(requireDeposit && !ripNumber){
         alert("❌ يرجى إدخال رقم الـ RIP الخاص بك لاستلام التسقاع عبر BaridiMob.");
         return;
@@ -413,16 +440,34 @@ async function addProduct(){
     }
 
     button.disabled = true;
-    button.textContent = "⏳ جاري حفظ المنتج في قاعدة البيانات...";
+    button.textContent = "⏳ جاري رفع الصورة وحفظ البيانات...";
 
     try{
+        let finalImageUrl = directUrl;
+
+        // إذا قام المستخدم باختيار ملف صورة من جهازه، نرفعه لـ Supabase Storage
+        if (imageFile) {
+            const uploadedUrl = await uploadImageToStorage(imageFile);
+            if (uploadedUrl) {
+                finalImageUrl = uploadedUrl;
+            } else {
+                throw new Error("فشل رفع الصورة إلى Storage. أعد المحاولة أو ضع رابط مباشر.");
+            }
+        }
+
+        if (!finalImageUrl) {
+            finalImageUrl = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80';
+        }
+
         const productPayload = {
             name: name,
             store_name: storeName,
+            seller_id: currentUser.id,
             category: category,
             price: price,
             old_price: oldPrice,
             image_url: finalImageUrl,
+            description: description,
             home_price: homePrice,
             desk_price: deskPrice,
             require_deposit: requireDeposit,
