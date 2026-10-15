@@ -102,6 +102,14 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
+.form-section {
+    display: block;
+}
+
+.form-section.hidden {
+    display: none;
+}
+
 .form-group { margin-bottom: 16px; }
 
 .grid-2 {
@@ -134,6 +142,19 @@ input:focus, select:focus {
     box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
 }
 
+.forgot-link {
+    display: block;
+    text-align: left;
+    font-size: 12px;
+    color: #0284c7;
+    font-weight: bold;
+    margin-top: 5px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.forgot-link:hover { text-decoration: underline; }
+
 .btn-submit {
     width: 100%;
     background: #16a34a;
@@ -149,6 +170,7 @@ input:focus, select:focus {
 }
 
 .btn-submit:hover { background: #12813b; }
+.btn-submit:disabled { background: #94a3b8; cursor: not-allowed; }
 
 .age-warning {
     color: #dc2626;
@@ -168,6 +190,24 @@ input:focus, select:focus {
     text-align: center;
 }
 
+.timer-text {
+    font-size: 13px;
+    font-weight: bold;
+    color: #b45309;
+    margin-top: 5px;
+}
+
+.resend-btn {
+    background: none;
+    border: none;
+    color: #0284c7;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 8px;
+    text-decoration: underline;
+}
+
 .msg {
     text-align: center;
     margin-top: 15px;
@@ -183,7 +223,7 @@ input:focus, select:focus {
 </head>
 <body>
 
-<!-- الخلفية الجمالية عالية الجودة مع هويّة التجارة والتسوق -->
+<!-- الخلفية الجمالية عالية الجودة -->
 <div class="bg-grid">
     <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80" alt="ساعات">
     <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80" alt="سماعات">
@@ -204,14 +244,14 @@ input:focus, select:focus {
         <p style="font-size:13px; color:#64748b; margin-top:4px;">منصة التجارة والتسوق المعتمدة في الجزائر 🇩🇿</p>
     </div>
 
-    <!-- أزرار التبديل المصلحة والتفاعلية -->
-    <div class="tabs">
-        <button class="tab-btn active" id="loginBtn" onclick="showForm('login')">🔑 تسجيل الدخول</button>
-        <button class="tab-btn" id="registerBtn" onclick="showForm('register')">📝 حساب جديد</button>
+    <!-- أزرار التبديل الرئيسي -->
+    <div class="tabs" id="mainTabs">
+        <button class="tab-btn active" id="loginTabBtn" onclick="switchTab('login')">🔑 تسجيل الدخول</button>
+        <button class="tab-btn" id="registerTabBtn" onclick="switchTab('register')">📝 حساب جديد</button>
     </div>
 
     <!-- 1. نموذج تسجيل الدخول -->
-    <div id="loginSection">
+    <div id="loginSection" class="form-section">
         <div class="form-group">
             <label>رقم الهاتف *</label>
             <input type="tel" id="loginPhone" placeholder="مثال: 0661112233">
@@ -219,12 +259,13 @@ input:focus, select:focus {
         <div class="form-group">
             <label>كلمة المرور *</label>
             <input type="password" id="loginPass" placeholder="******">
+            <a class="forgot-link" onclick="switchTab('forgot')">نسيت كلمة المرور؟</a>
         </div>
         <button class="btn-submit" onclick="handleLogin()">🔑 تسجيل الدخول</button>
     </div>
 
-    <!-- 2. نموذج إنشاء حساب جديد الشامل -->
-    <div id="registerSection" style="display:none;">
+    <!-- 2. نموذج إنشاء حساب جديد -->
+    <div id="registerSection" class="form-section hidden">
         <div class="grid-2">
             <div class="form-group">
                 <label>الاسم *</label>
@@ -338,13 +379,44 @@ input:focus, select:focus {
             <input type="password" id="regPass" placeholder="******">
         </div>
 
-        <button class="btn-submit" id="sendOtpBtn" onclick="sendOtpCode()">📲 إرسال رمز التحقق لهاتفي</button>
+        <button class="btn-submit" id="sendOtpBtn" onclick="sendOtpCode('register')">📲 إرسال رمز التحقق لهاتفي</button>
 
-        <div class="otp-box" id="otpBox">
-            <label style="color:#15803d; font-weight:bold;">رمز التحقق التجريبي هو: <span style="font-family:monospace; font-size:16px;">1234</span></label>
-            <input type="text" id="otpInput" placeholder="أدخل الكود: 1234" style="text-align:center; letter-spacing:5px; font-weight:bold; font-size:18px; margin:10px 0;">
-            <button class="btn-submit" onclick="handleRegister()">🚀 إنشاء حساب جديد</button>
+        <div class="otp-box" id="regOtpBox">
+            <label style="color:#15803d; font-weight:bold;">رمز التحقق التجريبي هو: <span style="font-family:monospace; font-size:16px;" id="regOtpDisplay">1234</span></label>
+            <input type="text" id="regOtpInput" placeholder="أدخل الكود" style="text-align:center; letter-spacing:5px; font-weight:bold; font-size:18px; margin:10px 0;">
+            <div class="timer-text" id="regTimerText">⏳ ينتهي الكود خلال: <span id="regTimer">60</span> ثانية</div>
+            <button class="resend-btn" id="regResendBtn" style="display:none;" onclick="sendOtpCode('register')">🔄 إعادة إرسال رمز جديد</button>
+            <button class="btn-submit" id="confirmRegBtn" onclick="handleRegister()">🚀 إنشاء حساب جديد</button>
         </div>
+    </div>
+
+    <!-- 3. نموذج نسيت كلمة المرور / استرجاع الحساب -->
+    <div id="forgotSection" class="form-section hidden">
+        <h3 style="color:#102a43; text-align:center; margin-bottom:15px;">🔒 استرجاع كلمة المرور</h3>
+        
+        <div id="forgotStep1">
+            <div class="form-group">
+                <label>أدخل رقم هاتفك المسجل *</label>
+                <input type="tel" id="forgotPhone" placeholder="06XXXXXXXX">
+            </div>
+            <button class="btn-submit" onclick="sendForgotOtp()">📲 إرسال كود التحقق لاسترجاع الحساب</button>
+        </div>
+
+        <div class="otp-box" id="forgotOtpBox">
+            <label style="color:#15803d; font-weight:bold;">رمز التحقق التجريبي هو: <span style="font-family:monospace; font-size:16px;" id="forgotOtpDisplay">5678</span></label>
+            <input type="text" id="forgotOtpInput" placeholder="أدخل الكود" style="text-align:center; letter-spacing:5px; font-weight:bold; font-size:18px; margin:10px 0;">
+            <div class="timer-text" id="forgotTimerText">⏳ ينتهي الكود خلال: <span id="forgotTimer">60</span> ثانية</div>
+            <button class="resend-btn" id="forgotResendBtn" style="display:none;" onclick="sendForgotOtp()">🔄 إعادة إرسال رمز جديد</button>
+            
+            <div class="form-group" style="margin-top:15px; text-align:right;">
+                <label>كلمة المرور الجديدة *</label>
+                <input type="password" id="newPassInput" placeholder="أدخل كلمة مرور جديدة">
+            </div>
+
+            <button class="btn-submit" id="confirmForgotBtn" onclick="handleResetPassword()">🔄 تغيير كلمة المرور ودخول</button>
+        </div>
+
+        <button onclick="switchTab('login')" style="background:none; border:none; color:#64748b; font-weight:bold; cursor:pointer; width:100%; margin-top:15px;">← العودة لتسجيل الدخول</button>
     </div>
 
     <div class="msg" id="authMsg"></div>
@@ -360,23 +432,40 @@ const supabase = window.supabase.createClient(
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
-// دالة التبديل السلسة والمضمونة 100%
-function showForm(type) {
+let currentOtp = "";
+let regTimerInterval = null;
+let forgotTimerInterval = null;
+
+// دالة التبديل بين التبويبات
+function switchTab(tab) {
+    document.getElementById('authMsg').textContent = "";
     const loginSec = document.getElementById('loginSection');
     const regSec = document.getElementById('registerSection');
-    const loginBtn = document.getElementById('loginBtn');
-    const regBtn = document.getElementById('registerBtn');
+    const forgotSec = document.getElementById('forgotSection');
+    const mainTabs = document.getElementById('mainTabs');
 
-    if (type === 'login') {
-        loginSec.style.display = 'block';
-        regSec.style.display = 'none';
+    const loginBtn = document.getElementById('loginTabBtn');
+    const regBtn = document.getElementById('registerTabBtn');
+
+    if (tab === 'login') {
+        mainTabs.style.display = 'flex';
+        loginSec.classList.remove('hidden');
+        regSec.classList.add('hidden');
+        forgotSec.classList.add('hidden');
         loginBtn.classList.add('active');
         regBtn.classList.remove('active');
-    } else {
-        loginSec.style.display = 'none';
-        regSec.style.display = 'block';
+    } else if (tab === 'register') {
+        mainTabs.style.display = 'flex';
+        loginSec.classList.add('hidden');
+        regSec.classList.remove('hidden');
+        forgotSec.classList.add('hidden');
         regBtn.classList.add('active');
         loginBtn.classList.remove('active');
+    } else if (tab === 'forgot') {
+        mainTabs.style.display = 'none';
+        loginSec.classList.add('hidden');
+        regSec.classList.add('hidden');
+        forgotSec.classList.remove('hidden');
     }
 }
 
@@ -408,10 +497,12 @@ function validateAge() {
     }
 }
 
-let generatedOtp = "1234";
-
-function sendOtpCode() {
+// 📌 1. إرسال رمز التحقق عند إنشاء حساب جديد بـ 60 ثانية
+async function sendOtpCode(type) {
     const phone = document.getElementById('regPhone').value.trim();
+    const msg = document.getElementById('authMsg');
+    msg.textContent = "";
+
     if (!phone || phone.length < 9) {
         alert("❌ يرجى إدخال رقم هاتف صحيح أولاً.");
         return;
@@ -422,21 +513,58 @@ function sendOtpCode() {
         return;
     }
 
-    document.getElementById('otpBox').style.display = 'block';
+    // 🔒 التحقق أن رقم الهاتف غير مسجل سابقاً
+    const { data: existingUser } = await supabase
+        .from('users')
+        .select('phone')
+        .eq('phone', phone)
+        .single();
+
+    if (existingUser) {
+        msg.style.color = '#dc2626';
+        msg.textContent = "⚠️ رقم الهاتف هذا مسجل بالفعل! يرجى تسجيل الدخول أو استرجاع كلمة المرور.";
+        return;
+    }
+
+    // توليد رمز عشوائي مكون من 4 أرقام
+    currentOtp = Math.floor(1000 + Math.random() * 9000).toString();
+    document.getElementById('regOtpDisplay').textContent = currentOtp;
+
+    document.getElementById('regOtpBox').style.display = 'block';
     document.getElementById('sendOtpBtn').style.display = 'none';
+    document.getElementById('regResendBtn').style.display = 'none';
+    document.getElementById('confirmRegBtn').disabled = false;
+
+    // بدء عداد 60 ثانية
+    let timeLeft = 60;
+    document.getElementById('regTimer').textContent = timeLeft;
+    clearInterval(regTimerInterval);
+
+    regTimerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById('regTimer').textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+            clearInterval(regTimerInterval);
+            currentOtp = "EXPIRED"; // إبطال الكود
+            document.getElementById('confirmRegBtn').disabled = true;
+            document.getElementById('regTimerText').textContent = "❌ انتهت صلاحية الكود (60 ثانية).";
+            document.getElementById('regResendBtn').style.display = 'inline-block';
+        }
+    }, 1000);
 }
 
+// 📌 2. إكمال التسجيل
 async function handleRegister() {
     const firstName = document.getElementById('regFirstName').value.trim();
     const lastName = document.getElementById('regLastName').value.trim();
-    const birthDate = document.getElementById('regBirthDate').value;
     const phone = document.getElementById('regPhone').value.trim();
     const wilaya = document.getElementById('regWilaya').value;
     const commune = document.getElementById('regCommune').value.trim();
     const role = document.getElementById('regRole').value;
     const storeName = document.getElementById('regStoreName').value.trim();
     const pass = document.getElementById('regPass').value.trim();
-    const otpEntered = document.getElementById('otpInput').value.trim();
+    const otpEntered = document.getElementById('regOtpInput').value.trim();
     const msg = document.getElementById('authMsg');
 
     if (!firstName || !lastName || !phone || !wilaya || !commune || !pass) {
@@ -444,7 +572,12 @@ async function handleRegister() {
         return;
     }
 
-    if (otpEntered !== generatedOtp) {
+    if (currentOtp === "EXPIRED") {
+        alert("❌ انتهت صلاحية الكود. يرجى اضغط 'إعادة إرسال رمز جديد'.");
+        return;
+    }
+
+    if (otpEntered !== currentOtp) {
         alert("❌ رمز التحقق غير صحيح!");
         return;
     }
@@ -461,7 +594,7 @@ async function handleRegister() {
 
     if (error) {
         msg.style.color = '#dc2626';
-        msg.textContent = "❌ رقم الهاتف مستخدم سابقاً أو حدث خطأ أثناء التسجيل.";
+        msg.textContent = "❌ حدث خطأ أثناء التسجيل.";
         return;
     }
 
@@ -478,6 +611,7 @@ async function handleRegister() {
     }, 1200);
 }
 
+// 📌 3. تسجيل الدخول والتحقق من صحة الرقم وكلمة المرور
 async function handleLogin() {
     const phone = document.getElementById('loginPhone').value.trim();
     const pass = document.getElementById('loginPass').value.trim();
@@ -492,12 +626,17 @@ async function handleLogin() {
         .from('users')
         .select('*')
         .eq('phone', phone)
-        .eq('password', pass)
         .single();
 
     if (error || !data) {
         msg.style.color = '#dc2626';
-        msg.textContent = "❌ خطأ في رقم الهاتف أو كلمة المرور.";
+        msg.textContent = "❌ رقم الهاتف هذا غير مسجل في المنصة!";
+        return;
+    }
+
+    if (data.password !== pass) {
+        msg.style.color = '#dc2626';
+        msg.textContent = "❌ كلمة المرور غير صحيحة! تأكد وأعد المحاولة.";
         return;
     }
 
@@ -513,6 +652,100 @@ async function handleLogin() {
             window.location.href = "index.html";
         }
     }, 1000);
+}
+
+// 📌 4. إرسال كود استرجاع كلمة المرور
+async function sendForgotOtp() {
+    const phone = document.getElementById('forgotPhone').value.trim();
+    const msg = document.getElementById('authMsg');
+    msg.textContent = "";
+
+    if (!phone) {
+        alert("❌ أدخل رقم هاتفك أولاً.");
+        return;
+    }
+
+    const { data: user } = await supabase
+        .from('users')
+        .select('*')
+        .eq('phone', phone)
+        .single();
+
+    if (!user) {
+        msg.style.color = '#dc2626';
+        msg.textContent = "❌ هذا الرقم غير مسجل في منصة MARCHI DZ.";
+        return;
+    }
+
+    currentOtp = Math.floor(1000 + Math.random() * 9000).toString();
+    document.getElementById('forgotOtpDisplay').textContent = currentOtp;
+    document.getElementById('forgotOtpBox').style.display = 'block';
+    document.getElementById('forgotResendBtn').style.display = 'none';
+    document.getElementById('confirmForgotBtn').disabled = false;
+
+    let timeLeft = 60;
+    document.getElementById('forgotTimer').textContent = timeLeft;
+    clearInterval(forgotTimerInterval);
+
+    forgotTimerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById('forgotTimer').textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+            clearInterval(forgotTimerInterval);
+            currentOtp = "EXPIRED";
+            document.getElementById('confirmForgotBtn').disabled = true;
+            document.getElementById('forgotTimerText').textContent = "❌ انتهت صلاحية الكود (60 ثانية).";
+            document.getElementById('forgotResendBtn').style.display = 'inline-block';
+        }
+    }, 1000);
+}
+
+// 📌 5. حفظ كلمة المرور الجديدة في Supabase وتحديثها
+async function handleResetPassword() {
+    const phone = document.getElementById('forgotPhone').value.trim();
+    const otpEntered = document.getElementById('forgotOtpInput').value.trim();
+    const newPass = document.getElementById('newPassInput').value.trim();
+    const msg = document.getElementById('authMsg');
+
+    if (!otpEntered || !newPass) {
+        alert("❌ يرجى إدخال رمز التحقق وكلمة المرور الجديدة.");
+        return;
+    }
+
+    if (currentOtp === "EXPIRED") {
+        alert("❌ انتهت صلاحية الكود.");
+        return;
+    }
+
+    if (otpEntered !== currentOtp) {
+        alert("❌ رمز التحقق غير صحيح!");
+        return;
+    }
+
+    const { data, error } = await supabase
+        .from('users')
+        .update({ password: newPass })
+        .eq('phone', phone)
+        .select();
+
+    if (error) {
+        msg.style.color = '#dc2626';
+        msg.textContent = "❌ حدث خطأ أثناء تحديث كلمة المرور.";
+        return;
+    }
+
+    msg.style.color = '#16a34a';
+    msg.textContent = "🎉 تم تغيير كلمة المرور بنجاح! يتم توجيهك الآن...";
+
+    setTimeout(() => {
+        localStorage.setItem("marchi_user", JSON.stringify(data[0]));
+        if (data[0].role === 'seller') {
+            window.location.href = "seller-dashboard.html";
+        } else {
+            window.location.href = "index.html";
+        }
+    }, 1200);
 }
 </script>
 
