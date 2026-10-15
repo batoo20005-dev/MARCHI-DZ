@@ -486,7 +486,6 @@ header{
     text-overflow:ellipsis;
 }
 
-/* معلومات المتجر والمبيعات والتوسيع الأسلوبي */
 .seller-badge-box{
     font-size:12px;
     color:#555;
@@ -675,22 +674,6 @@ footer{
         grid-template-columns:repeat(2,1fr);
     }
 }
-
-@media(max-width:500px){
-    .categories{
-        grid-template-columns:repeat(2,1fr);
-    }
-    .products{
-        grid-template-columns:repeat(2,1fr);
-        gap:10px;
-    }
-    .product-image{
-        height:160px;
-    }
-    .footer-container{
-        grid-template-columns:1fr;
-    }
-}
 </style>
 </head>
 
@@ -720,20 +703,8 @@ footer{
 </div>
 
 <!-- ACTIONS -->
-<div class="header-actions">
-<a href="seller-dashboard.html" class="header-action" style="color: #102a43; font-weight: bold;">
-<span class="action-icon">📊</span>
-<span>لوحة البائع</span>
-</a>
-<a href="add-product.html" class="header-action" style="color: #16a34a; font-weight: bold;">
-<span class="action-icon">➕</span>
-<span>إضافة منتج</span>
-</a>
-<a href="cart.html" class="header-action cart">
-<span class="action-icon">🛒</span>
-<span>السلة</span>
-<span class="cart-count" id="cartCount">0</span>
-</a>
+<div class="header-actions" id="headerActions">
+<!-- سيتم ملء الأزرار ديناميكياً حسب حالة تسجيل الدخول -->
 </div>
 
 </div>
@@ -744,9 +715,7 @@ footer{
 <a class="nav-item active" href="index.html">الرئيسية</a>
 <a class="nav-item" href="#categories">الفئات</a>
 <a class="nav-item" href="#products">العروض</a>
-<a class="nav-item" href="add-product.html">إضافة منتج</a>
 <a class="nav-item" href="cart.html">السلة والطلب</a>
-<a class="nav-item" href="seller-dashboard.html">لوحة البائع</a>
 </div>
 </nav>
 </header>
@@ -879,6 +848,67 @@ const supabase = window.supabase.createClient(
 );
 
 /* =========================
+   CHECK USER AUTH & RENDER HEADER
+========================= */
+function checkUserHeader() {
+    const user = JSON.parse(localStorage.getItem("marchi_user"));
+    const actionsBox = document.getElementById("headerActions");
+
+    let html = '';
+
+    if (!user) {
+        // زائر غير مسجل
+        html = `
+            <a href="auth.html" class="header-action" style="color: #16a34a; font-weight: bold;">
+                <span class="action-icon">👤</span>
+                <span>تسجيل الدخول / حساب جديد</span>
+            </a>
+        `;
+    } else if (user.role === 'seller') {
+        // تاجر مسجل
+        html = `
+            <a href="seller-dashboard.html" class="header-action" style="color: #102a43; font-weight: bold;">
+                <span class="action-icon">🏪</span>
+                <span>لوحة التحكم (${user.store_name || 'متجري'})</span>
+            </a>
+            <a href="add-product.html" class="header-action" style="color: #16a34a; font-weight: bold;">
+                <span class="action-icon">➕</span>
+                <span>إضافة منتج</span>
+            </a>
+            <button onclick="logout()" style="background:#dc2626; color:white; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; font-size:13px;">خروج</button>
+        `;
+    } else {
+        // مشتري مسجل
+        html = `
+            <span class="header-action" style="color: #102a43; font-weight: bold;">
+                <span class="action-icon">👤</span>
+                <span>أهلاً، ${user.full_name}</span>
+            </span>
+            <button onclick="logout()" style="background:#dc2626; color:white; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; font-size:13px;">خروج</button>
+        `;
+    }
+
+    // زر السلة يظهر للجميع دائماً
+    html += `
+        <a href="cart.html" class="header-action cart">
+            <span class="action-icon">🛒</span>
+            <span>السلة</span>
+            <span class="cart-count" id="cartCount">0</span>
+        </a>
+    `;
+
+    actionsBox.innerHTML = html;
+}
+
+function logout() {
+    localStorage.removeItem("marchi_user");
+    alert("تم تسجيل الخروج بنجاح 👋");
+    window.location.reload();
+}
+
+checkUserHeader();
+
+/* =========================
    LOAD PRODUCTS FROM SUPABASE
 ========================= */
 async function loadProductsFromSupabase() {
@@ -892,7 +922,7 @@ async function loadProductsFromSupabase() {
 
         const grid = document.getElementById('productGrid');
         if (!products || products.length === 0) {
-            grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding: 40px; color: #777;">لا توجد منتجات مضافة حالياً. كن أول من يضيف منتجاً!</p>';
+            grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding: 40px; color: #777;">لا توجد منتجات مضافة حالياً.</p>';
             return;
         }
 
@@ -907,13 +937,12 @@ async function loadProductsFromSupabase() {
                 ? `<span class="old-price">${product.old_price.toLocaleString()} دج</span>` 
                 : '';
 
-            // نظام توثيق البائع (1000 مبيعة + تقييم 4.5 أو أكثر)
             const salesCount = product.sales_count || 0;
             const rating = product.rating || 5.0;
             const isVerified = salesCount >= 1000 && rating >= 4.5;
             
             const verifiedBadgeHTML = isVerified 
-                ? `<span class="verified-icon" title="متجر موثوق (أكثر من 1000 مبيعة ناجحة)">✔️ موثوق</span>` 
+                ? `<span class="verified-icon" title="متجر موثوق">✔️ موثوق</span>` 
                 : '';
 
             const storeName = product.store_name || 'متجر معتمد';
@@ -928,14 +957,11 @@ async function loadProductsFromSupabase() {
                     <div class="product-info">
                         <div>
                             <div class="product-name">${product.name}</div>
-                            
-                            <!-- عرض بيانات البائع والمبيعات والتوثيق (طريقة Temu) -->
                             <div class="seller-badge-box">
                                 <span class="seller-name">🏪 ${storeName}</span>
                                 ${verifiedBadgeHTML}
                                 <span class="sales-badge">📦 ${salesCount} مبيعة</span>
                             </div>
-
                             <div class="rating">★ ${rating.toFixed(1)}</div>
                         </div>
 
@@ -963,13 +989,14 @@ async function loadProductsFromSupabase() {
 loadProductsFromSupabase();
 
 /* =========================
-   REAL CART (LOCALSTORAGE)
+   CART LOGIC
 ========================= */
 let cart = JSON.parse(localStorage.getItem("marchiCart")) || [];
 
 function updateCartCount(){
     const total = cart.reduce((sum, item) => sum + item.quantity, 0);
-    document.getElementById("cartCount").textContent = total;
+    const countEl = document.getElementById("cartCount");
+    if(countEl) countEl.textContent = total;
 }
 
 function addToCartDynamic(product) {
@@ -999,20 +1026,13 @@ function addToCartDynamic(product) {
 updateCartCount();
 
 /* =========================
-   FAVORITE
+   FAVORITE & SEARCH & FILTERS
 ========================= */
 function toggleFavorite(button){
     button.classList.toggle("liked");
-    if(button.classList.contains("liked")){
-        button.textContent = "♥";
-    }else{
-        button.textContent = "♡";
-    }
+    button.textContent = button.classList.contains("liked") ? "♥" : "♡";
 }
 
-/* =========================
-   SEARCH
-========================= */
 function searchProducts(){
     const search = document.getElementById("searchInput").value.toLowerCase().trim();
     const products = document.querySelectorAll(".product");
@@ -1038,9 +1058,6 @@ document.getElementById("searchInput").addEventListener("keydown", function(even
     }
 });
 
-/* =========================
-   CATEGORY FILTER
-========================= */
 function filterCategory(category, element){
     const products = document.querySelectorAll(".product");
     document.querySelectorAll(".category").forEach(cat => cat.classList.remove("selected"));
@@ -1058,18 +1075,12 @@ function filterCategory(category, element){
     document.getElementById("products").scrollIntoView({ behavior:"smooth" });
 }
 
-/* =========================
-   SHOW ALL
-========================= */
 function showAllProducts(){
     document.querySelectorAll(".product").forEach(product => product.style.display = "");
     document.querySelectorAll(".category").forEach(category => category.classList.remove("selected"));
     document.getElementById("productsTitle").textContent = "منتجات مميزة 🔥";
 }
 
-/* =========================
-   HERO BUTTON
-========================= */
 function scrollToProducts(){
     document.getElementById("products").scrollIntoView({ behavior:"smooth" });
 }
