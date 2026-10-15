@@ -4,8 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة تحكم البائع ونظام المبيعات | MARCHI DZ</title>
+<title>لوحة تحكم المتجر والديون | MARCHI DZ</title>
 
+<!-- مكتبة Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -45,7 +46,7 @@ header{
     padding:0 20px;
 }
 
-/* بطاقة المتجر والمبيعات (طريقة Temu) */
+/* بطاقة المتجر والمبيعات والديون */
 .store-stats-card{
     background:white;
     padding:25px;
@@ -53,7 +54,7 @@ header{
     display:grid;
     grid-template-columns:repeat(3, 1fr);
     gap:20px;
-    margin-bottom:30px;
+    margin-bottom:20px;
     box-shadow:0 4px 15px rgba(0,0,0,.04);
     text-align:center;
 }
@@ -62,6 +63,37 @@ header{
 .stat-box .value{ font-size:24px; font-weight:bold; color:#102a43; }
 .stat-box .value.debt{ color:#dc2626; }
 .stat-box .value.sales{ color:#16a34a; }
+
+/* شريط تقدم التوثيق بالشارة الزرقاء */
+.verification-card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:25px;
+    box-shadow:0 4px 15px rgba(0,0,0,.04);
+}
+
+.verification-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.progress-bar-bg{
+    width:100%;
+    background:#e2e8f0;
+    height:14px;
+    border-radius:7px;
+    overflow:hidden;
+}
+
+.progress-bar-fill{
+    height:100%;
+    background:#1d9bf0;
+    width:0%;
+    transition:width .4s ease;
+}
 
 .pay-debt-banner{
     background:#fef2f2;
@@ -143,7 +175,7 @@ header{
 
 <header>
 <div class="header-container">
-<div class="logo-name"><span class="marchi">MARCHI</span><span class="dz"> DZ</span> | لوحة المتجر والمبيعات</div>
+<div class="logo-name"><span class="marchi">MARCHI</span><span class="dz"> DZ</span> | لوحة المتجر</div>
 <a href="index.html" style="color:white; text-decoration:none; font-weight:bold;">🏪 العودة للمتجر</a>
 </div>
 </header>
@@ -152,25 +184,40 @@ header{
 
 <!-- تنبيه بلوغ الحد الأقصى للديون (500 دج) -->
 <div class="pay-debt-banner" id="debtBanner">
-    <h3>⚠️ تنبيه هام: لقد وصلت ديونك للمنصة إلى الحد الأقصى (500 دج أو أكثر)!</h3>
-    <p>توقفت الطلبيات الجديدة مؤقتاً. يرجى تسوية مستحقات المنصة عبر BaridiMob (CCP) لفتح الطلبيات واستئناف المبيعات.</p>
-    <div style="font-family:monospace; font-weight:bold; margin:10px 0;">CCP / RIP المنصة: 00799999001234567890</div>
-    <button onclick="payDebt()">✅ أرسلت وصل التسوية (تصفير الديون)</button>
+    <h3>⚠️ تنبيه هام: بلغت ديونك للمنصة الحد الأقصى (500 دج أو أكثر)!</h3>
+    <p>يتعذر فتح طلبات جديدة حتى تسوية مستحقات المنصة عبر BaridiMob واستئناف المبيعات.</p>
+    <div style="font-family:monospace; font-weight:bold; margin:10px 0; font-size:16px;">CCP / RIP المنصة: 00799999001234567890</div>
+    <button onclick="payDebt()">✅ تسوية الديون عبر BaridiMob</button>
 </div>
 
-<!-- إحصائيات المتجر (على طريقة Temu) -->
+<!-- إحصائيات المتجر والديون -->
 <div class="store-stats-card">
     <div class="stat-box">
-        <h3>🌟 تقييم متجرك</h3>
-        <div class="value">4.9 / 5.0</div>
+        <h3>⭐ تقييم المتجر</h3>
+        <div class="value" id="storeRating">4.8 / 5.0</div>
     </div>
     <div class="stat-box">
-        <h3>📦 إجمالي مبيعاتك الناجحة</h3>
+        <h3>📦 المبيعات الناجحة</h3>
         <div class="value sales" id="totalSalesCount">0 مبيعة</div>
     </div>
     <div class="stat-box">
-        <h3>💳 ديونك المستحقة للمنصة</h3>
+        <h3>💳 الديون المستحقة للمنصة</h3>
         <div class="value debt" id="sellerDebt">0 دج</div>
+    </div>
+</div>
+
+<!-- شريط تقدم التوثيق بالشارة الزرقاء ✔️ -->
+<div class="verification-card">
+    <div class="verification-header">
+        <strong>🛡️ مسار التوثيق الشارة الزرقاء (✔️ متجر موثوق):</strong>
+        <span id="verifiedStatusText" style="font-weight:bold; color:#1d9bf0;">⏳ غير موثوق بعد</span>
+    </div>
+    <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="verifiedProgressBar"></div>
+    </div>
+    <div style="display:flex; justify-content:space-between; font-size:12px; color:#666; margin-top:6px;">
+        <span>الهدف: 1000 مبيعة ناجحة + تقييم 4.5 نجوم</span>
+        <span id="salesProgressText">0 / 1000 مبيعة</span>
     </div>
 </div>
 
@@ -185,19 +232,32 @@ const supabase = window.supabase.createClient(
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
-// محاكاة بيانات البائع الحالي للتجربة
+// بيانات البائع الافتراضية للتجربة والتطوير
 let sellerData = {
     id: 1,
     store_name: "متجر الجزائر الرقمي",
-    sales_count: 14,       // عدد المبيعات الناجحة
-    debt: 150              // الديون الحالية للمنصة (بالدينار)
+    sales_count: 120,    // عدد المبيعات الناجحة
+    rating: 4.8,         // تقييم البائع
+    debt: 150            // الديون الحالية بـ DZD (كل فتح طلبية = 50 دج)
 };
 
 function updateDashboardUI() {
     document.getElementById("totalSalesCount").textContent = sellerData.sales_count + " مبيعة";
     document.getElementById("sellerDebt").textContent = sellerData.debt + " دج";
+    document.getElementById("storeRating").textContent = sellerData.rating.toFixed(1) + " / 5.0";
 
-    // إذا وصلت الديون 500 دج أو أكثر، نظهر تنبيه الإيقاف
+    // تحديث شريط التوثيق (1000 مبيعة)
+    const progressPercent = Math.min((sellerData.sales_count / 1000) * 100, 100);
+    document.getElementById("verifiedProgressBar").style.width = progressPercent + "%";
+    document.getElementById("salesProgressText").textContent = `${sellerData.sales_count} / 1000 مبيعة`;
+
+    if (sellerData.sales_count >= 1000 && sellerData.rating >= 4.5) {
+        document.getElementById("verifiedStatusText").innerHTML = "✔️ متجر موثوق (شارة زرقاء مفعلة)";
+    } else {
+        document.getElementById("verifiedStatusText").innerHTML = `⏳ ينقصك ${1000 - sellerData.sales_count} مبيعة للتوثيق`;
+    }
+
+    // تنبيه الديون إذا بلغت 500 دج أو أكثر
     if (sellerData.debt >= 500) {
         document.getElementById("debtBanner").style.display = "block";
     } else {
@@ -248,8 +308,8 @@ async function loadOrders() {
 
                 ${!isUnlocked ? `
                 <div style="background:#fffbeb; border:1px dashed #f59e0b; padding:15px; border-radius:10px; text-align:center; margin-top:15px;">
-                    <p style="color:#b45309; font-weight:bold;">🔒 معلومات الزبون ورقم هافته مغلقة!</p>
-                    <p style="font-size:13px; color:#78350f; margin-top:3px;">فتح الطلبية يضيف 50 دج إلى ديونك المستحقة للمنصة.</p>
+                    <p style="color:#b45309; font-weight:bold;">🔒 معلومات الزبون ورقم الهاتف مغلقة!</p>
+                    <p style="font-size:13px; color:#78350f; margin-top:3px;">فتح الطلبية يضيف 50 دج إلى ديونك للمنصة ويزيد عدد مبيعاتك الناجحة +1.</p>
                     <button class="unlock-btn" onclick="unlockOrder(${order.id})">🔓 فتح ومعاينة معلومات الزبون</button>
                 </div>
                 ` : `
@@ -268,25 +328,24 @@ async function loadOrders() {
 
 async function unlockOrder(orderId) {
     if (sellerData.debt >= 500) {
-        alert("❌ عذراً، لقد بلغت الحد الأقصى للديون (500 دج). يرجى تسوية مستحقات المنصة أولاً لفتح طلبات جديدة.");
+        alert("❌ وصلت ديونك إلى الحد الأقصى (500 دج). يرجى تسوية مستحقات المنصة عبر BaridiMob أولاً لفتح طلبات جديدة.");
         return;
     }
 
-    if (confirm("هل تريد فتح معلومات هذه الطلبية؟ (سيتم تسجيل 50 دج كدين للمنصة وزيادة عداد مبيعاتك بنجاح)")) {
+    if (confirm("هل تريد فتح معلومات هذه الطلبية؟ (سيتم تسجيل 50 دج كدين للمنصة وزيادة عداد مبيعاتك بـ +1)")) {
         sellerData.debt += 50;
         sellerData.sales_count += 1;
         updateDashboardUI();
         
         await supabase.from('orders').update({ unlocked: true }).eq('id', orderId);
         
-        alert("🎉 تم فتح الطلب ورقم الهاتف بنجاح!");
+        alert("🎉 تم فتح معلومات الطلب ورقم الهاتف بنجاح!");
         loadOrders();
     }
 }
 
 function payDebt() {
-    alert("📲 شكراً لك! بعد تحويل المبلغ عبر BaridiMob وإرسال الوصل، سيقوم فريق الدعم بتصفير ديونك في غضون دقائق.");
-    // هنا يمكن ربطها بوصل أو إرسال طلب تصفير
+    alert("📲 لتسوية الديون:\nقم بتحويل مبلغ الديون المستحقة إلى RIP التالي عبر BaridiMob:\nRIP: 00799999001234567890\nثم أرسل صورة الوصل لإعادة فتح الحساب فوراً!");
 }
 
 updateDashboardUI();
