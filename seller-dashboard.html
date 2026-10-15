@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم البائع والطلبات | MARCHI DZ</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,Tahoma,sans-serif;
+    background:#f7f9fa;
+    color:#172033;
+}
+
+header{
+    background:#102a43;
+    color:white;
+    padding:15px 25px;
+}
+
+.header-container{
+    max-width:1200px;
+    margin:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo-name{ font-size:22px; font-weight:900; }
+.marchi{ color:white; }
+.dz{ color:#16a34a; }
+
+.container{
+    max-width:1100px;
+    margin:30px auto;
+    padding:0 20px;
+}
+
+/* بطاقة الرصيد */
+.wallet-card{
+    background:linear-gradient(135deg, #102a43, #1e3a8a);
+    color:white;
+    padding:25px;
+    border-radius:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+    box-shadow:0 10px 25px rgba(0,0,0,.1);
+}
+
+.wallet-info h3{ font-size:16px; opacity:.9; margin-bottom:5px; }
+.wallet-balance{ font-size:36px; font-weight:900; color:#4ade80; }
+
+.charge-btn{
+    background:#16a34a;
+    color:white;
+    border:none;
+    padding:14px 24px;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.charge-btn:hover{ background:#12813b; }
+
+/* الطلبات */
+.section-title{ font-size:22px; margin-bottom:20px; color:#102a43; }
+
+.orders-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:20px;
+}
+
+.order-card{
+    background:white;
+    border:1px solid #e5e9ec;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,.04);
+}
+
+.order-header{
+    display:flex;
+    justify-content:space-between;
+    border-bottom:1px solid #f0f2f4;
+    padding-bottom:12px;
+    margin-bottom:15px;
+}
+
+.order-id{ font-weight:bold; color:#102a43; }
+.order-date{ color:#777; font-size:13px; }
+
+.order-details{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:20px;
+}
+
+.blurred-text{
+    filter:blur(5px);
+    user-select:none;
+    background:#e2e8f0;
+    padding:2px 8px;
+    border-radius:4px;
+}
+
+.lock-box{
+    background:#fffbeb;
+    border:1px dashed #f59e0b;
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
+    margin-top:15px;
+}
+
+.unlock-btn{
+    background:#16a34a;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    font-weight:bold;
+    font-size:15px;
+    cursor:pointer;
+    margin-top:8px;
+}
+
+.unlock-btn:hover{ background:#12813b; }
+
+@media(max-width:768px){
+    .wallet-card{ flex-direction:column; gap:15px; text-align:center; }
+    .order-details{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="header-container">
+<div class="logo-name"><span class="marchi">MARCHI</span><span class="dz"> DZ</span> | لوحة البائع</div>
+<a href="index.html" style="color:white; text-decoration:none; font-weight:bold;">🏪 العودة للمتجر</a>
+</div>
+</header>
+
+<main class="container">
+
+<!-- بطاقة الرصيد -->
+<div class="wallet-card">
+<div class="wallet-info">
+<h3>💳 رصيد شحن المبيعات الحالي:</h3>
+<div class="wallet-balance" id="sellerBalance">0 دج</div>
+<p style="font-size:12px; opacity:.8; margin-top:5px;">كلفة فتح كل طلبية جديدة: 50 دج فقط</p>
+</div>
+<button class="charge-btn" onclick="openChargeModal()">⚡ شحن الرصيد عبر BaridiMob</button>
+</div>
+
+<!-- قائمة الطلبات -->
+<h2 class="section-title">📦 الطلبات الواردة لمنتجاتك</h2>
+
+<div class="orders-grid" id="ordersContainer">
+<!-- يتم تحميل الطلبات ديناميكياً هنا -->
+</div>
+
+</main>
+
+<script>
+const supabase = window.supabase.createClient(
+    "https://lifxjoofdlcmbuskvsbg.supabase.co",
+    "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
+);
+
+// افتراضيا نأخذ بائع معين للتجربة
+let currentSellerBalance = 0; // الرصيد الحالي للبائع
+
+async function loadSellerBalance() {
+    // جلب رصيد البائع
+    document.getElementById("sellerBalance").textContent = currentSellerBalance.toLocaleString() + " دج";
+}
+
+async function loadOrders() {
+    const container = document.getElementById("ordersContainer");
+    
+    try {
+        const { data: orders, error } = await supabase
+            .from('orders')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if(!orders || orders.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding:40px; color:#777; background:white; border-radius:12px;">لا توجد طلبات واردة حالياً.</div>`;
+            return;
+        }
+
+        let html = "";
+        orders.forEach(order => {
+            const isUnlocked = order.unlocked || false; // هل قام البائع بفتح الطلب؟
+
+            html += `
+            <div class="order-card">
+                <div class="order-header">
+                    <span class="order-id">طلبية #${order.id}</span>
+                    <span class="order-date">📅 ${new Date(order.created_at).toLocaleDateString('ar-DZ')}</span>
+                </div>
+
+                <div class="order-details">
+                    <div>
+                        <p><strong>المنتجات:</strong> ${order.items ? order.items.map(i => i.name + ' (x' + i.quantity + ')').join(', ') : 'منتج'}</p>
+                        <p style="margin-top:5px;"><strong>الولاية والبلدية:</strong> ${order.wilaya} - ${order.address}</p>
+                        <p style="margin-top:5px;"><strong>نوع التوصيل:</strong> ${order.delivery_type === 'home' ? '🏠 للمنزل' : '🏢 للمكتب'}</p>
+                        <p style="margin-top:5px;"><strong>المجموع الإجمالي:</strong> <span style="color:#16a34a; font-weight:bold;">${order.total_price ? order.total_price.toLocaleString() : 0} دج</span></p>
+                    </div>
+
+                    <div style="background:#f8fafc; padding:12px; border-radius:8px;">
+                        <p><strong>اسم الزبون:</strong> ${isUnlocked ? order.client_name : '<span class="blurred-text">محمد بن علي</span>'}</p>
+                        <p style="margin-top:8px;"><strong>رقم الهاتف:</strong> ${isUnlocked ? `<a href="tel:${order.client_phone}" style="color:#16a34a; font-weight:bold;">${order.client_phone}</a>` : '<span class="blurred-text">0661234567</span>'}</p>
+                    </div>
+                </div>
+
+                ${!isUnlocked ? `
+                <div class="lock-box">
+                    <p style="color:#b45309; font-weight:bold;">🔒 معلومات الزبون ورقم هافته مغلقة!</p>
+                    <p style="font-size:13px; color:#78350f; margin-top:3px;">افتُح الطلبية برصيدك للتواصل مع الزبون وإرسال المنتج.</p>
+                    <button class="unlock-btn" onclick="unlockOrder(${order.id})">🔓 إلغاء القفل الآن (خصم 50 دج)</button>
+                </div>
+                ` : `
+                <div style="margin-top:12px; color:#16a34a; font-weight:bold;">✅ تم فتح الطلب بنجاح! يمكنك الاتصال بالزبون الآن.</div>
+                `}
+            </div>
+            `;
+        });
+
+        container.innerHTML = html;
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+async function unlockOrder(orderId) {
+    if (currentSellerBalance < 50) {
+        alert("❌ رصيدك غير كافٍ لفتح معلومات الطلب! يرجى شحن رصيدك عبر BaridiMob أولاً.");
+        openChargeModal();
+        return;
+    }
+
+    if (confirm("هل تريد خصم 50 دج من رصيدك لإلغاء قفل هذه الطلبية؟")) {
+        currentSellerBalance -= 50;
+        loadSellerBalance();
+        
+        // تحديث الطلب في Supabase ليصبح مفتوحاً
+        await supabase.from('orders').update({ unlocked: true }).eq('id', orderId);
+        
+        alert("🎉 تم إلغاء القفل بنجاح! يمكن الآن رؤية رقم الهاتف والاسم.");
+        loadOrders();
+    }
+}
+
+function openChargeModal() {
+    alert("📲 لشحن رصيدك:\nحول المبلغ المراد (مثلاً 1000 دج) إلى RIP التالي:\nRIP: 00799999002345678901\nثم ارسل صورة الوصل إلى مدير المنصة لتفعيل الرصيد فوراً!");
+}
+
+loadSellerBalance();
+loadOrders();
+</script>
+
+</body>
+</html>
