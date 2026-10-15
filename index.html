@@ -5,10 +5,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MARCHI DZ | تسوق بثقة، استلم براحة</title>
+<title>إضافة منتج | MARCHI DZ</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-
 *{
     margin:0;
     padding:0;
@@ -21,64 +22,37 @@ body{
     color:#172033;
 }
 
-button,input{
-    font-family:inherit;
-}
-
-button{
-    cursor:pointer;
-}
-
-a{
-    text-decoration:none;
-    color:inherit;
-}
-
-/* ================= HEADER ================= */
-
 header{
     background:white;
     border-bottom:1px solid #e5e9ec;
-    position:sticky;
-    top:0;
-    z-index:1000;
 }
 
-.top-header{
-    max-width:1400px;
+.header{
+    max-width:1200px;
     margin:auto;
-    min-height:82px;
-    padding:10px 25px;
-
+    min-height:75px;
+    padding:10px 20px;
     display:flex;
     align-items:center;
-    gap:25px;
+    justify-content:space-between;
 }
-
-/* LOGO */
 
 .logo{
     display:flex;
     align-items:center;
     gap:10px;
-    min-width:220px;
+    text-decoration:none;
 }
 
 .logo img{
-    width:58px;
-    height:58px;
+    width:55px;
+    height:55px;
     object-fit:contain;
 }
 
-.logo-text{
-    display:flex;
-    flex-direction:column;
-}
-
 .logo-name{
-    font-size:25px;
+    font-size:24px;
     font-weight:900;
-    letter-spacing:1px;
 }
 
 .marchi{
@@ -89,1808 +63,429 @@ header{
     color:#16a34a;
 }
 
-.logo-slogan{
-    font-size:11px;
-    color:#777;
-    margin-top:4px;
-}
-
-/* SEARCH */
-
-.search{
-    flex:1;
-    height:48px;
-
-    display:flex;
-
-    border:1px solid #dfe5e9;
-    border-radius:10px;
-
-    overflow:hidden;
-}
-
-.search input{
-    flex:1;
-    border:none;
-    outline:none;
-
-    padding:0 18px;
-
-    font-size:15px;
-}
-
-.search button{
-    width:60px;
-
-    border:none;
-
-    background:#102a43;
-    color:white;
-
-    font-size:19px;
-}
-
-.search button:hover{
-    background:#16a34a;
-}
-
-/* HEADER ACTIONS */
-
-.header-actions{
-    display:flex;
-    gap:22px;
-    align-items:center;
-}
-
-.header-action{
-    display:flex;
-    align-items:center;
-    gap:6px;
-
-    font-size:14px;
-
-    cursor:pointer;
-    white-space:nowrap;
-}
-
-.header-action:hover{
+.back{
     color:#16a34a;
-}
-
-.action-icon{
-    font-size:21px;
-}
-
-.cart{
-    position:relative;
-}
-
-.cart-count{
-    position:absolute;
-
-    top:-10px;
-    right:-10px;
-
-    width:19px;
-    height:19px;
-
-    background:#16a34a;
-    color:white;
-
-    border-radius:50%;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:10px;
-}
-
-/* ================= NAV ================= */
-
-.navigation{
-    background:white;
-    border-top:1px solid #f0f2f4;
-}
-
-.nav-container{
-    max-width:1400px;
-    margin:auto;
-
-    min-height:55px;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    gap:50px;
-}
-
-.nav-item{
-    height:55px;
-
-    display:flex;
-    align-items:center;
-
-    font-size:15px;
     font-weight:bold;
-
-    position:relative;
-
-    cursor:pointer;
+    text-decoration:none;
 }
-
-.nav-item:hover{
-    color:#16a34a;
-}
-
-.nav-item.active{
-    color:#16a34a;
-}
-
-.nav-item.active::after{
-    content:"";
-
-    position:absolute;
-
-    bottom:0;
-    right:0;
-    left:0;
-
-    height:3px;
-
-    background:#16a34a;
-}
-
-/* ================= HERO ================= */
-
-.hero{
-    max-width:1400px;
-
-    height:430px;
-
-    margin:20px auto 0;
-
-    border-radius:16px;
-
-    overflow:hidden;
-
-    position:relative;
-
-    background:
-    linear-gradient(
-        90deg,
-        rgba(5,15,25,.80),
-        rgba(5,15,25,.25),
-        rgba(5,15,25,.05)
-    ),
-    url("https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1800&q=85");
-
-    background-size:cover;
-    background-position:center;
-}
-
-.hero-content{
-    position:absolute;
-
-    right:80px;
-    top:50%;
-
-    transform:translateY(-50%);
-
-    color:white;
-
-    max-width:550px;
-}
-
-.hero-content h1{
-    font-size:48px;
-    line-height:1.25;
-
-    margin-bottom:18px;
-}
-
-.hero-content p{
-    font-size:18px;
-    line-height:1.8;
-
-    margin-bottom:28px;
-}
-
-.hero-button{
-    background:#16a34a;
-    color:white;
-
-    border:none;
-    border-radius:8px;
-
-    padding:15px 32px;
-
-    font-size:16px;
-    font-weight:bold;
-}
-
-.hero-button:hover{
-    background:#12813b;
-}
-
-.slider-dots{
-    position:absolute;
-
-    bottom:20px;
-    left:50%;
-
-    transform:translateX(-50%);
-
-    display:flex;
-    gap:8px;
-}
-
-.slider-dot{
-    width:9px;
-    height:9px;
-
-    border-radius:50%;
-
-    background:white;
-}
-
-.slider-dot.active{
-    background:#16a34a;
-}
-
-/* ================= FEATURES ================= */
-
-.features{
-    max-width:1100px;
-
-    margin:auto;
-
-    background:white;
-
-    border-radius:0 0 15px 15px;
-
-    box-shadow:0 5px 25px rgba(0,0,0,.06);
-
-    display:grid;
-
-    grid-template-columns:repeat(4,1fr);
-
-    padding:22px;
-}
-
-.feature{
-    display:flex;
-
-    justify-content:center;
-    align-items:center;
-
-    gap:12px;
-
-    border-left:1px solid #e5e9ec;
-}
-
-.feature:last-child{
-    border-left:none;
-}
-
-.feature-icon{
-    font-size:30px;
-}
-
-.feature-text strong{
-    display:block;
-    margin-bottom:5px;
-}
-
-.feature-text span{
-    color:#777;
-    font-size:12px;
-}
-
-/* ================= MAIN ================= */
 
 .container{
-    max-width:1400px;
-
-    margin:auto;
-
-    padding:50px 25px 0;
+    max-width:850px;
+    margin:45px auto;
+    padding:0 20px;
 }
 
-.section-header{
-    display:flex;
-
-    justify-content:space-between;
-    align-items:center;
-
-    margin-bottom:22px;
-}
-
-.section-title{
-    font-size:25px;
-    font-weight:800;
-}
-
-.view-all{
-    color:#16a34a;
-    font-size:14px;
-    font-weight:bold;
-}
-
-/* ================= CATEGORIES ================= */
-
-.categories{
-    display:grid;
-
-    grid-template-columns:repeat(10,1fr);
-
-    gap:12px;
-}
-
-.category{
-    background:white;
-
-    border:1px solid #e5e9ec;
-
-    border-radius:12px;
-
-    padding:15px 7px;
-
+.title{
     text-align:center;
-
-    transition:.2s;
-
-    cursor:pointer;
+    margin-bottom:30px;
 }
 
-.category:hover,
-.category.selected{
-    transform:translateY(-3px);
-
-    border-color:#16a34a;
-
-    box-shadow:0 6px 18px rgba(0,0,0,.07);
-}
-
-.category-icon{
-    font-size:38px;
-
-    height:60px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.category-name{
-    font-size:13px;
-    font-weight:bold;
-}
-
-/* ================= PRODUCTS ================= */
-
-.products{
-    display:grid;
-
-    grid-template-columns:repeat(5,1fr);
-
-    gap:18px;
-}
-
-.product{
-    background:white;
-
-    border:1px solid #e5e9ec;
-
-    border-radius:13px;
-
-    overflow:hidden;
-
-    position:relative;
-
-    transition:.2s;
-}
-
-.product:hover{
-    transform:translateY(-5px);
-
-    box-shadow:0 12px 28px rgba(0,0,0,.08);
-}
-
-.discount{
-    position:absolute;
-
-    top:12px;
-    right:12px;
-
-    background:#16a34a;
-    color:white;
-
-    padding:5px 8px;
-
-    border-radius:5px;
-
-    font-size:11px;
-
-    z-index:2;
-}
-
-.favorite{
-    position:absolute;
-
-    top:10px;
-    left:10px;
-
-    width:35px;
-    height:35px;
-
-    border:1px solid #ddd;
-
-    border-radius:50%;
-
-    background:white;
-
-    font-size:19px;
-
-    z-index:2;
-}
-
-.favorite.liked{
-    color:#16a34a;
-}
-
-.product-image{
-    height:220px;
-
-    background:#f1f3f4;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    overflow:hidden;
-}
-
-.product-image img{
-    width:100%;
-    height:100%;
-
-    object-fit:cover;
-
-    transition:.3s;
-}
-
-.product:hover img{
-    transform:scale(1.05);
-}
-
-.product-info{
-    padding:16px;
-}
-
-.product-name{
-    font-size:15px;
-
-    margin-bottom:8px;
-
-    white-space:nowrap;
-
-    overflow:hidden;
-
-    text-overflow:ellipsis;
-}
-
-.rating{
-    color:#f5a623;
-
-    font-size:13px;
-
+.title h1{
+    font-size:32px;
     margin-bottom:10px;
 }
 
-.price{
-    font-size:19px;
+.title p{
+    color:#777;
+}
 
+.form-box{
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 5px 25px rgba(0,0,0,.06);
+}
+
+.form-group{
+    margin-bottom:22px;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
     font-weight:bold;
-
-    color:#102a43;
-
-    margin-bottom:12px;
 }
 
-.old-price{
-    color:#999;
-
-    text-decoration:line-through;
-
-    font-size:12px;
-
-    margin-right:7px;
-}
-
-.add-cart{
+input,
+select,
+textarea{
     width:100%;
-
-    border:none;
-
-    background:#102a43;
-
-    color:white;
-
-    padding:11px;
-
-    border-radius:7px;
-
-    font-weight:bold;
+    padding:13px 15px;
+    border:1px solid #dfe5e9;
+    border-radius:8px;
+    outline:none;
+    font-size:15px;
+    background:white;
 }
 
-.add-cart:hover{
-    background:#16a34a;
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#16a34a;
 }
 
-/* ================= FOOTER ================= */
-
-footer{
-    margin-top:70px;
-
-    background:#102a43;
-
-    color:white;
-
-    padding:50px 25px 25px;
+textarea{
+    min-height:130px;
+    resize:vertical;
 }
 
-.footer-container{
-    max-width:1400px;
-    margin:auto;
-
+.price-row{
     display:grid;
-
-    grid-template-columns:2fr 1fr 1fr 1fr;
-
-    gap:50px;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
 }
 
-.footer-logo{
-    font-size:28px;
-    font-weight:900;
+.image-box{
+    border:2px dashed #dfe5e9;
+    border-radius:10px;
+    padding:25px;
+    text-align:center;
+}
 
+.image-box p{
+    color:#777;
     margin-bottom:12px;
 }
 
-.footer-about{
-    color:#ccd6df;
-
-    line-height:1.8;
-
-    max-width:400px;
+.image-preview{
+    display:none;
+    width:180px;
+    height:180px;
+    object-fit:cover;
+    border-radius:10px;
+    margin:15px auto 0;
 }
 
-.footer-title{
-    margin-bottom:18px;
+.rules-box{
+    margin-top:25px;
+    padding:20px;
+    background:#f8fafc;
+    border:1px solid #e5e9ec;
+    border-radius:10px;
 }
 
-.footer-links{
-    list-style:none;
+.rules-box h3{
+    margin-bottom:15px;
 }
 
-.footer-links li{
-    margin-bottom:11px;
+.rules-box ul{
+    padding-right:20px;
+}
 
-    color:#ccd6df;
+.rules-box li{
+    margin-bottom:9px;
+    line-height:1.6;
+}
 
-    font-size:14px;
-
+.agree-rules{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    margin-top:18px;
     cursor:pointer;
 }
 
-.footer-links li:hover{
-    color:#4ade80;
+.agree-rules input{
+    width:18px;
+    height:18px;
+    margin-top:3px;
 }
 
-.copyright{
-    max-width:1400px;
+.submit-btn{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:9px;
+    background:#16a34a;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
 
-    margin:40px auto 0;
+.submit-btn:hover{
+    background:#12813b;
+}
 
-    padding-top:20px;
+.submit-btn:disabled{
+    background:#9ca3af;
+    cursor:not-allowed;
+}
 
-    border-top:1px solid rgba(255,255,255,.12);
-
+.message{
+    display:none;
+    margin-top:20px;
+    padding:15px;
+    border-radius:8px;
     text-align:center;
-
-    color:#aebbc6;
-
-    font-size:13px;
+    background:#dcfce7;
+    color:#166534;
 }
 
-/* ================= MOBILE ================= */
-
-@media(max-width:1100px){
-
-    .categories{
-        grid-template-columns:repeat(5,1fr);
-    }
-
-    .products{
-        grid-template-columns:repeat(4,1fr);
-    }
-
+.error-message{
+    display:none;
+    margin-top:20px;
+    padding:15px;
+    border-radius:8px;
+    text-align:center;
+    background:#fee2e2;
+    color:#991b1b;
 }
 
-@media(max-width:800px){
-
-    .top-header{
-        flex-wrap:wrap;
-        padding:12px 15px;
-    }
-
-    .logo{
-        width:100%;
-    }
-
-    .search{
-        order:3;
-        width:100%;
-        flex:auto;
-    }
-
-    .header-actions{
-        position:absolute;
-        top:20px;
-        left:15px;
-    }
-
-    .header-action span:not(.action-icon){
-        display:none;
-    }
-
-    .nav-container{
-        overflow-x:auto;
-
-        justify-content:flex-start;
-
-        gap:28px;
-
-        padding:0 15px;
-    }
-
-    .hero{
-        margin:10px;
-
-        height:380px;
-    }
-
-    .hero-content{
-        right:30px;
-        left:30px;
-    }
-
-    .hero-content h1{
-        font-size:34px;
-    }
-
-    .features{
-        margin:0 10px;
-
-        grid-template-columns:repeat(2,1fr);
-
-        gap:20px;
-    }
-
-    .feature{
-        border:none;
-    }
-
-    .categories{
-        grid-template-columns:repeat(4,1fr);
-    }
-
-    .products{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .footer-container{
-        grid-template-columns:repeat(2,1fr);
-    }
-}
-
-@media(max-width:500px){
-
-    .categories{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .products{
-        grid-template-columns:repeat(2,1fr);
-
-        gap:10px;
-    }
-
-    .product-image{
-        height:160px;
-    }
-
-    .footer-container{
+@media(max-width:600px){
+    .price-row{
         grid-template-columns:1fr;
     }
-
+    .form-box{
+        padding:20px;
+    }
+    .title h1{
+        font-size:26px;
+    }
 }
-
 </style>
 </head>
 
-
 <body>
 
-
-<!-- ================= HEADER ================= -->
-
 <header>
-
-<div class="top-header">
-
-
-<a href="#" class="logo">
-
+<div class="header">
+<a href="index.html" class="logo">
 <img src="logo.png" alt="MARCHI DZ">
-
-<div class="logo-text">
-
 <div class="logo-name">
-
 <span class="marchi">MARCHI</span>
 <span class="dz"> DZ</span>
-
 </div>
-
-<div class="logo-slogan">
-تسوق بثقة، استلم براحة
-</div>
-
-</div>
-
 </a>
-
-
-<!-- SEARCH -->
-
-<div class="search">
-
-<input
-id="searchInput"
-type="text"
-placeholder="ابحث عن أي منتج..."
->
-
-<button onclick="searchProducts()">
-🔍
-</button>
-
+<a href="index.html" class="back">← العودة للرئيسية</a>
 </div>
-
-
-<!-- ACTIONS -->
-
-<div class="header-actions">
-
-<div class="header-action">
-
-<span class="action-icon">👤</span>
-<span>تسجيل الدخول</span>
-
-</div>
-
-<div class="header-action">
-
-<span class="action-icon">❓</span>
-<span>الدعم</span>
-
-</div>
-
-<div class="header-action cart">
-
-<span class="action-icon">🛒</span>
-<span>السلة</span>
-
-<span
-class="cart-count"
-id="cartCount"
->
-0
-</span>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- NAV -->
-
-<nav class="navigation">
-
-<div class="nav-container">
-
-<a class="nav-item active" href="#">
-الرئيسية
-</a>
-
-<a class="nav-item" href="#categories">
-الفئات
-</a>
-
-<a class="nav-item" href="#products">
-العروض
-</a>
-
-<a class="nav-item" href="#">
-المتاجر
-</a>
-
-<a class="nav-item" href="#">
-تتبع الطلب
-</a>
-
-<a class="nav-item" href="#">
-من نحن
-</a>
-
-<a class="nav-item" href="#categories">
-☰ كل الفئات
-</a>
-
-</div>
-
-</nav>
-
 </header>
 
+<main class="container">
+<div class="title">
+<h1>➕ إضافة منتج</h1>
+<p>أضف منتجك ليظهر في متجر MARCHI DZ</p>
+</div>
 
-<!-- ================= HERO ================= -->
+<div class="form-box">
 
-<section class="hero">
+<!-- اسم المنتج -->
+<div class="form-group">
+<label>اسم المنتج *</label>
+<input type="text" id="productName" placeholder="مثال: سماعات لاسلكية">
+</div>
 
-<div class="hero-content">
+<!-- الفئة -->
+<div class="form-group">
+<label>الفئة *</label>
+<select id="productCategory">
+<option value="">اختر الفئة</option>
+<option value="سيارات">🚗 السيارات</option>
+<option value="ألعاب">🎮 الألعاب</option>
+<option value="ساعات">⌚ الساعات</option>
+<option value="أحذية">👟 الأحذية</option>
+<option value="ملابس">👕 الملابس</option>
+<option value="رياضة">🏋️ الرياضة</option>
+<option value="جمال">💄 الجمال</option>
+<option value="منزل">🏠 المنزل</option>
+<option value="هواتف">📱 الهواتف</option>
+<option value="إلكترونيات">🎧 الإلكترونيات</option>
+</select>
+</div>
 
-<h1>
-كل ما تحتاجه
+<!-- السعر -->
+<div class="price-row">
+<div class="form-group">
+<label>السعر بالدينار *</label>
+<input type="number" id="productPrice" placeholder="4500" min="1" step="1">
+</div>
+<div class="form-group">
+<label>السعر القديم بالدينار</label>
+<input type="number" id="oldPrice" placeholder="5300" min="1" step="1">
+</div>
+</div>
+
+<!-- الصورة -->
+<div class="form-group">
+<label>صورة المنتج</label>
+<div class="image-box">
+<p>اختر صورة من جهازك</p>
+<input type="file" id="productImage" accept="image/*">
+<img id="imagePreview" class="image-preview" alt="معاينة المنتج">
+</div>
+</div>
+
+<!-- الوصف -->
+<div class="form-group">
+<label>وصف المنتج *</label>
+<textarea id="productDescription" placeholder="اكتب وصفًا مختصرًا للمنتج..."></textarea>
+</div>
+
+<!-- الكمية -->
+<div class="form-group">
+<label>الكمية المتوفرة *</label>
+<input type="number" id="productQuantity" placeholder="10" min="1" step="1">
+</div>
+
+<!-- القوانين -->
+<div class="rules-box">
+<h3>📜 قوانين بيع المنتجات</h3>
+<ul>
+<li>🚫 يمنع بيع أي منتج غير قانوني أو محظور.</li>
+<li>🚫 يمنع بيع الأسلحة والمخدرات والمواد الخطرة أو الممنوعة.</li>
+<li>🚫 يمنع بيع المنتجات المسروقة أو المقلدة.</li>
+<li>🚫 يمنع وضع معلومات أو صور مضللة عن المنتج.</li>
+<li>💰 يجب أن يكون سعر المنتج أكبر من 0 دج.</li>
+<li>📝 يجب أن تكون معلومات المنتج صحيحة.</li>
+<li>📦 البائع مسؤول عن توفر المنتج وجودته.</li>
+<li>💰 رسوم MARCHI DZ هي 50 دج عن كل عملية بيع مكتملة فوق 1000 دج.</li>
+<li>⚠️ يحق لـ MARCHI DZ إزالة المنتجات المخالفة وتعليق الحساب.</li>
+</ul>
+
+<label class="agree-rules">
+<input type="checkbox" id="agreeRules">
+<span>أوافق على قوانين MARCHI DZ وأتعهد بأن المنتج قانوني والمعلومات التي قدمتها صحيحة.</span>
+</label>
+</div>
+
 <br>
-في مكان واحد
-</h1>
 
-<p>
-آلاف المنتجات، أفضل الأسعار،
-وتوصيل سريع إلى جميع الولايات الجزائرية 🇩🇿
-</p>
+<!-- زر الإضافة -->
+<button class="submit-btn" id="submitBtn" onclick="addProduct()">➕ إضافة المنتج</button>
 
-<button
-class="hero-button"
-onclick="scrollToProducts()"
->
-تسوق الآن
-</button>
+<div class="message" id="message">تمت إضافة المنتج بنجاح ✅</div>
+<div class="error-message" id="errorMessage">حدث خطأ أثناء إضافة المنتج ❌</div>
 
 </div>
-
-
-<div class="slider-dots">
-
-<span class="slider-dot active"></span>
-<span class="slider-dot"></span>
-<span class="slider-dot"></span>
-<span class="slider-dot"></span>
-
-</div>
-
-</section>
-
-
-<!-- ================= FEATURES ================= -->
-
-<section class="features">
-
-<div class="feature">
-
-<div class="feature-icon">🛡️</div>
-
-<div class="feature-text">
-
-<strong>تسوق بأمان</strong>
-
-<span>حماية طلبك</span>
-
-</div>
-
-</div>
-
-
-<div class="feature">
-
-<div class="feature-icon">🚚</div>
-
-<div class="feature-text">
-
-<strong>توصيل سريع</strong>
-
-<span>إلى جميع الولايات</span>
-
-</div>
-
-</div>
-
-
-<div class="feature">
-
-<div class="feature-icon">⭐</div>
-
-<div class="feature-text">
-
-<strong>منتجات موثوقة</strong>
-
-<span>جودة مضمونة</span>
-
-</div>
-
-</div>
-
-
-<div class="feature">
-
-<div class="feature-icon">🎧</div>
-
-<div class="feature-text">
-
-<strong>دعم العملاء</strong>
-
-<span>متواجدون لمساعدتك</span>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- ================= CATEGORIES ================= -->
-
-<section class="container" id="categories">
-
-<div class="section-header">
-
-<h2 class="section-title">
-تصفح الفئات
-</h2>
-
-<a
-href="#"
-class="view-all"
-onclick="showAllProducts();return false;"
->
-عرض الكل ←
-</a>
-
-</div>
-
-
-<div class="categories">
-
-
-<div
-class="category"
-onclick="filterCategory('سيارات',this)"
->
-
-<div class="category-icon">🚗</div>
-
-<div class="category-name">
-السيارات
-</div>
-
-</div>
-
-
-<div
-class="category"
-onclick="filterCategory('ألعاب',this)"
->
-
-<div class="category-icon">🎮</div>
-
-<div class="category-name">
-الألعاب
-</div>
-
-</div>
-
-
-<div
-class="category"
-onclick="filterCategory('ساعات',this)"
->
-
-<div class="category-icon">⌚</div>
-
-<div class="category-name">
-الساعات
-</div>
-
-</div>
-
-
-<div
-class="category"
-onclick="filterCategory('أحذية',this)"
->
-
-<div class="category-icon">👟</div>
-
-<div class="category-name">
-الأحذية
-</div>
-
-</div>
-
-
-<div
-class="category"
-onclick="filterCategory('ملابس',this)"
->
-
-<div class="category-icon">👕</div>
-
-<div class="category-name">
-الملابس
-</div>
-
-</div>
-
-
-<div
-class="category"
-onclick="filterCategory('رياضة',this)"
->
-
-<div class="category-icon">🏋️</div>
-
-<div class="category-name">
-الرياضة
-</div>
-
-</div>
-
-
-<div
-class="category"
-onclick="filterCategory('جمال',this)"
->
-
-<div class="category-icon">💄</div>
-
-<div class="category-name">
-الجمال
-</div>
-
-</div>
-
-
-<div
-class="category"
-onclick="filterCategory('منزل',this)"
->
-
-<div class="category-icon">🏠</div>
-
-<div class="category-name">
-المنزل
-</div>
-
-</div>
-
-
-<div
-class="category"
-onclick="filterCategory('هواتف',this)"
->
-
-<div class="category-icon">📱</div>
-
-<div class="category-name">
-الهواتف
-</div>
-
-</div>
-
-
-<div
-class="category"
-onclick="filterCategory('إلكترونيات',this)"
->
-
-<div class="category-icon">🎧</div>
-
-<div class="category-name">
-إلكترونيات
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- ================= PRODUCTS ================= -->
-
-<section class="container" id="products">
-
-<div class="section-header">
-
-<h2
-class="section-title"
-id="productsTitle"
->
-منتجات مميزة 🔥
-</h2>
-
-</div>
-
-
-<div
-class="products"
-id="productGrid"
->
-
-
-<!-- PRODUCT -->
-
-<div
-class="product"
-data-category="إلكترونيات"
-data-name="سماعات لاسلكية"
->
-
-<span class="discount">
--15%
-</span>
-
-<button
-class="favorite"
-onclick="toggleFavorite(this)"
->
-♡
-</button>
-
-<div class="product-image">
-
-<img
-src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80"
-alt="سماعات"
->
-
-</div>
-
-<div class="product-info">
-
-<div class="product-name">
-سماعات لاسلكية احترافية
-</div>
-
-<div class="rating">
-★★★★★
-</div>
-
-<div class="price">
-4,500 دج
-<span class="old-price">
-5,300 دج
-</span>
-</div>
-
-<button
-class="add-cart"
-onclick="addToCart('سماعات لاسلكية')"
->
-🛒 أضف للسلة
-</button>
-
-</div>
-
-</div>
-
-
-<!-- PRODUCT -->
-
-<div
-class="product"
-data-category="ساعات"
-data-name="ساعة ذكية"
->
-
-<span class="discount">
--20%
-</span>
-
-<button
-class="favorite"
-onclick="toggleFavorite(this)"
->
-♡
-</button>
-
-<div class="product-image">
-
-<img
-src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80"
-alt="ساعة"
->
-
-</div>
-
-<div class="product-info">
-
-<div class="product-name">
-ساعة ذكية رياضية
-</div>
-
-<div class="rating">
-★★★★★
-</div>
-
-<div class="price">
-6,900 دج
-<span class="old-price">
-8,500 دج
-</span>
-</div>
-
-<button
-class="add-cart"
-onclick="addToCart('ساعة ذكية')"
->
-🛒 أضف للسلة
-</button>
-
-</div>
-
-</div>
-
-
-<!-- PRODUCT -->
-
-<div
-class="product"
-data-category="إلكترونيات"
-data-name="سماعات ايربودز"
->
-
-<button
-class="favorite"
-onclick="toggleFavorite(this)"
->
-♡
-</button>
-
-<div class="product-image">
-
-<img
-src="https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=600&q=80"
-alt="سماعات"
->
-
-</div>
-
-<div class="product-info">
-
-<div class="product-name">
-سماعات AirPods لاسلكية
-</div>
-
-<div class="rating">
-★★★★☆
-</div>
-
-<div class="price">
-8,500 دج
-</div>
-
-<button
-class="add-cart"
-onclick="addToCart('AirPods')"
->
-🛒 أضف للسلة
-</button>
-
-</div>
-
-</div>
-
-
-<!-- PRODUCT -->
-
-<div
-class="product"
-data-category="هواتف"
-data-name="هاتف ذكي"
->
-
-<span class="discount">
--10%
-</span>
-
-<button
-class="favorite"
-onclick="toggleFavorite(this)"
->
-♡
-</button>
-
-<div class="product-image">
-
-<img
-src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80"
-alt="هاتف"
->
-
-</div>
-
-<div class="product-info">
-
-<div class="product-name">
-هاتف ذكي حديث
-</div>
-
-<div class="rating">
-★★★★★
-</div>
-
-<div class="price">
-48,000 دج
-<span class="old-price">
-53,000 دج
-</span>
-</div>
-
-<button
-class="add-cart"
-onclick="addToCart('هاتف ذكي')"
->
-🛒 أضف للسلة
-</button>
-
-</div>
-
-</div>
-
-
-<!-- PRODUCT -->
-
-<div
-class="product"
-data-category="أحذية"
-data-name="حذاء رياضي"
->
-
-<span class="discount">
--25%
-</span>
-
-<button
-class="favorite"
-onclick="toggleFavorite(this)"
->
-♡
-</button>
-
-<div class="product-image">
-
-<img
-src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80"
-alt="حذاء"
->
-
-</div>
-
-<div class="product-info">
-
-<div class="product-name">
-حذاء رياضي عصري
-</div>
-
-<div class="rating">
-★★★★★
-</div>
-
-<div class="price">
-5,500 دج
-<span class="old-price">
-7,300 دج
-</span>
-</div>
-
-<button
-class="add-cart"
-onclick="addToCart('حذاء رياضي')"
->
-🛒 أضف للسلة
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- ================= FOOTER ================= -->
-
-<footer>
-
-<div class="footer-container">
-
-<div>
-
-<div class="footer-logo">
-
-<span class="marchi">MARCHI</span>
-<span class="dz"> DZ</span>
-
-</div>
-
-<p class="footer-about">
-سوق إلكتروني جزائري يجمع المنتجات والبائعين
-في مكان واحد، لتجربة تسوق سهلة وآمنة.
-</p>
-
-</div>
-
-
-<div>
-
-<h3 class="footer-title">
-روابط مهمة
-</h3>
-
-<ul class="footer-links">
-
-<li>الرئيسية</li>
-<li>من نحن</li>
-<li>تواصل معنا</li>
-<li>الأسئلة الشائعة</li>
-
-</ul>
-
-</div>
-
-
-<div>
-
-<h3 class="footer-title">
-التسوق
-</h3>
-
-<ul class="footer-links">
-
-<li>الفئات</li>
-<li>العروض</li>
-<li>المنتجات الجديدة</li>
-<li>المتاجر</li>
-
-</ul>
-
-</div>
-
-
-<div>
-
-<h3 class="footer-title">
-المساعدة
-</h3>
-
-<ul class="footer-links">
-
-<li>الدعم</li>
-<li>تتبع الطلب</li>
-<li>سياسة الاسترجاع</li>
-<li>الشروط والأحكام</li>
-
-</ul>
-
-</div>
-
-</div>
-
-
-<div class="copyright">
-
-© 2026 MARCHI DZ — جميع الحقوق محفوظة 🇩🇿
-
-</div>
-
-</footer>
-
+</main>
 
 <script>
-
-/* =========================
-   CART
-========================= */
-
-/* =========================
-   REAL CART
-========================= */
-
-let cart = JSON.parse(
-    localStorage.getItem("marchiCart")
-) || [];
-
-
-/* تحديث عداد السلة */
-
-function updateCartCount(){
-
-    const total = cart.reduce(
-        (sum, item) => sum + item.quantity,
-        0
-    );
-
-    document.getElementById("cartCount").textContent = total;
-
-}
-
-
-/* إضافة منتج للسلة */
-
-function addToCart(productName){
-
-    const product =
-        document.querySelector(
-            `.product[data-name="${productName}"]`
-        );
-
-    if(!product){
-        return;
-    }
-
-    const priceText =
-        product.querySelector(".price").childNodes[0].textContent;
-
-    const price =
-        parseInt(
-            priceText.replace(/[^\d]/g,"")
-        );
-
-    const image =
-        product.querySelector("img").src;
-
-    const existing =
-        cart.find(
-            item => item.name === productName
-        );
-
-    if(existing){
-
-        existing.quantity++;
-
-    }else{
-
-        cart.push({
-
-            name: productName,
-
-            price: price,
-
-            image: image,
-
-            quantity: 1
-
-        });
-
-    }
-
-    localStorage.setItem(
-        "marchiCart",
-        JSON.stringify(cart)
-    );
-
-    updateCartCount();
-
-    alert(
-        "تمت إضافة المنتج إلى السلة 🛒"
-    );
-
-}
-
-
-/* تشغيل العداد عند فتح الموقع */
-
-updateCartCount();
-
-
-/* =========================
-   FAVORITE
-========================= */
-
-function toggleFavorite(button){
-
-    button.classList.toggle("liked");
-
-    if(button.classList.contains("liked")){
-
-        button.textContent = "♥";
-
-    }else{
-
-        button.textContent = "♡";
-
-    }
-
-}
-
-
-/* =========================
-   SEARCH
-========================= */
-
-function searchProducts(){
-
-    const search =
-        document
-        .getElementById("searchInput")
-        .value
-        .toLowerCase()
-        .trim();
-
-    const products =
-        document.querySelectorAll(".product");
-
-    let found = 0;
-
-    products.forEach(function(product){
-
-        const name =
-            product.dataset.name.toLowerCase();
-
-        const category =
-            product.dataset.category.toLowerCase();
-
-        if(
-            name.includes(search) ||
-            category.includes(search)
-        ){
-
-            product.style.display = "";
-
-            found++;
-
-        }else{
-
-            product.style.display = "none";
-
-        }
-
-    });
-
-    document.getElementById("productsTitle").textContent =
-        search
-        ? "نتائج البحث 🔎"
-        : "منتجات مميزة 🔥";
-
-    document
-    .getElementById("products")
-    .scrollIntoView({
-        behavior:"smooth"
-    });
-
-}
-
-
-/* SEARCH WITH ENTER */
-
-document
-.getElementById("searchInput")
-.addEventListener("keydown",function(event){
-
-    if(event.key === "Enter"){
-
-        searchProducts();
-
-    }
-
+/* =================================
+   SUPABASE
+================================= */
+const supabase = window.supabase.createClient(
+    "https://lifxjoofdlcmbuskvsbg.supabase.co",
+    "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
+);
+
+/* =================================
+   IMAGE PREVIEW
+================================= */
+document.getElementById("productImage").addEventListener("change", function(){
+    const file = this.files[0];
+    if(!file) return;
+
+    const preview = document.getElementById("imagePreview");
+    const reader = new FileReader();
+
+    reader.onload = function(event){
+        preview.src = event.target.result;
+        preview.style.display = "block";
+    };
+    reader.readAsDataURL(file);
 });
 
+/* =================================
+   ADD PRODUCT
+================================= */
+async function addProduct(){
+    const name = document.getElementById("productName").value.trim();
+    const category = document.getElementById("productCategory").value;
+    const price = Number(document.getElementById("productPrice").value);
+    const oldPriceValue = document.getElementById("oldPrice").value;
+    const oldPrice = oldPriceValue ? Number(oldPriceValue) : null;
+    const description = document.getElementById("productDescription").value.trim();
+    const quantity = Number(document.getElementById("productQuantity").value);
+    const image = document.getElementById("productImage").files[0];
+    const agreeRules = document.getElementById("agreeRules").checked;
+    const button = document.getElementById("submitBtn");
 
-/* =========================
-   CATEGORY FILTER
-========================= */
+    // إخفاء الرسائل السابقة
+    document.getElementById("message").style.display = "none";
+    document.getElementById("errorMessage").style.display = "none";
 
-function filterCategory(category,element){
+    /* التحقق من الحقول */
+    if(!name){ alert("❌ اكتب اسم المنتج."); return; }
+    if(!category){ alert("❌ اختر فئة المنتج."); return; }
+    if(!price || price <= 0){ alert("❌ يجب أن يكون السعر أكبر من 0 دج."); return; }
+    if(oldPrice !== null && oldPrice <= 0){ alert("❌ السعر القديم يجب أن يكون أكبر من 0."); return; }
+    if(!description){ alert("❌ اكتب وصف المنتج."); return; }
+    if(!quantity || quantity <= 0){ alert("❌ الكمية يجب أن تكون أكبر من 0."); return; }
+    if(!image){ alert("❌ اختر صورة المنتج."); return; }
+    if(!agreeRules){ alert("❌ يجب الموافقة على قوانين MARCHI DZ."); return; }
 
-    const products =
-        document.querySelectorAll(".product");
+    if(image.size > 5 * 1024 * 1024){ alert("❌ حجم الصورة يجب أن يكون أقل من 5MB."); return; }
+    if(!image.type.startsWith("image/")){ alert("❌ الملف المختار ليس صورة."); return; }
 
-    document
-    .querySelectorAll(".category")
-    .forEach(function(cat){
+    button.disabled = true;
+    button.textContent = "⏳ جاري رفع الصورة وإضافة المنتج...";
 
-        cat.classList.remove("selected");
+    try{
+        /* 1. رفع الصورة إلى Supabase Storage */
+        const fileExt = image.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `${fileName}`;
 
-    });
+        const { error: uploadError } = await supabase.storage
+            .from("products") // تأكد أنك أنشأت Bucket بهذا الاسم في Supabase وجعلته Public
+            .upload(filePath, image);
 
-    element.classList.add("selected");
-
-    products.forEach(function(product){
-
-        if(product.dataset.category === category){
-
-            product.style.display = "";
-
-        }else{
-
-            product.style.display = "none";
-
+        if(uploadError){
+            throw uploadError;
         }
 
-    });
+        // جلب الرابط العام للصورة
+        const { data: publicUrlData } = supabase.storage
+            .from("products")
+            .getPublicUrl(filePath);
 
-    document.getElementById("productsTitle").textContent =
-        "منتجات " + category;
+        const imageUrl = publicUrlData.publicUrl;
 
-    document
-    .getElementById("products")
-    .scrollIntoView({
-        behavior:"smooth"
-    });
+        /* 2. حفظ بيانات المنتج في قاعدة البيانات */
+        const { data, error } = await supabase
+            .from("products")
+            .insert([{
+                name: name,
+                category: category,
+                price: price,
+                old_price: oldPrice,
+                description: description,
+                quantity: quantity,
+                image_url: imageUrl
+            }])
+            .select();
 
+        if(error){
+            throw error;
+        }
+
+        // نجاح العملية
+        document.getElementById("message").style.display = "block";
+        alert("تمت إضافة المنتج بنجاح ✅");
+
+        // تنظيف الحقول
+        document.getElementById("productName").value = "";
+        document.getElementById("productCategory").value = "";
+        document.getElementById("productPrice").value = "";
+        document.getElementById("oldPrice").value = "";
+        document.getElementById("productDescription").value = "";
+        document.getElementById("productQuantity").value = "";
+        document.getElementById("productImage").value = "";
+        document.getElementById("imagePreview").style.display = "none";
+        document.getElementById("agreeRules").checked = false;
+
+    }
+    catch(error){
+        console.error("Supabase error:", error);
+        document.getElementById("errorMessage").textContent = "❌ لم تتم إضافة المنتج. تأكد من إعدادات Supabase Storage (Bucket 'products') و RLS.";
+        document.getElementById("errorMessage").style.display = "block";
+        alert("حدث خطأ أثناء إضافة المنتج ❌");
+    }
+    finally{
+        button.disabled = false;
+        button.textContent = "➕ إضافة المنتج";
+    }
 }
-
-
-/* =========================
-   SHOW ALL
-========================= */
-
-function showAllProducts(){
-
-    document
-    .querySelectorAll(".product")
-    .forEach(function(product){
-
-        product.style.display = "";
-
-    });
-
-    document
-    .querySelectorAll(".category")
-    .forEach(function(category){
-
-        category.classList.remove("selected");
-
-    });
-
-    document.getElementById("productsTitle").textContent =
-        "منتجات مميزة 🔥";
-
-}
-
-
-/* =========================
-   HERO BUTTON
-========================= */
-
-function scrollToProducts(){
-
-    document
-    .getElementById("products")
-    .scrollIntoView({
-        behavior:"smooth"
-    });
-
-}
-
 </script>
 
 </body>
