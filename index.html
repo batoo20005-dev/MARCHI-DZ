@@ -509,4 +509,514 @@ header{
 }
 
 .add-cart:hover{
-    background:#
+    background:#16a34a;
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+    margin-top:70px;
+    background:#102a43;
+    color:white;
+    padding:50px 25px 25px;
+}
+
+.footer-container{
+    max-width:1400px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr 1fr;
+    gap:50px;
+}
+
+.footer-logo{
+    font-size:28px;
+    font-weight:900;
+    margin-bottom:12px;
+}
+
+.footer-about{
+    color:#ccd6df;
+    line-height:1.8;
+    max-width:400px;
+}
+
+.footer-title{
+    margin-bottom:18px;
+}
+
+.footer-links{
+    list-style:none;
+}
+
+.footer-links li{
+    margin-bottom:11px;
+    color:#ccd6df;
+    font-size:14px;
+    cursor:pointer;
+}
+
+.footer-links li:hover{
+    color:#4ade80;
+}
+
+.copyright{
+    max-width:1400px;
+    margin:40px auto 0;
+    padding-top:20px;
+    border-top:1px solid rgba(255,255,255,.12);
+    text-align:center;
+    color:#aebbc6;
+    font-size:13px;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:1100px){
+    .categories{
+        grid-template-columns:repeat(5,1fr);
+    }
+    .products{
+        grid-template-columns:repeat(4,1fr);
+    }
+}
+
+@media(max-width:800px){
+    .top-header{
+        flex-wrap:wrap;
+        padding:12px 15px;
+    }
+    .logo{
+        width:100%;
+    }
+    .search{
+        order:3;
+        width:100%;
+        flex:auto;
+    }
+    .header-actions{
+        position:absolute;
+        top:20px;
+        left:15px;
+    }
+    .header-action span:not(.action-icon){
+        display:none;
+    }
+    .nav-container{
+        overflow-x:auto;
+        justify-content:flex-start;
+        gap:28px;
+        padding:0 15px;
+    }
+    .hero{
+        margin:10px;
+        height:380px;
+    }
+    .hero-content{
+        right:30px;
+        left:30px;
+    }
+    .hero-content h1{
+        font-size:34px;
+    }
+    .features{
+        margin:0 10px;
+        grid-template-columns:repeat(2,1fr);
+        gap:20px;
+    }
+    .feature{
+        border:none;
+    }
+    .categories{
+        grid-template-columns:repeat(4,1fr);
+    }
+    .products{
+        grid-template-columns:repeat(2,1fr);
+    }
+    .footer-container{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:500px){
+    .categories{
+        grid-template-columns:repeat(2,1fr);
+    }
+    .products{
+        grid-template-columns:repeat(2,1fr);
+        gap:10px;
+    }
+    .product-image{
+        height:160px;
+    }
+    .footer-container{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+<header>
+<div class="top-header">
+
+<a href="index.html" class="logo">
+<img src="logo.png" alt="MARCHI DZ">
+<div class="logo-text">
+<div class="logo-name">
+<span class="marchi">MARCHI</span>
+<span class="dz"> DZ</span>
+</div>
+<div class="logo-slogan">
+تسوق بثقة، استلم براحة
+</div>
+</div>
+</a>
+
+<!-- SEARCH -->
+<div class="search">
+<input id="searchInput" type="text" placeholder="ابحث عن أي منتج...">
+<button onclick="searchProducts()">🔍</button>
+</div>
+
+<!-- ACTIONS -->
+<div class="header-actions">
+<a href="add-product.html" class="header-action" style="color: #16a34a; font-weight: bold;">
+<span class="action-icon">➕</span>
+<span>إضافة منتج</span>
+</a>
+<a href="cart.html" class="header-action cart">
+<span class="action-icon">🛒</span>
+<span>السلة</span>
+<span class="cart-count" id="cartCount">0</span>
+</a>
+</div>
+
+</div>
+
+<!-- NAV -->
+<nav class="navigation">
+<div class="nav-container">
+<a class="nav-item active" href="index.html">الرئيسية</a>
+<a class="nav-item" href="#categories">الفئات</a>
+<a class="nav-item" href="#products">العروض</a>
+<a class="nav-item" href="add-product.html">إضافة منتج</a>
+<a class="nav-item" href="cart.html">السلة والطلب</a>
+<a class="nav-item" href="#categories">☰ كل الفئات</a>
+</div>
+</nav>
+</header>
+
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+<div class="hero-content">
+<h1>كل ما تحتاجه<br>في مكان واحد</h1>
+<p>آلاف المنتجات، أفضل الأسعار، وتوصيل سريع إلى جميع الولايات الجزائرية 🇩🇿</p>
+<button class="hero-button" onclick="scrollToProducts()">تسوق الآن</button>
+</div>
+<div class="slider-dots">
+<span class="slider-dot active"></span>
+<span class="slider-dot"></span>
+<span class="slider-dot"></span>
+<span class="slider-dot"></span>
+</div>
+</section>
+
+
+<!-- ================= FEATURES ================= -->
+<section class="features">
+<div class="feature">
+<div class="feature-icon">🛡️</div>
+<div class="feature-text"><strong>تسوق بأمان</strong><span>حماية طلبك</span></div>
+</div>
+<div class="feature">
+<div class="feature-icon">🚚</div>
+<div class="feature-text"><strong>توصيل سريع</strong><span>إلى جميع الولايات</span></div>
+</div>
+<div class="feature">
+<div class="feature-icon">⭐</div>
+<div class="feature-text"><strong>منتجات موثوقة</strong><span>جودة مضمونة</span></div>
+</div>
+<div class="feature">
+<div class="feature-icon">🎧</div>
+<div class="feature-text"><strong>دعم العملاء</strong><span>متواجدون لمساعدتك</span></div>
+</div>
+</section>
+
+
+<!-- ================= CATEGORIES ================= -->
+<section class="container" id="categories">
+<div class="section-header">
+<h2 class="section-title">تصفح الفئات</h2>
+<a href="#" class="view-all" onclick="showAllProducts();return false;">عرض الكل ←</a>
+</div>
+<div class="categories">
+<div class="category" onclick="filterCategory('سيارات',this)"><div class="category-icon">🚗</div><div class="category-name">السيارات</div></div>
+<div class="category" onclick="filterCategory('ألعاب',this)"><div class="category-icon">🎮</div><div class="category-name">الألعاب</div></div>
+<div class="category" onclick="filterCategory('ساعات',this)"><div class="category-icon">⌚</div><div class="category-name">الساعات</div></div>
+<div class="category" onclick="filterCategory('أحذية',this)"><div class="category-icon">👟</div><div class="category-name">الأحذية</div></div>
+<div class="category" onclick="filterCategory('ملابس',this)"><div class="category-icon">👕</div><div class="category-name">الملابس</div></div>
+<div class="category" onclick="filterCategory('رياضة',this)"><div class="category-icon">🏋️</div><div class="category-name">الرياضة</div></div>
+<div class="category" onclick="filterCategory('جمال',this)"><div class="category-icon">💄</div><div class="category-name">الجمال</div></div>
+<div class="category" onclick="filterCategory('منزل',this)"><div class="category-icon">🏠</div><div class="category-name">المنزل</div></div>
+<div class="category" onclick="filterCategory('هواتف',this)"><div class="category-icon">📱</div><div class="category-name">الهواتف</div></div>
+<div class="category" onclick="filterCategory('إلكترونيات',this)"><div class="category-icon">🎧</div><div class="category-name">إلكترونيات</div></div>
+</div>
+</section>
+
+
+<!-- ================= PRODUCTS ================= -->
+<section class="container" id="products">
+<div class="section-header">
+<h2 class="section-title" id="productsTitle">منتجات مميزة 🔥</h2>
+</div>
+
+<!-- هنا سيتم جلب المنتجات ديناميكياً من قاعدة بيانات Supabase -->
+<div class="products" id="productGrid">
+<p style="grid-column: 1/-1; text-align:center; padding: 40px; color: #777;">جاري تحميل المنتجات...</p>
+</div>
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+<footer>
+<div class="footer-container">
+<div>
+<div class="footer-logo">
+<span class="marchi">MARCHI</span>
+<span class="dz"> DZ</span>
+</div>
+<p class="footer-about">
+سوق إلكتروني جزائري يجمع المنتجات والبائعين في مكان واحد، لتجربة تسوق سهلة وآمنة.
+</p>
+</div>
+<div>
+<h3 class="footer-title">روابط مهمة</h3>
+<ul class="footer-links">
+<li>الرئيسية</li>
+<li>من نحن</li>
+<li>تواصل معنا</li>
+<li>الأسئلة الشائعة</li>
+</ul>
+</div>
+<div>
+<h3 class="footer-title">التسوق</h3>
+<ul class="footer-links">
+<li>الفئات</li>
+<li>العروض</li>
+<li>المنتجات الجديدة</li>
+<li>المتاجر</li>
+</ul>
+</div>
+<div>
+<h3 class="footer-title">المساعدة</h3>
+<ul class="footer-links">
+<li>الدعم</li>
+<li>تتبع الطلب</li>
+<li>سياسة الاسترجاع</li>
+<li>الشروط والأحكام</li>
+</ul>
+</div>
+</div>
+<div class="copyright">
+© 2026 MARCHI DZ — جميع الحقوق محفوظة 🇩🇿
+</div>
+</footer>
+
+
+<script>
+/* =========================
+   SUPABASE CONNECTION
+========================= */
+const supabase = window.supabase.createClient(
+    "https://lifxjoofdlcmbuskvsbg.supabase.co",
+    "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
+);
+
+/* =========================
+   LOAD PRODUCTS FROM SUPABASE
+========================= */
+async function loadProductsFromSupabase() {
+    try {
+        const { data: products, error } = await supabase
+            .from('products')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        const grid = document.getElementById('productGrid');
+        if (!products || products.length === 0) {
+            grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding: 40px; color: #777;">لا توجد منتجات مضافة حالياً. كن أول من يضيف منتجاً!</p>';
+            return;
+        }
+
+        grid.innerHTML = ''; // تنظيف الشبكة
+
+        products.forEach(product => {
+            const discountHTML = product.old_price && product.old_price > product.price 
+                ? `<span class="discount">-${Math.round((1 - product.price / product.old_price) * 100)}%</span>` 
+                : '';
+
+            const oldPriceHTML = product.old_price 
+                ? `<span class="old-price">${product.old_price.toLocaleString()} دج</span>` 
+                : '';
+
+            const productHTML = `
+                <div class="product" data-category="${product.category}" data-name="${product.name}" data-id="${product.id}">
+                    ${discountHTML}
+                    <button class="favorite" onclick="toggleFavorite(this)">♡</button>
+                    <div class="product-image">
+                        <img src="${product.image_url || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80'}" alt="${product.name}">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="rating">★★★★★</div>
+                        <div class="price">
+                            ${product.price.toLocaleString()} دج
+                            ${oldPriceHTML}
+                        </div>
+                        <button class="add-cart" onclick='addToCartDynamic(${JSON.stringify(product).replace(/'/g, "&apos;")})'>
+                            🛒 أضف للسلة
+                        </button>
+                    </div>
+                </div>
+            `;
+            grid.innerHTML += productHTML;
+        });
+
+    } catch (err) {
+        console.error("Error loading products:", err);
+        document.getElementById('productGrid').innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding: 40px; color: #991b1b;">حدث خطأ أثناء تحميل المنتجات ❌</p>';
+    }
+}
+
+// تشغيل جلب المنتجات فور فتح الصفحة
+loadProductsFromSupabase();
+
+/* =========================
+   REAL CART (LOCALSTORAGE)
+========================= */
+let cart = JSON.parse(localStorage.getItem("marchiCart")) || [];
+
+// تحديث عداد السلة
+function updateCartCount(){
+    const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+    document.getElementById("cartCount").textContent = total;
+}
+
+// إضافة منتج ديناميكي للسلة مع إعدادات التوصيل والعربون
+function addToCartDynamic(product) {
+    const existing = cart.find(item => item.id === product.id);
+
+    if (existing) {
+        existing.quantity++;
+    } else {
+        cart.push({ 
+            id: product.id, 
+            name: product.name, 
+            price: product.price, 
+            image: product.image_url, 
+            home_price: product.home_price || 600,
+            desk_price: product.desk_price || 400,
+            require_deposit: product.require_deposit || false,
+            rip_number: product.rip_number || "",
+            quantity: 1 
+        });
+    }
+
+    localStorage.setItem("marchiCart", JSON.stringify(cart));
+    updateCartCount();
+    alert("تمت إضافة المنتج إلى السلة 🛒");
+}
+
+// تشغيل العداد عند فتح الموقع
+updateCartCount();
+
+
+/* =========================
+   FAVORITE
+========================= */
+function toggleFavorite(button){
+    button.classList.toggle("liked");
+    if(button.classList.contains("liked")){
+        button.textContent = "♥";
+    }else{
+        button.textContent = "♡";
+    }
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+function searchProducts(){
+    const search = document.getElementById("searchInput").value.toLowerCase().trim();
+    const products = document.querySelectorAll(".product");
+
+    products.forEach(function(product){
+        const name = product.dataset.name ? product.dataset.name.toLowerCase() : "";
+        const category = product.dataset.category ? product.dataset.category.toLowerCase() : "";
+
+        if(name.includes(search) || category.includes(search)){
+            product.style.display = "";
+        }else{
+            product.style.display = "none";
+        }
+    });
+
+    document.getElementById("productsTitle").textContent = search ? "نتائج البحث 🔎" : "منتجات مميزة 🔥";
+    document.getElementById("products").scrollIntoView({ behavior:"smooth" });
+}
+
+document.getElementById("searchInput").addEventListener("keydown", function(event){
+    if(event.key === "Enter"){
+        searchProducts();
+    }
+});
+
+
+/* =========================
+   CATEGORY FILTER
+========================= */
+function filterCategory(category, element){
+    const products = document.querySelectorAll(".product");
+    document.querySelectorAll(".category").forEach(cat => cat.classList.remove("selected"));
+    element.classList.add("selected");
+
+    products.forEach(function(product){
+        if(product.dataset.category === category){
+            product.style.display = "";
+        }else{
+            product.style.display = "none";
+        }
+    });
+
+    document.getElementById("productsTitle").textContent = "منتجات " + category;
+    document.getElementById("products").scrollIntoView({ behavior:"smooth" });
+}
+
+
+/* =========================
+   SHOW ALL
+========================= */
+function showAllProducts(){
+    document.querySelectorAll(".product").forEach(product => product.style.display = "");
+    document.querySelectorAll(".category").forEach(category => category.classList.remove("selected"));
+    document.getElementById("productsTitle").textContent = "منتجات مميزة 🔥";
+}
+
+
+/* =========================
+   HERO BUTTON
+========================= */
+function scrollToProducts(){
+    document.getElementById("products").scrollIntoView({ behavior:"smooth" });
+}
+</script>
+
+</body>
+</html>
