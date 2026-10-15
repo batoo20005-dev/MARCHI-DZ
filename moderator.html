@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة المشرفين وخدمة العملاء | MARCHI DZ Moderator</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{ font-family:Arial, sans-serif; background:#0f172a; color:white; padding:20px; }
+header{ background:#1e293b; padding:20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; border:1px solid #334155; }
+.logo{ font-size:22px; font-weight:900; }
+.dz{ color:#16a34a; }
+.badge{ background:#0284c7; padding:4px 10px; border-radius:6px; font-size:12px; margin-right:10px; }
+.stats-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:15px; margin-bottom:25px; }
+.stat-card{ background:#1e293b; padding:20px; border-radius:12px; border:1px solid #334155; text-align:center; }
+.stat-card h3{ font-size:13px; color:#94a3b8; margin-bottom:8px; }
+.stat-card .val{ font-size:24px; font-weight:bold; color:#38bdf8; }
+.table-box{ background:#1e293b; padding:20px; border-radius:12px; border:1px solid #334155; margin-bottom:25px; }
+h2{ font-size:18px; margin-bottom:15px; color:#f8fafc; }
+table{ width:100%; border-collapse:collapse; text-align:right; font-size:14px; }
+th, td{ padding:12px; border-bottom:1px solid #334155; }
+th{ color:#94a3b8; background:#0f172a; }
+.btn-action{ padding:6px 12px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; }
+.btn-red{ background:#dc2626; color:white; }
+.btn-green{ background:#16a34a; color:white; }
+.status-active{ color:#4ade80; font-weight:bold; }
+.status-banned{ color:#f87171; font-weight:bold; }
+@media(max-width:768px){ .stats-grid{ grid-template-columns:1fr; } table{ font-size:12px; } }
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">MARCHI<span class="dz"> DZ</span> <span class="badge">🛡️ لوحة المشرفين وخدمة العملاء</span></div>
+<div>
+    <a href="index.html" style="color:#38bdf8; text-decoration:none; font-weight:bold; margin-left:15px;">🏪 العودة للمتجر</a>
+    <button onclick="logout()" style="background:#dc2626; color:white; border:none; padding:8px 15px; border-radius:6px; font-weight:bold; cursor:pointer;">خروج</button>
+</div>
+</header>
+
+<main>
+    <!-- إحصائيات سريعة للمشرف -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>🏪 إجمالي المتاجر</h3>
+            <div class="val" id="sellerCount">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>👤 إجمالي المشترين</h3>
+            <div class="val" id="buyerCount">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>🚫 الحسابات المحظورة</h3>
+            <div class="val" id="bannedCount" style="color:#f87171;">0</div>
+        </div>
+    </div>
+
+    <!-- 1. إدارة التجار وإمكانية الحظر -->
+    <div class="table-box">
+        <h2>🏪 إدارة التجار والمتاجر (حظر التجار المخالفين)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>الاسم</th>
+                    <th>اسم المتجر</th>
+                    <th>الهاتف</th>
+                    <th>الحالة</th>
+                    <th>الإجراء</th>
+                </tr>
+            </thead>
+            <tbody id="sellersTable">
+                <tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 2. إدارة المشترين وإمكانية الحظر -->
+    <div class="table-box">
+        <h2>👤 إدارة الزبائن والمشترين (حظر الحسابات المخالفة)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>الاسم الكامل</th>
+                    <th>الهاتف</th>
+                    <th>الحالة</th>
+                    <th>الإجراء</th>
+                </tr>
+            </thead>
+            <tbody id="buyersTable">
+                <tr><td colspan="4" style="text-align:center;">جاري التحميل...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 3. إدارة المنتجات والمحتوى الممنوع -->
+    <div class="table-box">
+        <h2>📦 إدارة المنتجات (حذف السلع والمحتوى الممنوع)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>اسم المنتج</th>
+                    <th>المتجر</th>
+                    <th>السعر</th>
+                    <th>الإجراء</th>
+                </tr>
+            </thead>
+            <tbody id="productsTable">
+                <tr><td colspan="4" style="text-align:center;">جاري التحميل...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+const supabase = window.supabase.createClient(
+    "https://lifxjoofdlcmbuskvsbg.supabase.co",
+    "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
+);
+
+// 🔒 حماية اللوحة: الدخول متاح للمشرفين (moderator) والمدير العام (admin) فقط
+const currentUser = JSON.parse(localStorage.getItem("marchi_user"));
+
+if (!currentUser || (currentUser.role !== 'moderator' && currentUser.role !== 'admin')) {
+    alert("⚠️ هذه الصفحة مخصصة للمشرفين وخدمة العملاء فقط!");
+    window.location.href = "index.html";
+}
+
+async function loadData() {
+    try {
+        const { data: users } = await supabase.from('users').select('*');
+        const { data: products } = await supabase.from('products').select('*');
+
+        if (users) {
+            const sellers = users.filter(u => u.role === 'seller');
+            const buyers = users.filter(u => u.role === 'buyer');
+            const banned = users.filter(u => u.is_banned === true);
+
+            document.getElementById('sellerCount').textContent = sellers.length;
+            document.getElementById('buyerCount').textContent = buyers.length;
+            document.getElementById('bannedCount').textContent = banned.length;
+
+            // عرض التجار
+            const sellersBody = document.getElementById('sellersTable');
+            sellersBody.innerHTML = '';
+            sellers.forEach(s => {
+                const isBanned = s.is_banned || false;
+                sellersBody.innerHTML += `
+                    <tr>
+                        <td>${s.full_name}</td>
+                        <td><strong>${s.store_name || 'بدون اسم'}</strong></td>
+                        <td>${s.phone}</td>
+                        <td><span class="${isBanned ? 'status-banned' : 'status-active'}">${isBanned ? '🚫 محظور' : '✅ نشط'}</span></td>
+                        <td>
+                            <button class="btn-action ${isBanned ? 'btn-green' : 'btn-red'}" onclick="toggleBanUser(${s.id}, ${!isBanned})">
+                                ${isBanned ? '🔓 إلغاء الحظر' : '🚫 حظر التاجر'}
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            // عرض الزبائن
+            const buyersBody = document.getElementById('buyersTable');
+            buyersBody.innerHTML = '';
+            buyers.forEach(b => {
+                const isBanned = b.is_banned || false;
+                buyersBody.innerHTML += `
+                    <tr>
+                        <td>${b.full_name}</td>
+                        <td>${b.phone}</td>
+                        <td><span class="${isBanned ? 'status-banned' : 'status-active'}">${isBanned ? '🚫 محظور' : '✅ نشط'}</span></td>
+                        <td>
+                            <button class="btn-action ${isBanned ? 'btn-green' : 'btn-red'}" onclick="toggleBanUser(${b.id}, ${!isBanned})">
+                                ${isBanned ? '🔓 إلغاء الحظر' : '🚫 حظر الزبون'}
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        if (products) {
+            const productsBody = document.getElementById('productsTable');
+            productsBody.innerHTML = '';
+            products.forEach(p => {
+                productsBody.innerHTML += `
+                    <tr>
+                        <td><strong>${p.name}</strong></td>
+                        <td>${p.store_name || 'متجر'}</td>
+                        <td>${p.price.toLocaleString()} دج</td>
+                        <td>
+                            <button class="btn-action btn-red" onclick="deleteProduct(${p.id})">🗑️ حذف المنتج</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+    } catch (err) {
+        console.error("Moderator Error:", err);
+    }
+}
+
+async function toggleBanUser(userId, banStatus) {
+    const actionText = banStatus ? "حظر" : "إلغاء حظر";
+    if (confirm(`هل أنت تأكد من ${actionText} هذا المستخدم؟`)) {
+        await supabase.from('users').update({ is_banned: banStatus }).eq('id', userId);
+        alert(`✅ تم ${actionText} الحساب بنجاح.`);
+        loadData();
+    }
+}
+
+async function deleteProduct(productId) {
+    if (confirm("هل أنت تأكد من حذف هذا المنتج الممنوع؟")) {
+        await supabase.from('products').delete().eq('id', productId);
+        alert("✅ تم حذف المنتج المخالف بنجاح.");
+        loadData();
+    }
+}
+
+function logout() {
+    localStorage.removeItem("marchi_user");
+    window.location.href = "index.html";
+}
+
+loadData();
+</script>
+</body>
+</html>
