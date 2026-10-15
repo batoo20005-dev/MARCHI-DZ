@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سلة المشتريات وإتمام الطلب | MARCHI DZ</title>
+
+<!-- مكتبة Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,Tahoma,sans-serif;
+    background:#f7f9fa;
+    color:#172033;
+}
+
+header{
+    background:white;
+    border-bottom:1px solid #e5e9ec;
+}
+
+.header{
+    max-width:1200px;
+    margin:auto;
+    min-height:75px;
+    padding:10px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+}
+
+.logo img{
+    width:55px;
+    height:55px;
+    object-fit:contain;
+}
+
+.logo-name{ font-size:24px; font-weight:900; }
+.marchi{ color:#102a43; }
+.dz{ color:#16a34a; }
+
+.back{
+    color:#16a34a;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+.container{
+    max-width:1100px;
+    margin:40px auto;
+    padding:0 20px;
+}
+
+.title{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.cart-layout{
+    display:grid;
+    grid-template-columns:1.5fr 1fr;
+    gap:30px;
+}
+
+/* قائمة المنتجات */
+.cart-items{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 5px 25px rgba(0,0,0,.05);
+}
+
+.cart-item{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:15px 0;
+    border-bottom:1px solid #f0f2f4;
+}
+
+.cart-item:last-child{
+    border-bottom:none;
+}
+
+.cart-item img{
+    width:80px;
+    height:80px;
+    object-fit:cover;
+    border-radius:10px;
+    background:#f3f4f5;
+}
+
+.item-details{ flex:1; }
+.item-name{ font-size:16px; font-weight:bold; margin-bottom:6px; }
+.item-price{ color:#16a34a; font-weight:bold; }
+
+.item-qty{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:8px;
+}
+
+.item-qty button{
+    width:28px;
+    height:28px;
+    border:1px solid #ddd;
+    background:white;
+    border-radius:5px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.delete-btn{
+    color:#ef4444;
+    background:none;
+    border:none;
+    cursor:pointer;
+    font-size:18px;
+    padding:5px;
+}
+
+/* استمارة الشراء */
+.checkout-box{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 5px 25px rgba(0,0,0,.05);
+    height:fit-content;
+}
+
+.checkout-box h2{
+    font-size:18px;
+    margin-bottom:20px;
+    border-bottom:2px solid #f0f2f4;
+    padding-bottom:10px;
+}
+
+.form-group{ margin-bottom:15px; }
+
+label{
+    display:block;
+    margin-bottom:6px;
+    font-size:14px;
+    font-weight:bold;
+}
+
+input, select{
+    width:100%;
+    padding:12px;
+    border:1px solid #dfe5e9;
+    border-radius:8px;
+    outline:none;
+    font-size:14px;
+}
+
+input:focus, select:focus{ border-color:#16a34a; }
+
+/* خيارات التوصيل */
+.delivery-options{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:8px;
+}
+
+.delivery-card{
+    border:1px solid #dfe5e9;
+    border-radius:8px;
+    padding:12px;
+    text-align:center;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.delivery-card.active{
+    border-color:#16a34a;
+    background:#f0fdf4;
+}
+
+.delivery-card input{ display:none; }
+
+/* صندوق دفع العربون */
+.deposit-box{
+    display:none;
+    background:#fffbeb;
+    border:1px solid #fcd34d;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+.deposit-box h4{
+    color:#92400e;
+    margin-bottom:8px;
+}
+
+.rip-number{
+    background:white;
+    padding:8px;
+    border:1px dashed #d97706;
+    border-radius:6px;
+    font-family:monospace;
+    font-weight:bold;
+    text-align:center;
+    margin:8px 0;
+}
+
+.summary{
+    margin:20px 0;
+    padding:15px;
+    background:#f8fafc;
+    border-radius:10px;
+}
+
+.summary-row{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
+    font-size:14px;
+}
+
+.summary-row.total{
+    font-size:18px;
+    font-weight:bold;
+    color:#102a43;
+    border-top:1px solid #e5e9ec;
+    padding-top:10px;
+    margin-bottom:0;
+}
+
+.submit-order{
+    width:100%;
+    padding:15px;
+    background:#16a34a;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.submit-order:hover{ background:#12813b; }
+
+.empty-cart{
+    text-align:center;
+    padding:40px;
+    color:#777;
+}
+
+@media(max-width:800px){
+    .cart-layout{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="header">
+<a href="index.html" class="logo">
+<img src="logo.png" alt="MARCHI DZ">
+<div class="logo-name">
+<span class="marchi">MARCHI</span>
+<span class="dz"> DZ</span>
+</div>
+</a>
+<a href="index.html" class="back">← إكمال التسوق</a>
+</div>
+</header>
+
+<main class="container">
+<div class="title">
+<h1>🛒 سلة المشتريات وإتمام الطلب</h1>
+</div>
+
+<div class="cart-layout">
+
+<!-- قائمة المنتجات -->
+<div class="cart-items" id="cartItemsContainer"></div>
+
+<!-- معلومات الاستلام والدفع -->
+<div class="checkout-box">
+<h2>📦 طريقة الاستلام ومعلومات التوصيل</h2>
+
+<div class="form-group">
+<label>الاسم واللقب *</label>
+<input type="text" id="clientName" placeholder="مثال: محمد بن علي">
+</div>
+
+<div class="form-group">
+<label>رقم الهاتف *</label>
+<input type="tel" id="clientPhone" placeholder="06XXXXXXXX / 05XXXXXXXX / 07XXXXXXXX">
+</div>
+
+<div class="form-group">
+<label>الولاية والبلدية *</label>
+<input type="text" id="clientAddress" placeholder="مثال: باتنة - بلدية عين التوتة">
+</div>
+
+<!-- نوع التوصيل -->
+<div class="form-group">
+<label>نوع التوصيل المطلوب *</label>
+<div class="delivery-options">
+    <div class="delivery-card active" id="typeHome" onclick="selectDeliveryType('home')">
+        <strong>🏠 للمنزل</strong>
+        <div id="homePriceText">500 دج</div>
+    </div>
+    <div class="delivery-card" id="typeDesk" onclick="selectDeliveryType('desk')">
+        <strong>🏢 للمكتب / Stop Desk</strong>
+        <div id="deskPriceText">300 دج</div>
+    </div>
+</div>
+</div>
+
+<!-- صندوق دفـع تسقاع / عربون الضمان إذا كان مفعل من البائع -->
+<div class="deposit-box" id="depositBox">
+    <h4>⚠️ تنبيه: ضمان حجز الطلب (عربون التسقاع)</h4>
+    <p style="font-size: 12px; color: #78350f;">يشترط البائع تحويل مبلغ تسقاع لضمان جدية الطلب وعدم الإرجاع. يتم خصم هذا المبلغ من سعر المنتج الإجمالي عند الاستلام.</p>
+    <div class="rip-number" id="ripDisplay">RIP: 00799999000000000000</div>
+    
+    <label style="margin-top: 10px;">إرفاق صورة الوصل (Reçu BaridiMob) *</label>
+    <input type="file" id="depositReceipt" accept="image/*">
+</div>
+
+<div class="summary">
+<div class="summary-row">
+<span>مجموع المنتجات:</span>
+<span id="subTotal">0 دج</span>
+</div>
+<div class="summary-row">
+<span>تكلفة التوصيل:</span>
+<span id="deliveryCost">500 دج</span>
+</div>
+<div class="summary-row total">
+<span>المبلغ الصافي عند الاستلام:</span>
+<span id="grandTotal">0 دج</span>
+</div>
+</div>
+
+<button class="submit-order" id="orderBtn" onclick="submitOrder()">✅ تأكيد الطلب الآن</button>
+</div>
+
+</div>
+</main>
+
+<script>
+const supabase = window.supabase.createClient(
+    "https://lifxjoofdlcmbuskvsbg.supabase.co",
+    "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
+);
+
+let cart = JSON.parse(localStorage.getItem("marchiCart")) || [];
+let selectedDeliveryType = 'home'; 
+
+// أسعار افتراضية للتوصيل (يتم تحديثها تلقائياً حسب إعدادات البائع في المنتج)
+let homeDeliveryPrice = 600;
+let deskDeliveryPrice = 400;
+
+function renderCart() {
+    const container = document.getElementById("cartItemsContainer");
+
+    if (cart.length === 0) {
+        container.innerHTML = `
+            <div class="empty-cart">
+                <h2>السلة فارغة حالياً 🛒</h2>
+                <br>
+                <a href="index.html" class="back">تصفح المنتجات وأضف ما يعجبك</a>
+            </div>
+        `;
+        document.getElementById("subTotal").textContent = "0 دج";
+        document.getElementById("grandTotal").textContent = "0 دج";
+        return;
+    }
+
+    let itemsHTML = "";
+    let subtotal = 0;
+    let requireDeposit = false;
+    let ripNumber = "";
+
+    cart.forEach((item, index) => {
+        subtotal += item.price * item.quantity;
+        
+        // تفقد إعدادات التوصيل والضمان من المنتج الأول في السلة
+        if(item.home_price) homeDeliveryPrice = item.home_price;
+        if(item.desk_price) deskDeliveryPrice = item.desk_price;
+        if(item.require_deposit) {
+            requireDeposit = true;
+            ripNumber = item.rip_number || "";
+        }
+
+        itemsHTML += `
+            <div class="cart-item">
+                <img src="${item.image || 'logo.png'}" alt="${item.name}">
+                <div class="item-details">
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-price">${item.price.toLocaleString()} دج</div>
+                    <div class="item-qty">
+                        <button onclick="changeQty(${index}, -1)">-</button>
+                        <span>${item.quantity}</span>
+                        <button onclick="changeQty(${index}, 1)">+</button>
+                    </div>
+                </div>
+                <button class="delete-btn" onclick="removeItem(${index})">🗑️</button>
+            </div>
+        `;
+    });
+
+    container.innerHTML = itemsHTML;
+
+    // تحديث واجهة التوصيل
+    document.getElementById("homePriceText").textContent = homeDeliveryPrice.toLocaleString() + " دج";
+    document.getElementById("deskPriceText").textContent = deskDeliveryPrice.toLocaleString() + " دج";
+
+    // تفعيل خيار التسقاع عبر BaridiMob لو البائع طالبه
+    if(requireDeposit) {
+        document.getElementById("depositBox").style.display = "block";
+        document.getElementById("ripDisplay").textContent = "CCP / RIP البائع: " + ripNumber;
+    } else {
+        document.getElementById("depositBox").style.display = "none";
+    }
+
+    let currentDeliveryFee = selectedDeliveryType === 'home' ? homeDeliveryPrice : deskDeliveryPrice;
+
+    document.getElementById("subTotal").textContent = subtotal.toLocaleString() + " دج";
+    document.getElementById("deliveryCost").textContent = currentDeliveryFee.toLocaleString() + " دج";
+    document.getElementById("grandTotal").textContent = (subtotal + currentDeliveryFee).toLocaleString() + " دج";
+}
+
+function selectDeliveryType(type) {
+    selectedDeliveryType = type;
+    document.getElementById("typeHome").classList.toggle("active", type === 'home');
+    document.getElementById("typeDesk").classList.toggle("active", type === 'desk');
+    renderCart();
+}
+
+function changeQty(index, delta) {
+    cart[index].quantity += delta;
+    if (cart[index].quantity <= 0) cart.splice(index, 1);
+    localStorage.setItem("marchiCart", JSON.stringify(cart));
+    renderCart();
+}
+
+function removeItem(index) {
+    cart.splice(index, 1);
+    localStorage.setItem("marchiCart", JSON.stringify(cart));
+    renderCart();
+}
+
+async function submitOrder() {
+    const name = document.getElementById("clientName").value.trim();
+    const phone = document.getElementById("clientPhone").value.trim();
+    const address = document.getElementById("clientAddress").value.trim();
+    const receiptFile = document.getElementById("depositReceipt").files[0];
+    const button = document.getElementById("orderBtn");
+
+    if (cart.length === 0) { alert("❌ سلتك فارغة!"); return; }
+    if (!name || !phone || !address) { alert("❌ يرجى أدخال بياناتك ورقم الهاتف والعنوان كاملة."); return; }
+
+    const isDepositRequired = document.getElementById("depositBox").style.display === "block";
+    if (isDepositRequired && !receiptFile) {
+        alert("❌ يرجى إرفاق صورة وصل تحويل التسقاع عبر BaridiMob لتأكيد الطلب.");
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "⏳ جاري إرسال الطلب...";
+
+    try {
+        let receiptUrl = null;
+
+        // رفع الوصل إذا كان متاحاً
+        if (receiptFile) {
+            const fileName = `receipt_${Date.now()}_${Math.random().toString(36).substring(2)}`;
+            const { error: uploadErr } = await supabase.storage.from("products").upload(fileName, receiptFile);
+            if (!uploadErr) {
+                const { data: urlData } = supabase.storage.from("products").getPublicUrl(fileName);
+                receiptUrl = urlData.publicUrl;
+            }
+        }
+
+        let currentDeliveryFee = selectedDeliveryType === 'home' ? homeDeliveryPrice : deskDeliveryPrice;
+
+        const { error } = await supabase.from("orders").insert([{
+            client_name: name,
+            client_phone: phone,
+            address: address,
+            delivery_type: selectedDeliveryType,
+            delivery_fee: currentDeliveryFee,
+            items: cart,
+            receipt_url: receiptUrl,
+            total_price: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) + currentDeliveryFee,
+            status: 'pending'
+        }]);
+
+        if (error) throw error;
+
+        alert("تم إرسال طلبك بنجاح! 🎉 سيتصل بك البائع لتأكيد الشحن.");
+        localStorage.removeItem("marchiCart");
+        window.location.href = "index.html";
+
+    } catch (err) {
+        console.error("Order error:", err);
+        alert("❌ حدث خطأ أثناء إرسال الطلب.");
+    } finally {
+        button.disabled = false;
+        button.textContent = "✅ تأكيد الطلب الآن";
+    }
+}
+
+renderCart();
+</script>
+</body>
+</html>
