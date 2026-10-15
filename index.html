@@ -410,6 +410,9 @@ header{
     overflow:hidden;
     position:relative;
     transition:.2s;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
 }
 
 .product:hover{
@@ -468,20 +471,55 @@ header{
 
 .product-info{
     padding:16px;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
 }
 
 .product-name{
     font-size:15px;
-    margin-bottom:8px;
+    font-weight:bold;
+    margin-bottom:6px;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
 }
 
+/* معلومات المتجر والمبيعات والتوسيع الأسلوبي */
+.seller-badge-box{
+    font-size:12px;
+    color:#555;
+    margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    gap:4px;
+    flex-wrap:wrap;
+}
+
+.seller-name{
+    font-weight:bold;
+    color:#102a43;
+}
+
+.verified-icon{
+    color:#1d9bf0;
+    font-weight:bold;
+    font-size:12px;
+}
+
+.sales-badge{
+    background:#f1f5f9;
+    color:#475569;
+    padding:2px 6px;
+    border-radius:4px;
+    font-size:11px;
+}
+
 .rating{
     color:#f5a623;
     font-size:13px;
-    margin-bottom:10px;
+    margin-bottom:8px;
 }
 
 .price{
@@ -683,6 +721,10 @@ footer{
 
 <!-- ACTIONS -->
 <div class="header-actions">
+<a href="seller-dashboard.html" class="header-action" style="color: #102a43; font-weight: bold;">
+<span class="action-icon">📊</span>
+<span>لوحة البائع</span>
+</a>
 <a href="add-product.html" class="header-action" style="color: #16a34a; font-weight: bold;">
 <span class="action-icon">➕</span>
 <span>إضافة منتج</span>
@@ -704,7 +746,7 @@ footer{
 <a class="nav-item" href="#products">العروض</a>
 <a class="nav-item" href="add-product.html">إضافة منتج</a>
 <a class="nav-item" href="cart.html">السلة والطلب</a>
-<a class="nav-item" href="#categories">☰ كل الفئات</a>
+<a class="nav-item" href="seller-dashboard.html">لوحة البائع</a>
 </div>
 </nav>
 </header>
@@ -730,15 +772,15 @@ footer{
 <section class="features">
 <div class="feature">
 <div class="feature-icon">🛡️</div>
-<div class="feature-text"><strong>تسوق بأمان</strong><span>حماية طلبك</span></div>
+<div class="feature-text"><strong>بائعون موثوقون</strong><span>تقييمات شفافة</span></div>
 </div>
 <div class="feature">
 <div class="feature-icon">🚚</div>
-<div class="feature-text"><strong>توصيل سريع</strong><span>إلى جميع الولايات</span></div>
+<div class="feature-text"><strong>توصيل سريع</strong><span>للمنزل أو المكتب</span></div>
 </div>
 <div class="feature">
 <div class="feature-icon">⭐</div>
-<div class="feature-text"><strong>منتجات موثوقة</strong><span>جودة مضمونة</span></div>
+<div class="feature-text"><strong>عربون ضامن</strong><span>حماية من الـ Retour</span></div>
 </div>
 <div class="feature">
 <div class="feature-icon">🎧</div>
@@ -790,7 +832,7 @@ footer{
 <span class="dz"> DZ</span>
 </div>
 <p class="footer-about">
-سوق إلكتروني جزائري يجمع المنتجات والبائعين في مكان واحد، لتجربة تسوق سهلة وآمنة.
+سوق إلكتروني جزائري يجمع المنتجات والبائعين الموثوقين في مكان واحد، لتجربة تسوق سهلة وآمنة.
 </p>
 </div>
 <div>
@@ -808,7 +850,7 @@ footer{
 <li>الفئات</li>
 <li>العروض</li>
 <li>المنتجات الجديدة</li>
-<li>المتاجر</li>
+<li>المتاجر الموثوقة</li>
 </ul>
 </div>
 <div>
@@ -854,7 +896,7 @@ async function loadProductsFromSupabase() {
             return;
         }
 
-        grid.innerHTML = ''; // تنظيف الشبكة
+        grid.innerHTML = '';
 
         products.forEach(product => {
             const discountHTML = product.old_price && product.old_price > product.price 
@@ -865,6 +907,17 @@ async function loadProductsFromSupabase() {
                 ? `<span class="old-price">${product.old_price.toLocaleString()} دج</span>` 
                 : '';
 
+            // نظام توثيق البائع (1000 مبيعة + تقييم 4.5 أو أكثر)
+            const salesCount = product.sales_count || 0;
+            const rating = product.rating || 5.0;
+            const isVerified = salesCount >= 1000 && rating >= 4.5;
+            
+            const verifiedBadgeHTML = isVerified 
+                ? `<span class="verified-icon" title="متجر موثوق (أكثر من 1000 مبيعة ناجحة)">✔️ موثوق</span>` 
+                : '';
+
+            const storeName = product.store_name || 'متجر معتمد';
+
             const productHTML = `
                 <div class="product" data-category="${product.category}" data-name="${product.name}" data-id="${product.id}">
                     ${discountHTML}
@@ -873,15 +926,28 @@ async function loadProductsFromSupabase() {
                         <img src="${product.image_url || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80'}" alt="${product.name}">
                     </div>
                     <div class="product-info">
-                        <div class="product-name">${product.name}</div>
-                        <div class="rating">★★★★★</div>
-                        <div class="price">
-                            ${product.price.toLocaleString()} دج
-                            ${oldPriceHTML}
+                        <div>
+                            <div class="product-name">${product.name}</div>
+                            
+                            <!-- عرض بيانات البائع والمبيعات والتوثيق (طريقة Temu) -->
+                            <div class="seller-badge-box">
+                                <span class="seller-name">🏪 ${storeName}</span>
+                                ${verifiedBadgeHTML}
+                                <span class="sales-badge">📦 ${salesCount} مبيعة</span>
+                            </div>
+
+                            <div class="rating">★ ${rating.toFixed(1)}</div>
                         </div>
-                        <button class="add-cart" onclick='addToCartDynamic(${JSON.stringify(product).replace(/'/g, "&apos;")})'>
-                            🛒 أضف للسلة
-                        </button>
+
+                        <div>
+                            <div class="price">
+                                ${product.price.toLocaleString()} دج
+                                ${oldPriceHTML}
+                            </div>
+                            <button class="add-cart" onclick='addToCartDynamic(${JSON.stringify(product).replace(/'/g, "&apos;")})'>
+                                🛒 أضف للسلة
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -894,7 +960,6 @@ async function loadProductsFromSupabase() {
     }
 }
 
-// تشغيل جلب المنتجات فور فتح الصفحة
 loadProductsFromSupabase();
 
 /* =========================
@@ -902,13 +967,11 @@ loadProductsFromSupabase();
 ========================= */
 let cart = JSON.parse(localStorage.getItem("marchiCart")) || [];
 
-// تحديث عداد السلة
 function updateCartCount(){
     const total = cart.reduce((sum, item) => sum + item.quantity, 0);
     document.getElementById("cartCount").textContent = total;
 }
 
-// إضافة منتج ديناميكي للسلة مع إعدادات التوصيل والعربون
 function addToCartDynamic(product) {
     const existing = cart.find(item => item.id === product.id);
 
@@ -933,9 +996,7 @@ function addToCartDynamic(product) {
     alert("تمت إضافة المنتج إلى السلة 🛒");
 }
 
-// تشغيل العداد عند فتح الموقع
 updateCartCount();
-
 
 /* =========================
    FAVORITE
@@ -948,7 +1009,6 @@ function toggleFavorite(button){
         button.textContent = "♡";
     }
 }
-
 
 /* =========================
    SEARCH
@@ -978,7 +1038,6 @@ document.getElementById("searchInput").addEventListener("keydown", function(even
     }
 });
 
-
 /* =========================
    CATEGORY FILTER
 ========================= */
@@ -999,7 +1058,6 @@ function filterCategory(category, element){
     document.getElementById("products").scrollIntoView({ behavior:"smooth" });
 }
 
-
 /* =========================
    SHOW ALL
 ========================= */
@@ -1008,7 +1066,6 @@ function showAllProducts(){
     document.querySelectorAll(".category").forEach(category => category.classList.remove("selected"));
     document.getElementById("productsTitle").textContent = "منتجات مميزة 🔥";
 }
-
 
 /* =========================
    HERO BUTTON
