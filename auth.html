@@ -18,18 +18,18 @@ body {
     padding: 20px;
     position: relative;
     overflow-x: hidden;
-    background: #0f172a;
+    background: #0b132b;
 }
 
-/* خلفية متدرجة مع صور منتجات متنوعة مموهة ومريحة للعين */
+/* خلفية متدرجة وشبكة صور تسوق احترافية ومريحة */
 .bg-grid {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    opacity: 0.22;
-    filter: blur(4px) grayscale(20%);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 12px;
+    opacity: 0.28;
     z-index: 1;
     padding: 10px;
 }
@@ -41,25 +41,24 @@ body {
     border-radius: 12px;
 }
 
-.overlay-gradient {
+.overlay-dark {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(16, 42, 67, 0.88) 100%);
+    background: linear-gradient(135deg, rgba(11, 19, 43, 0.92) 0%, rgba(16, 42, 67, 0.88) 100%);
+    backdrop-filter: blur(6px);
     z-index: 2;
 }
 
-/* بطاقة الدخول الشفافة الأنيقة */
+/* بطاقة الحسابات */
 .auth-card {
     position: relative;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(12px);
+    background: #ffffff;
     padding: 35px 30px;
     border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     width: 100%;
-    max-width: 520px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    max-width: 500px;
 }
 
 .logo-header {
@@ -68,8 +67,9 @@ body {
 }
 
 .logo-name {
-    font-size: 28px;
+    font-size: 30px;
     font-weight: 900;
+    letter-spacing: 1px;
 }
 .marchi { color: #102a43; }
 .dz { color: #16a34a; }
@@ -78,11 +78,11 @@ body {
     display: flex;
     margin-bottom: 25px;
     background: #f1f5f9;
-    padding: 5px;
+    padding: 6px;
     border-radius: 12px;
 }
 
-.tab {
+.tab-btn {
     flex: 1;
     text-align: center;
     padding: 12px;
@@ -90,13 +90,16 @@ body {
     font-weight: bold;
     color: #64748b;
     border-radius: 9px;
-    transition: all 0.3s ease;
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    transition: all 0.25s ease;
 }
 
-.tab.active {
-    background: white;
+.tab-btn.active {
+    background: #ffffff;
     color: #16a34a;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .form-group { margin-bottom: 16px; }
@@ -122,7 +125,7 @@ input, select {
     border-radius: 9px;
     font-size: 14px;
     outline: none;
-    background: white;
+    background: #ffffff;
     transition: 0.2s;
 }
 
@@ -180,35 +183,35 @@ input:focus, select:focus {
 </head>
 <body>
 
-<!-- الخلفية الجمالية -->
+<!-- الخلفية الجمالية عالية الجودة مع هويّة التجارة والتسوق -->
 <div class="bg-grid">
-    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" alt="ساعة">
-    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" alt="سماعات">
-    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" alt="حذاء">
-    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500" alt="هاتف">
-    <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500" alt="كاميرا">
-    <img src="https://images.unsplash.com/photo-1560343090-f0409e92791a?w=500" alt="أحذية">
-    <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500" alt="عناية">
-    <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=500" alt="تسوق">
+    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80" alt="ساعات">
+    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80" alt="سماعات">
+    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80" alt="أحذية رياضية">
+    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80" alt="هواتف ذكية">
+    <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80" alt="إلكترونيات">
+    <img src="https://images.unsplash.com/photo-1560343090-f0409e92791a?auto=format&fit=crop&w=600&q=80" alt="موضة">
+    <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80" alt="منتجات تجميل">
+    <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=600&q=80" alt="تسوق إلكتروني">
 </div>
-<div class="overlay-gradient"></div>
+<div class="overlay-dark"></div>
 
 <div class="auth-card">
     <div class="logo-header">
         <div class="logo-name">
             <span class="marchi">MARCHI</span><span class="dz"> DZ</span>
         </div>
-        <p style="font-size:12px; color:#64748b; margin-top:3px;">منصة التجارة الموثوقة في الجزائر 🇩🇿</p>
+        <p style="font-size:13px; color:#64748b; margin-top:4px;">منصة التجارة والتسوق المعتمدة في الجزائر 🇩🇿</p>
     </div>
 
-    <!-- أزرار التبديل -->
+    <!-- أزرار التبديل المصلحة والتفاعلية -->
     <div class="tabs">
-        <div class="tab active" id="loginTabBtn" onclick="switchTab('login')">🔑 تسجيل الدخول</div>
-        <div class="tab" id="registerTabBtn" onclick="switchTab('register')">📝 حساب جديد</div>
+        <button class="tab-btn active" id="loginBtn" onclick="showForm('login')">🔑 تسجيل الدخول</button>
+        <button class="tab-btn" id="registerBtn" onclick="showForm('register')">📝 حساب جديد</button>
     </div>
 
     <!-- 1. نموذج تسجيل الدخول -->
-    <div id="loginForm">
+    <div id="loginSection">
         <div class="form-group">
             <label>رقم الهاتف *</label>
             <input type="tel" id="loginPhone" placeholder="مثال: 0661112233">
@@ -217,11 +220,11 @@ input:focus, select:focus {
             <label>كلمة المرور *</label>
             <input type="password" id="loginPass" placeholder="******">
         </div>
-        <button class="btn-submit" onclick="handleLogin()">دخول للولايات والخدمات</button>
+        <button class="btn-submit" onclick="handleLogin()">🔑 تسجيل الدخول</button>
     </div>
 
     <!-- 2. نموذج إنشاء حساب جديد الشامل -->
-    <div id="registerForm" style="display:none;">
+    <div id="registerSection" style="display:none;">
         <div class="grid-2">
             <div class="form-group">
                 <label>الاسم *</label>
@@ -237,7 +240,7 @@ input:focus, select:focus {
             <div class="form-group">
                 <label>تاريخ الميلاد *</label>
                 <input type="date" id="regBirthDate" onchange="validateAge()">
-                <div class="age-warning" id="ageWarning">🚫 يمنع إنشاء حساب لمن هم أقل من 18 سنة.</div>
+                <div class="age-warning" id="ageWarning">🚫 يمنع التسجيل لمن هم أقل من 18 سنة.</div>
             </div>
             <div class="form-group">
                 <label>رقم الهاتف *</label>
@@ -335,14 +338,12 @@ input:focus, select:focus {
             <input type="password" id="regPass" placeholder="******">
         </div>
 
-        <!-- زر إرسال رمز التحقق OTP -->
         <button class="btn-submit" id="sendOtpBtn" onclick="sendOtpCode()">📲 إرسال رمز التحقق لهاتفي</button>
 
-        <!-- صندوق كود التحقق OTP -->
         <div class="otp-box" id="otpBox">
-            <label style="color:#15803d;">تم إرسال كود التحقق مكون من 4 أرقام لهاتفك</label>
+            <label style="color:#15803d; font-weight:bold;">رمز التحقق التجريبي هو: <span style="font-family:monospace; font-size:16px;">1234</span></label>
             <input type="text" id="otpInput" placeholder="أدخل الكود: 1234" style="text-align:center; letter-spacing:5px; font-weight:bold; font-size:18px; margin:10px 0;">
-            <button class="btn-submit" onclick="handleRegister()">✅ تأكيد وإنشاء الحساب</button>
+            <button class="btn-submit" onclick="handleRegister()">🚀 إنشاء حساب جديد</button>
         </div>
     </div>
 
@@ -359,21 +360,22 @@ const supabase = window.supabase.createClient(
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
-function switchTab(mode) {
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const loginBtn = document.getElementById('loginTabBtn');
-    const registerBtn = document.getElementById('registerTabBtn');
+// دالة التبديل السلسة والمضمونة 100%
+function showForm(type) {
+    const loginSec = document.getElementById('loginSection');
+    const regSec = document.getElementById('registerSection');
+    const loginBtn = document.getElementById('loginBtn');
+    const regBtn = document.getElementById('registerBtn');
 
-    if (mode === 'login') {
-        loginForm.style.display = 'block';
-        registerForm.style.display = 'none';
+    if (type === 'login') {
+        loginSec.style.display = 'block';
+        regSec.style.display = 'none';
         loginBtn.classList.add('active');
-        registerBtn.classList.remove('active');
+        regBtn.classList.remove('active');
     } else {
-        loginForm.style.display = 'none';
-        registerForm.style.display = 'block';
-        registerBtn.classList.add('active');
+        loginSec.style.display = 'none';
+        regSec.style.display = 'block';
+        regBtn.classList.add('active');
         loginBtn.classList.remove('active');
     }
 }
@@ -406,7 +408,7 @@ function validateAge() {
     }
 }
 
-let generatedOtp = "1234"; // كود افتراضي للتحقق للتجربة والسرعة
+let generatedOtp = "1234";
 
 function sendOtpCode() {
     const phone = document.getElementById('regPhone').value.trim();
@@ -422,7 +424,6 @@ function sendOtpCode() {
 
     document.getElementById('otpBox').style.display = 'block';
     document.getElementById('sendOtpBtn').style.display = 'none';
-    alert("📲 رمز التحقق التجريبي للسرعة هو: " + generatedOtp);
 }
 
 async function handleRegister() {
@@ -483,7 +484,7 @@ async function handleLogin() {
     const msg = document.getElementById('authMsg');
 
     if (!phone || !pass) {
-        alert("يرجى أدخل رقم الهاتف وكلمة المرور.");
+        alert("يرجى إدخال رقم الهاتف وكلمة المرور.");
         return;
     }
 
