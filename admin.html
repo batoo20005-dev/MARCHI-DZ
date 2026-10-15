@@ -20,36 +20,43 @@ h2{ font-size:18px; margin-bottom:15px; color:#f8fafc; }
 table{ width:100%; border-collapse:collapse; text-align:right; font-size:14px; }
 th, td{ padding:12px; border-bottom:1px solid #334155; }
 th{ color:#94a3b8; background:#0f172a; }
-.btn-action{ padding:6px 12px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; }
+.btn-action{ padding:6px 12px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; margin-left:5px; }
 .btn-green{ background:#16a34a; color:white; }
+.btn-blue{ background:#0284c7; color:white; }
+.btn-purple{ background:#8b5cf6; color:white; }
 .btn-red{ background:#dc2626; color:white; }
-@media(max-width:768px){ .stats-grid{ grid-template-columns:1fr 1fr; } }
+.role-badge{ padding:3px 8px; border-radius:4px; font-size:11px; font-weight:bold; }
+.role-admin{ background:#ef4444; color:white; }
+.role-mod{ background:#0284c7; color:white; }
+.role-seller{ background:#16a34a; color:white; }
+.role-buyer{ background:#64748b; color:white; }
+@media(max-width:768px){ .stats-grid{ grid-template-columns:1fr 1fr; } table{ font-size:12px; } }
 </style>
 </head>
 <body>
 
 <header>
-<div class="logo">MARCHI<span class="dz"> DZ</span> | 👑 لوحة الإدارة والتحكم</div>
+<div class="logo">MARCHI<span class="dz"> DZ</span> | 👑 لوحة المدير العام</div>
 <div>
-    <a href="index.html" style="color:#4ade80; text-decoration:none; font-weight:bold; margin-left:15px;">🏪 المعاينة كمتجر</a>
+    <a href="moderator.html" style="color:#38bdf8; text-decoration:none; font-weight:bold; margin-left:15px;">🛡️ لوحة الإشراف</a>
+    <a href="index.html" style="color:#4ade80; text-decoration:none; font-weight:bold; margin-left:15px;">🏪 المتجر</a>
     <button onclick="logoutAdmin()" style="background:#dc2626; color:white; border:none; padding:8px 15px; border-radius:6px; font-weight:bold; cursor:pointer;">خروج</button>
 </div>
 </header>
 
 <main>
-    <!-- الإحصائيات العامة للمنصة -->
     <div class="stats-grid">
         <div class="stat-card">
             <h3>👥 إجمالي المستخدمين</h3>
             <div class="val" id="totalUsers">0</div>
         </div>
         <div class="stat-card">
-            <h3>🏪 المتاجر المسجلة</h3>
-            <div class="val" id="totalSellers">0</div>
+            <h3>🛡️ عدد المشرفين</h3>
+            <div class="val" id="totalMods" style="color:#38bdf8;">0</div>
         </div>
         <div class="stat-card">
-            <h3>📦 الطلبيات الإجمالية</h3>
-            <div class="val" id="totalOrders">0</div>
+            <h3>🏪 المتاجر المسجلة</h3>
+            <div class="val" id="totalSellers">0</div>
         </div>
         <div class="stat-card">
             <h3>💳 ديون التجار للمنصة</h3>
@@ -57,20 +64,20 @@ th{ color:#94a3b8; background:#0f172a; }
         </div>
     </div>
 
-    <!-- قائمة جميع التجار والمتاجر -->
+    <!-- جدول إدارة جميع المستخدمين وتغيير رتبهم -->
     <div class="table-box">
-        <h2>🏪 إدارة التجار والمتاجر</h2>
+        <h2>👥 إدارة المستخدمين والأدوار (التعيين كمشرف / تاجر / مشتري)</h2>
         <table>
             <thead>
                 <tr>
-                    <th>اسم البائع</th>
-                    <th>اسم المتجر</th>
+                    <th>الاسم الكامل</th>
                     <th>الهاتف</th>
-                    <th>الديون المستحقة</th>
-                    <th>الإجراءات</th>
+                    <th>الرتبة الحالية</th>
+                    <th>الديون (للتجار)</th>
+                    <th>الإجراءات والترقية</th>
                 </tr>
             </thead>
-            <tbody id="sellersTableBody">
+            <tbody id="usersTableBody">
                 <tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr>
             </tbody>
         </table>
@@ -83,7 +90,6 @@ const supabase = window.supabase.createClient(
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
-// 🔒 حماية صارمة: التأكد من أن الحساب الحالي هو admin فقط
 const currentUser = JSON.parse(localStorage.getItem("marchi_user"));
 
 if (!currentUser || currentUser.role !== 'admin') {
@@ -93,44 +99,69 @@ if (!currentUser || currentUser.role !== 'admin') {
 
 async function loadAdminData() {
     try {
-        // جلب المستخدمين والتجار
-        const { data: users } = await supabase.from('users').select('*');
-        const { data: orders } = await supabase.from('orders').select('*');
+        const { data: users } = await supabase.from('users').select('*').order('created_at', { ascending: false });
 
         if (users) {
             document.getElementById("totalUsers").textContent = users.length;
             
+            const mods = users.filter(u => u.role === 'moderator');
             const sellers = users.filter(u => u.role === 'seller');
+            
+            document.getElementById("totalMods").textContent = mods.length;
             document.getElementById("totalSellers").textContent = sellers.length;
 
             let sumDebt = sellers.reduce((acc, s) => acc + (s.debt || 0), 0);
             document.getElementById("totalDebts").textContent = sumDebt.toLocaleString() + " دج";
 
-            // عرض جدول التجار
-            const tbody = document.getElementById("sellersTableBody");
+            const tbody = document.getElementById("usersTableBody");
             tbody.innerHTML = "";
 
-            sellers.forEach(s => {
+            users.forEach(u => {
+                let roleBadge = `<span class="role-badge role-buyer">👤 مشتري</span>`;
+                if(u.role === 'admin') roleBadge = `<span class="role-badge role-admin">👑 مدير</span>`;
+                if(u.role === 'moderator') roleBadge = `<span class="role-badge role-mod">🛡️ مشرف</span>`;
+                if(u.role === 'seller') roleBadge = `<span class="role-badge role-seller">🏪 تاجر</span>`;
+
                 tbody.innerHTML += `
                     <tr>
-                        <td>${s.full_name}</td>
-                        <td><strong>${s.store_name || 'بدون اسم'}</strong></td>
-                        <td>${s.phone}</td>
-                        <td style="color:${(s.debt || 0) >= 500 ? '#ef4444' : '#4ade80'}; font-weight:bold;">${s.debt || 0} دج</td>
+                        <td><strong>${u.full_name}</strong></td>
+                        <td>${u.phone}</td>
+                        <td>${roleBadge}</td>
+                        <td style="color:${(u.debt || 0) >= 500 ? '#ef4444' : '#4ade80'}; font-weight:bold;">${u.role === 'seller' ? (u.debt || 0) + ' دج' : '-'}</td>
                         <td>
-                            <button class="btn-action btn-green" onclick="resetSellerDebt(${s.id})">⚡ تصفير الدين</button>
+                            ${u.role !== 'admin' ? `
+                                <button class="btn-action btn-blue" onclick="changeRole(${u.id}, 'moderator')">🛡️ ترقية لمشرف</button>
+                                <button class="btn-action btn-purple" onclick="changeRole(${u.id}, 'seller')">🏪 تحويل لتاجر</button>
+                                <button class="btn-action btn-green" onclick="changeRole(${u.id}, 'buyer')">👤 تحويل لمشتري</button>
+                                ${u.role === 'seller' ? `<button class="btn-action btn-red" onclick="resetSellerDebt(${u.id})">⚡ تصفير الدين</button>` : ''}
+                            ` : '<span style="color:#94a3b8; font-size:12px;">حساب المدير العام</span>'}
                         </td>
                     </tr>
                 `;
             });
         }
 
-        if (orders) {
-            document.getElementById("totalOrders").textContent = orders.length;
-        }
-
     } catch (err) {
         console.error("Admin Load Error:", err);
+    }
+}
+
+// دالة تغيير الرتبة بضغطة زر واحدة
+async function changeRole(userId, newRole) {
+    const roleNames = {
+        'moderator': 'مشرف (خدمة عملاء)',
+        'seller': 'تاجر / بائع',
+        'buyer': 'مشتري / زبون'
+    };
+
+    if (confirm(`هل أنت تأكد من تغيير رتبة هذا المستخدم إلى [${roleNames[newRole]}]؟`)) {
+        const { error } = await supabase.from('users').update({ role: newRole }).eq('id', userId);
+        if (error) {
+            alert("❌ حدث خطأ أثناء التحديث: " + error.message);
+        } else {
+            alert("🎉 تم تغيير رتبة المستخدم بنجاح!");
+            loadAdminData();
+        }
     }
 }
 
