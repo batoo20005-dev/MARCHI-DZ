@@ -177,8 +177,11 @@ header{
 
 <header>
 <div class="header-container">
-<div class="logo-name"><span class="marchi">MARCHI</span><span class="dz"> DZ</span> | لوحة المتجر</div>
-<a href="index.html" style="color:white; text-decoration:none; font-weight:bold;">🏪 العودة للمتجر</a>
+<div class="logo-name"><span class="marchi">MARCHI</span><span class="dz"> DZ</span> | لوحة المتجر: <span id="storeTitleHeader">متجري</span></div>
+<div style="display:flex; gap:15px; align-items:center;">
+    <a href="add-product.html" style="color:#4ade80; text-decoration:none; font-weight:bold;">➕ إضافة منتج</a>
+    <a href="index.html" style="color:white; text-decoration:none; font-weight:bold;">🏪 العودة للمتجر</a>
+</div>
 </div>
 </header>
 
@@ -208,7 +211,7 @@ header{
     </div>
 </div>
 
-<!-- زر سري لتسوية الديون في أي وقت -->
+<!-- زر تسوية الديون في أي وقت -->
 <div style="text-align:left; margin-bottom:20px;">
     <button onclick="openChargeModal()" style="background:#102a43; color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">💳 شحن رصيد الطلبيات عبر BaridiMob</button>
 </div>
@@ -266,16 +269,23 @@ const supabase = window.supabase.createClient(
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
-// بيانات البائع الافتراضية للتجربة
+// 🔒 حماية صفحة لوحة التحكم (التحقق أن المستخدم تاجر مسجل دخول)
+let currentUser = JSON.parse(localStorage.getItem("marchi_user"));
+
+if (!currentUser || currentUser.role !== 'seller') {
+    alert("⚠️ هذه الصفحة خاصة بالتجار المعتمدين فقط! يرجى تسجيل الدخول كتاجر.");
+    window.location.href = "auth.html";
+}
+
 let sellerData = {
-    id: 1,
-    store_name: "متجر الجزائر الرقمي",
-    sales_count: 120,
+    id: currentUser.id,
+    store_name: currentUser.store_name || "متجري",
+    sales_count: currentUser.sales_count || 120,
     rating: 4.8,
-    debt: 150
+    debt: currentUser.debt || 0
 };
 
-const MY_PLATFORM_RIP = "00799999001234567890";
+document.getElementById("storeTitleHeader").textContent = sellerData.store_name;
 
 function updateDashboardUI() {
     document.getElementById("totalSalesCount").textContent = sellerData.sales_count + " مبيعة";
