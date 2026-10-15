@@ -5,76 +5,351 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>تسجيل الدخول أو إنشاء حساب | MARCHI DZ</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{ margin:0; padding:0; box-sizing:border-box; }
-body{ font-family:Arial, sans-serif; background:#f4f6f8; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
-.auth-card{ background:white; padding:30px; border-radius:15px; box-shadow:0 4px 20px rgba(0,0,0,0.08); width:100%; max-width:450px; }
-h2{ color:#102a43; text-align:center; margin-bottom:15px; }
-.tabs{ display:flex; margin-bottom:20px; border-bottom:2px solid #eee; }
-.tab{ flex:1; text-align:center; padding:10px; cursor:pointer; font-weight:bold; color:#777; }
-.tab.active{ color:#16a34a; border-bottom:2px solid #16a34a; margin-bottom:-2px; }
-.form-group{ margin-bottom:15px; }
-label{ display:block; margin-bottom:5px; font-weight:bold; font-size:14px; }
-input, select{ width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; font-size:15px; outline:none; }
-button{ width:100%; background:#16a34a; color:white; border:none; padding:13px; border-radius:8px; font-weight:bold; font-size:16px; cursor:pointer; margin-top:10px; }
-button:hover{ background:#12813b; }
-.msg{ text-align:center; margin-top:12px; font-weight:bold; font-size:14px; }
+
+body {
+    font-family: Arial, Tahoma, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+    background: #0f172a;
+}
+
+/* خلفية متدرجة مع صور منتجات متنوعة مموهة ومريحة للعين */
+.bg-grid {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    opacity: 0.22;
+    filter: blur(4px) grayscale(20%);
+    z-index: 1;
+    padding: 10px;
+}
+
+.bg-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.overlay-gradient {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(16, 42, 67, 0.88) 100%);
+    z-index: 2;
+}
+
+/* بطاقة الدخول الشفافة الأنيقة */
+.auth-card {
+    position: relative;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(12px);
+    padding: 35px 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+    width: 100%;
+    max-width: 520px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.logo-header {
+    text-align: center;
+    margin-bottom: 22px;
+}
+
+.logo-name {
+    font-size: 28px;
+    font-weight: 900;
+}
+.marchi { color: #102a43; }
+.dz { color: #16a34a; }
+
+.tabs {
+    display: flex;
+    margin-bottom: 25px;
+    background: #f1f5f9;
+    padding: 5px;
+    border-radius: 12px;
+}
+
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #64748b;
+    border-radius: 9px;
+    transition: all 0.3s ease;
+}
+
+.tab.active {
+    background: white;
+    color: #16a34a;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
+
+.form-group { margin-bottom: 16px; }
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    font-size: 13px;
+    color: #334155;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 9px;
+    font-size: 14px;
+    outline: none;
+    background: white;
+    transition: 0.2s;
+}
+
+input:focus, select:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+}
+
+.btn-submit {
+    width: 100%;
+    background: #16a34a;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.2s;
+}
+
+.btn-submit:hover { background: #12813b; }
+
+.age-warning {
+    color: #dc2626;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 4px;
+    display: none;
+}
+
+.otp-box {
+    display: none;
+    background: #f0fdf4;
+    border: 1px dashed #16a34a;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 12px;
+    text-align: center;
+}
+
+.msg {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+@media(max-width: 550px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .bg-grid { grid-template-columns: repeat(2, 1fr); }
+}
 </style>
 </head>
 <body>
 
+<!-- الخلفية الجمالية -->
+<div class="bg-grid">
+    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" alt="ساعة">
+    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" alt="سماعات">
+    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" alt="حذاء">
+    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500" alt="هاتف">
+    <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500" alt="كاميرا">
+    <img src="https://images.unsplash.com/photo-1560343090-f0409e92791a?w=500" alt="أحذية">
+    <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500" alt="عناية">
+    <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=500" alt="تسوق">
+</div>
+<div class="overlay-gradient"></div>
+
 <div class="auth-card">
-    <div class="tabs">
-        <div class="tab active" id="loginTab" onclick="switchMode('login')">تسجيل الدخول</div>
-        <div class="tab" id="registerTab" onclick="switchMode('register')">حساب جديد</div>
+    <div class="logo-header">
+        <div class="logo-name">
+            <span class="marchi">MARCHI</span><span class="dz"> DZ</span>
+        </div>
+        <p style="font-size:12px; color:#64748b; margin-top:3px;">منصة التجارة الموثوقة في الجزائر 🇩🇿</p>
     </div>
 
-    <!-- نموذج تسجيل الدخول -->
+    <!-- أزرار التبديل -->
+    <div class="tabs">
+        <div class="tab active" id="loginTabBtn" onclick="switchTab('login')">🔑 تسجيل الدخول</div>
+        <div class="tab" id="registerTabBtn" onclick="switchTab('register')">📝 حساب جديد</div>
+    </div>
+
+    <!-- 1. نموذج تسجيل الدخول -->
     <div id="loginForm">
-        <h2>🔑 أهلاً بك من جديد</h2>
         <div class="form-group">
-            <label>رقم الهاتف</label>
-            <input type="text" id="loginPhone" placeholder="0661111111">
+            <label>رقم الهاتف *</label>
+            <input type="tel" id="loginPhone" placeholder="مثال: 0661112233">
         </div>
         <div class="form-group">
-            <label>كلمة المرور</label>
+            <label>كلمة المرور *</label>
             <input type="password" id="loginPass" placeholder="******">
         </div>
-        <button onclick="handleLogin()">دخول</button>
+        <button class="btn-submit" onclick="handleLogin()">دخول للولايات والخدمات</button>
     </div>
 
-    <!-- نموذج إنشاء حساب -->
+    <!-- 2. نموذج إنشاء حساب جديد الشامل -->
     <div id="registerForm" style="display:none;">
-        <h2>📝 انضم إلى MARCHI DZ</h2>
-        <div class="form-group">
-            <label>الاسم الكامل</label>
-            <input type="text" id="regName" placeholder="محمد بن علي">
+        <div class="grid-2">
+            <div class="form-group">
+                <label>الاسم *</label>
+                <input type="text" id="regFirstName" placeholder="مثال: محمد">
+            </div>
+            <div class="form-group">
+                <label>اللقب *</label>
+                <input type="text" id="regLastName" placeholder="مثال: بن علي">
+            </div>
         </div>
-        <div class="form-group">
-            <label>رقم الهاتف</label>
-            <input type="text" id="regPhone" placeholder="0661111111">
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label>تاريخ الميلاد *</label>
+                <input type="date" id="regBirthDate" onchange="validateAge()">
+                <div class="age-warning" id="ageWarning">🚫 يمنع إنشاء حساب لمن هم أقل من 18 سنة.</div>
+            </div>
+            <div class="form-group">
+                <label>رقم الهاتف *</label>
+                <input type="tel" id="regPhone" placeholder="06XXXXXXXX">
+            </div>
         </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label>الولاية *</label>
+                <select id="regWilaya">
+                    <option value="">اختر الولاية (58 ولاية)</option>
+                    <option value="01 - أدرار">01 - أدرار</option>
+                    <option value="02 - الشلف">02 - الشلف</option>
+                    <option value="03 - الأغواط">03 - الأغواط</option>
+                    <option value="04 - أم البواقي">04 - أم البواقي</option>
+                    <option value="05 - باتنة">05 - باتنة</option>
+                    <option value="06 - بجاية">06 - بجاية</option>
+                    <option value="07 - بسكرة">07 - بسكرة</option>
+                    <option value="08 - بشار">08 - بشار</option>
+                    <option value="09 - البليدة">09 - البليدة</option>
+                    <option value="10 - البويرة">10 - البويرة</option>
+                    <option value="11 - تمنراست">11 - تمنراست</option>
+                    <option value="12 - تبسة">12 - تبسة</option>
+                    <option value="13 - تلمسان">13 - تلمسان</option>
+                    <option value="14 - تيارت">14 - تيارت</option>
+                    <option value="15 - تيزي وزو">15 - تيزي وزو</option>
+                    <option value="16 - الجزائر">16 - الجزائر</option>
+                    <option value="17 - الجلفة">17 - الجلفة</option>
+                    <option value="18 - جيجل">18 - جيجل</option>
+                    <option value="19 - سطيف">19 - سطيف</option>
+                    <option value="20 - سعيدة">20 - سعيدة</option>
+                    <option value="21 - سكيكدة">21 - سكيكدة</option>
+                    <option value="22 - سيدي بلعباس">22 - سيدي بلعباس</option>
+                    <option value="23 - عنابة">23 - عنابة</option>
+                    <option value="24 - قالمة">24 - قالمة</option>
+                    <option value="25 - قسنطينة">25 - قسنطينة</option>
+                    <option value="26 - المدية">26 - المدية</option>
+                    <option value="27 - مستغانم">27 - مستغانم</option>
+                    <option value="28 - المسيلة">28 - المسيلة</option>
+                    <option value="29 - معسكر">29 - معسكر</option>
+                    <option value="30 - ورقلة">30 - ورقلة</option>
+                    <option value="31 - وهران">31 - وهران</option>
+                    <option value="32 - البيض">32 - البيض</option>
+                    <option value="33 - إليزي">33 - إليزي</option>
+                    <option value="34 - برج بوعريريج">34 - برج بوعريريج</option>
+                    <option value="35 - بومرداس">35 - بومرداس</option>
+                    <option value="36 - الطارف">36 - الطارف</option>
+                    <option value="37 - تندوف">37 - تندوف</option>
+                    <option value="38 - تسمسيلت">38 - تسمسيلت</option>
+                    <option value="39 - الوادي">39 - الوادي</option>
+                    <option value="40 - خنشلة">40 - خنشلة</option>
+                    <option value="41 - سوق أهراس">41 - سوق أهراس</option>
+                    <option value="42 - تيبازة">42 - تيبازة</option>
+                    <option value="43 - ميلة">43 - ميلة</option>
+                    <option value="44 - عين الدفلى">44 - عين الدفلى</option>
+                    <option value="45 - النعامة">45 - النعامة</option>
+                    <option value="46 - عين تموشنت">46 - عين تموشنت</option>
+                    <option value="47 - غرداية">47 - غرداية</option>
+                    <option value="48 - غليزان">48 - غليزان</option>
+                    <option value="49 - تيميمون">49 - تيميمون</option>
+                    <option value="50 - برج باجي مختار">50 - برج باجي مختار</option>
+                    <option value="51 - أولاد جلال">51 - أولاد جلال</option>
+                    <option value="52 - بني عباس">52 - بني عباس</option>
+                    <option value="53 - إن صالح">53 - إن صالح</option>
+                    <option value="54 - إن قزام">54 - إن قزام</option>
+                    <option value="55 - تقرت">55 - تقرت</option>
+                    <option value="56 - جانت">56 - جانت</option>
+                    <option value="57 - المغير">57 - المغير</option>
+                    <option value="58 - المنيعة">58 - المنيعة</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>البلدية والعنوان *</label>
+                <input type="text" id="regCommune" placeholder="مثال: عين التوتة">
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label>نوع الحساب *</label>
+                <select id="regRole" onchange="toggleStoreField()">
+                    <option value="buyer">👤 مشتري (تصفح وشراء المنتجات)</option>
+                    <option value="seller">🏪 بائع / تاجر (عرض وبيع السلع)</option>
+                </select>
+            </div>
+            <div class="form-group" id="storeField" style="display:none;">
+                <label>اسم المتجر *</label>
+                <input type="text" id="regStoreName" placeholder="مثال: متجر الهواتف">
+            </div>
+        </div>
+
         <div class="form-group">
-            <label>كلمة المرور</label>
+            <label>كلمة المرور *</label>
             <input type="password" id="regPass" placeholder="******">
         </div>
-        <div class="form-group">
-            <label>نوع الحساب</label>
-            <select id="regRole" onchange="toggleStoreField()">
-                <option value="buyer">👤 مشتري (أتصفح وأشتري المنتجات)</option>
-                <option value="seller">🏪 بائع / تاجر (أرغب في عرض وبيع سلعي)</option>
-            </select>
+
+        <!-- زر إرسال رمز التحقق OTP -->
+        <button class="btn-submit" id="sendOtpBtn" onclick="sendOtpCode()">📲 إرسال رمز التحقق لهاتفي</button>
+
+        <!-- صندوق كود التحقق OTP -->
+        <div class="otp-box" id="otpBox">
+            <label style="color:#15803d;">تم إرسال كود التحقق مكون من 4 أرقام لهاتفك</label>
+            <input type="text" id="otpInput" placeholder="أدخل الكود: 1234" style="text-align:center; letter-spacing:5px; font-weight:bold; font-size:18px; margin:10px 0;">
+            <button class="btn-submit" onclick="handleRegister()">✅ تأكيد وإنشاء الحساب</button>
         </div>
-        <div class="form-group" id="storeField" style="display:none;">
-            <label>اسم المتجر</label>
-            <input type="text" id="regStoreName" placeholder="مثال: متجر الهواتف الذكية">
-        </div>
-        <button onclick="handleRegister()">إنشاء الحساب</button>
     </div>
 
     <div class="msg" id="authMsg"></div>
-    <div style="text-align:center; margin-top:15px;">
-        <a href="index.html" style="color:#666; text-decoration:none; font-size:13px;">← العودة للمتجر كزائر</a>
+
+    <div style="text-align:center; margin-top:20px;">
+        <a href="index.html" style="color:#64748b; text-decoration:none; font-size:13px; font-weight:bold;">← التصفح كزائر في المتجر</a>
     </div>
 </div>
 
@@ -84,17 +359,22 @@ const supabase = window.supabase.createClient(
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
-function switchMode(mode) {
-    if(mode === 'login') {
-        document.getElementById('loginForm').style.display = 'block';
-        document.getElementById('registerForm').style.display = 'none';
-        document.getElementById('loginTab').classList.add('active');
-        document.getElementById('registerTab').classList.remove('active');
+function switchTab(mode) {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const loginBtn = document.getElementById('loginTabBtn');
+    const registerBtn = document.getElementById('registerTabBtn');
+
+    if (mode === 'login') {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        loginBtn.classList.add('active');
+        registerBtn.classList.remove('active');
     } else {
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('registerForm').style.display = 'block';
-        document.getElementById('registerTab').classList.add('active');
-        document.getElementById('loginTab').classList.remove('active');
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        registerBtn.classList.add('active');
+        loginBtn.classList.remove('active');
     }
 }
 
@@ -103,49 +383,98 @@ function toggleStoreField() {
     document.getElementById('storeField').style.display = role === 'seller' ? 'block' : 'none';
 }
 
-async function handleRegister() {
-    const name = document.getElementById('regName').value.trim();
+function validateAge() {
+    const birthVal = document.getElementById('regBirthDate').value;
+    const warning = document.getElementById('ageWarning');
+    if (!birthVal) return false;
+
+    const birthDate = new Date(birthVal);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+
+    if (age < 18) {
+        warning.style.display = 'block';
+        return false;
+    } else {
+        warning.style.display = 'none';
+        return true;
+    }
+}
+
+let generatedOtp = "1234"; // كود افتراضي للتحقق للتجربة والسرعة
+
+function sendOtpCode() {
     const phone = document.getElementById('regPhone').value.trim();
-    const pass = document.getElementById('regPass').value.trim();
+    if (!phone || phone.length < 9) {
+        alert("❌ يرجى إدخال رقم هاتف صحيح أولاً.");
+        return;
+    }
+
+    if (!validateAge()) {
+        alert("❌ يتوجب أن يكون عمرك 18 سنة أو أكثر للتسجيل.");
+        return;
+    }
+
+    document.getElementById('otpBox').style.display = 'block';
+    document.getElementById('sendOtpBtn').style.display = 'none';
+    alert("📲 رمز التحقق التجريبي للسرعة هو: " + generatedOtp);
+}
+
+async function handleRegister() {
+    const firstName = document.getElementById('regFirstName').value.trim();
+    const lastName = document.getElementById('regLastName').value.trim();
+    const birthDate = document.getElementById('regBirthDate').value;
+    const phone = document.getElementById('regPhone').value.trim();
+    const wilaya = document.getElementById('regWilaya').value;
+    const commune = document.getElementById('regCommune').value.trim();
     const role = document.getElementById('regRole').value;
     const storeName = document.getElementById('regStoreName').value.trim();
+    const pass = document.getElementById('regPass').value.trim();
+    const otpEntered = document.getElementById('otpInput').value.trim();
     const msg = document.getElementById('authMsg');
 
-    if(!name || !phone || !pass) {
-        alert("يرجى ملء جميع الحقول الإلزامية");
+    if (!firstName || !lastName || !phone || !wilaya || !commune || !pass) {
+        alert("❌ يرجى ملء كافة البيانات الإلزامية.");
         return;
     }
 
-    if(role === 'seller' && !storeName) {
-        alert("يرجى إدخال اسم متجرك");
+    if (otpEntered !== generatedOtp) {
+        alert("❌ رمز التحقق غير صحيح!");
         return;
     }
+
+    const fullName = `${firstName} ${lastName}`;
 
     const { data, error } = await supabase.from('users').insert([{
-        full_name: name,
+        full_name: fullName,
         phone: phone,
         password: pass,
         role: role,
         store_name: role === 'seller' ? storeName : null
     }]).select();
 
-    if(error) {
+    if (error) {
         msg.style.color = '#dc2626';
-        msg.textContent = "❌ رقم الهاتف مستخدم من قبل أو حدث خطأ.";
+        msg.textContent = "❌ رقم الهاتف مستخدم سابقاً أو حدث خطأ أثناء التسجيل.";
         return;
     }
 
     msg.style.color = '#16a34a';
-    msg.textContent = "🎉 تم إنشاء الحساب بنجاح! جاري تسجيل الدخول...";
-    
+    msg.textContent = "🎉 تم إنشاء الحساب بنجاح! جاري تحويلك...";
+
     setTimeout(() => {
         localStorage.setItem("marchi_user", JSON.stringify(data[0]));
-        if(role === 'seller') {
+        if (role === 'seller') {
             window.location.href = "seller-dashboard.html";
         } else {
             window.location.href = "index.html";
         }
-    }, 1500);
+    }, 1200);
 }
 
 async function handleLogin() {
@@ -153,8 +482,8 @@ async function handleLogin() {
     const pass = document.getElementById('loginPass').value.trim();
     const msg = document.getElementById('authMsg');
 
-    if(!phone || !pass) {
-        alert("يرجى إدخال الهاتف وكلمة المرور");
+    if (!phone || !pass) {
+        alert("يرجى أدخل رقم الهاتف وكلمة المرور.");
         return;
     }
 
@@ -165,19 +494,19 @@ async function handleLogin() {
         .eq('password', pass)
         .single();
 
-    if(error || !data) {
+    if (error || !data) {
         msg.style.color = '#dc2626';
         msg.textContent = "❌ خطأ في رقم الهاتف أو كلمة المرور.";
         return;
     }
 
     localStorage.setItem("marchi_user", JSON.stringify(data));
-    
+
     msg.style.color = '#16a34a';
-    msg.textContent = "🎉 أهلاً بك! يتم توجيهك...";
+    msg.textContent = "🎉 أهلاً بك من جديد! جاري التحويل...";
 
     setTimeout(() => {
-        if(data.role === 'seller') {
+        if (data.role === 'seller') {
             window.location.href = "seller-dashboard.html";
         } else {
             window.location.href = "index.html";
