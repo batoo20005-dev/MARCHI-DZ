@@ -236,6 +236,15 @@ input:focus, select:focus{ border-color:#16a34a; }
     margin-bottom:0;
 }
 
+.fee-badge {
+    font-size: 11px;
+    background: #e0f2fe;
+    color: #0369a1;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
 .submit-order{
     width:100%;
     padding:15px;
@@ -412,6 +421,10 @@ input:focus, select:focus{ border-color:#16a34a; }
 <span>تكلفة التوصيل:</span>
 <span id="deliveryCost">600 دج</span>
 </div>
+<div class="summary-row">
+<span>رسوم خدمة المنصة:</span>
+<span id="platformFeeText" class="fee-badge">مجاني</span>
+</div>
 <div class="summary-row total">
 <span>المبلغ الصافي عند الاستلام:</span>
 <span id="grandTotal">0 دج</span>
@@ -436,7 +449,6 @@ let currentUser = JSON.parse(localStorage.getItem("marchi_user"));
 let selectedDeliveryType = 'home'; 
 let homeDeliveryPrice = 600;
 let deskDeliveryPrice = 400;
-let receiptBase64 = "";
 
 // التعبئة التلقائية لبيانات المشتري إن كان مسجلاً
 document.addEventListener("DOMContentLoaded", () => {
@@ -452,14 +464,42 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// لقراءة صورة وصل التحويل تحويلها لـ Base64
-document.getElementById("depositReceipt").addEventListener("change", function(){
-    const file = this.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e){ receiptBase64 = e.target.result; };
-    reader.readAsDataURL(file);
-});
+// 📌 دالة حساب عمولة المنصة الجديدة حسب سلم الفئات
+function calculatePlatformFee(amount) {
+    if (amount < 1000) {
+        return 0; // أقل من 1000 دج: مجاناً
+    } else if (amount >= 1000 && amount < 10000) {
+        return 20; // من 1000 دج إلى 9999 دج: 20 دج
+    } else if (amount >= 10000 && amount < 50000) {
+        return 100; // من 10000 دج إلى 49999 دج: 100 دج
+    } else if (amount >= 50000 && amount <= 100000) {
+        return 200; // من 50000 دج إلى 100000 دج: 200 دج
+    } else {
+        return 300; // فوق 100000 دج
+    }
+}
+
+// 📌 دالة رفع صورة وصل التحويل لـ Storage
+async function uploadReceiptFile(file) {
+    if (!file) return null;
+    const fileExt = file.name.split('.').pop();
+    const fileName = `receipt_${Date.now()}_${Math.floor(Math.random()*1000)}.${fileExt}`;
+
+    const { data, error } = await supabase.storage
+        .from('product-images')
+        .upload(fileName, file);
+
+    if (error) {
+        console.error("Receipt Upload Error:", error);
+        return null;
+    }
+
+    const { data: publicUrlData } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(fileName);
+
+    return publicUrlData.publicUrl;
+}
 
 function renderCart() {
     const container = document.getElementById("cartItemsContainer");
@@ -474,6 +514,7 @@ function renderCart() {
         `;
         document.getElementById("subTotal").textContent = "0 دج";
         document.getElementById("grandTotal").textContent = "0 دج";
+        document.getElementById("platformFeeText").textContent = "مجاني";
         return;
     }
 
@@ -522,9 +563,18 @@ function renderCart() {
     }
 
     let currentDeliveryFee = selectedDeliveryType === 'home' ? homeDeliveryPrice : deskDeliveryPrice;
+    let platformFee = calculatePlatformFee(subtotal);
 
     document.getElementById("subTotal").textContent = subtotal.toLocaleString() + " دج";
     document.getElementById("deliveryCost").textContent = currentDeliveryFee.toLocaleString() + " دج";
+    
+    // عرض قيمة العمولة بوضوح
+    if (platformFee === 0) {
+        document.getElementById("platformFeeText").textContent = "0 دج (مجاني < 1000 دج)";
+    } else {
+        document.getElementById("platformFeeText").textContent = platformFee.toLocaleString() + " دج";
+    }
+
     document.getElementById("grandTotal").textContent = (subtotal + currentDeliveryFee).toLocaleString() + " دج";
 }
 
@@ -571,26 +621,39 @@ async function submitOrder() {
     const phone = document.getElementById("clientPhone").value.trim();
     const wilaya = document.getElementById("clientWilaya").value;
     const commune = document.getElementById("clientCommune").value.trim();
+    const receiptFile = document.getElementById("depositReceipt").files[0];
     const button = document.getElementById("orderBtn");
 
     if (cart.length === 0) { alert("❌ سلتك فارغة!"); return; }
     if (!firstName || !lastName || !phone || !wilaya || !commune) { 
-        alert("❌ يرجى ملء كافة البيانات الحقول المطلوب (الاسم، اللقب، الهاتف، الولاية والبلدية)."); 
+        alert("❌ يرجى ملء كافة البيانات الحقول المطلوبة (الاسم، اللقب، الهاتف، الولاية والبلدية)."); 
         return; 
     }
 
     const isDepositRequired = document.getElementById("depositBox").style.display === "block";
-    if (isDepositRequired && !receiptBase64) {
+    if (isDepositRequired && !receiptFile) {
         alert("❌ يرجى إرفاق صورة وصل تحويل التسقاع عبر BaridiMob لتأكيد الطلب.");
         return;
     }
 
     button.disabled = true;
-    button.textContent = "⏳ جاري إرسال الطلب إلى البائع...";
+    button.textContent = "⏳ جاري معالجة الطلب وإرساله...";
 
     try {
+        let receiptUrl = null;
+        if (isDepositRequired && receiptFile) {
+            receiptUrl = await uploadReceiptFile(receiptFile);
+            if (!receiptUrl) {
+                throw new Error("فشل رفع صورة الوصل. أعد المحاولة.");
+            }
+        }
+
         let currentDeliveryFee = selectedDeliveryType === 'home' ? homeDeliveryPrice : deskDeliveryPrice;
         let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        
+        // حساب رسم المنصة بالفئات الجديدة
+        let platformFee = calculatePlatformFee(subtotal);
+        let sellerId = cart[0]?.seller_id || null;
 
         const { error } = await supabase.from("orders").insert([{
             client_name: `${firstName} ${lastName}`,
@@ -600,6 +663,10 @@ async function submitOrder() {
             delivery_type: selectedDeliveryType,
             items: cart,
             total_price: subtotal + currentDeliveryFee,
+            platform_fee: platformFee, // تسجيل رسم الفئة المحدد
+            seller_id: sellerId,
+            buyer_id: currentUser.id,
+            deposit_receipt_url: receiptUrl,
             unlocked: false
         }]);
 
