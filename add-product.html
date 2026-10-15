@@ -121,7 +121,7 @@ input:focus, select:focus, textarea:focus{
 }
 
 textarea{
-    min-height:130px;
+    min-height:110px;
     resize:vertical;
 }
 
@@ -134,19 +134,21 @@ textarea{
 .image-box{
     border:2px dashed #dfe5e9;
     border-radius:10px;
-    padding:25px;
+    padding:20px;
     text-align:center;
+    background:#fafafa;
 }
 
 .image-box p{
     color:#777;
-    margin-bottom:12px;
+    margin-bottom:10px;
+    font-size:14px;
 }
 
 .image-preview{
     display:none;
-    width:180px;
-    height:180px;
+    width:160px;
+    height:160px;
     object-fit:cover;
     border-radius:10px;
     margin:15px auto 0;
@@ -210,6 +212,7 @@ textarea{
     text-align:center;
     background:#dcfce7;
     color:#166534;
+    font-weight:bold;
 }
 
 .error-message{
@@ -220,6 +223,7 @@ textarea{
     text-align:center;
     background:#fee2e2;
     color:#991b1b;
+    font-weight:bold;
 }
 
 @media(max-width:600px){
@@ -257,7 +261,12 @@ textarea{
 
 <div class="form-group">
 <label>اسم المنتج *</label>
-<input type="text" id="productName" placeholder="مثال: سماعات لاسلكية">
+<input type="text" id="productName" placeholder="مثال: سماعات لاسلكية عالية الجودة">
+</div>
+
+<div class="form-group">
+<label>اسم المتجر *</label>
+<input type="text" id="storeName" value="متجر الجزائر الرقمي" placeholder="اسم متجرك في المنصة">
 </div>
 
 <div class="form-group">
@@ -291,8 +300,10 @@ textarea{
 <div class="form-group">
 <label>صورة المنتج *</label>
 <div class="image-box">
-<p>اختر صورة ممتازة لمنتجك</p>
-<input type="file" id="productImage" accept="image/*">
+<p>اختر صورة من جهازك أو ضع رابط صورة مباشر</p>
+<input type="file" id="productImageFile" accept="image/*" style="margin-bottom: 10px;">
+<div style="font-size: 12px; color: #888; margin: 5px 0;">أو</div>
+<input type="url" id="productImageUrl" placeholder="https://example.com/image.jpg">
 <img id="imagePreview" class="image-preview" alt="معاينة المنتج">
 </div>
 </div>
@@ -302,25 +313,7 @@ textarea{
 <textarea id="productDescription" placeholder="اكتب وصفًا مفصلاً للمنتج..."></textarea>
 </div>
 
-<div class="form-group">
-<label>الكمية المتوفرة *</label>
-<input type="number" id="productQuantity" placeholder="10" min="1">
-</div>
-
 <div class="form-section-title">🚚 2. خيارات التوصيل</div>
-
-<div class="form-group">
-<label>شركة التوصيل المتعامل معها</label>
-<select id="deliveryCompany">
-<option value="Yalidine">Yalidine Express</option>
-<option value="ZR Express">ZR Express</option>
-
-<option value="Anderson">Anderson Express</option>
-<option value="Kazi Tour">Kazi Tour</option>
-
-<option value="أخرى">شركة أخرى / توصيل خاص</option>
-</select>
-</div>
 
 <div class="grid-2">
 <div class="form-group">
@@ -356,7 +349,7 @@ textarea{
 <ul>
 <li>🚫 يمنع بيع أي منتج غير قانوني أو مقلد.</li>
 <li>📦 البائع مسؤول عن صحة رقم الـ RIP وسرعة شحن الطلب.</li>
-<li>💰 رسوم المنصة هي 50 دج عن كل بيعة ناجحة فوق 1000 دج.</li>
+<li>💰 رسوم المنصة هي 50 دج عن كل فتح معلومات طلبية.</li>
 </ul>
 
 <label class="agree-rules">
@@ -369,7 +362,7 @@ textarea{
 
 <button class="submit-btn" id="submitBtn" onclick="addProduct()">➕ إضافة المنتج الآن</button>
 
-<div class="message" id="message">تمت إضافة المنتج بنجاح ✅</div>
+<div class="message" id="message">تمت إضافة المنتج بنجاح ✅ جاري تحويلك للرئيسية...</div>
 <div class="error-message" id="errorMessage">حدث خطأ أثناء إضافة المنتج ❌</div>
 
 </div>
@@ -381,12 +374,21 @@ const supabase = window.supabase.createClient(
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
-document.getElementById("productImage").addEventListener("change", function(){
+let uploadedBase64Image = "";
+
+// معاينة وقراءة الصورة المرفوعة من الجهاز
+document.getElementById("productImageFile").addEventListener("change", function(){
     const file = this.files[0];
     if(!file) return;
+    
     const preview = document.getElementById("imagePreview");
     const reader = new FileReader();
-    reader.onload = function(e){ preview.src = e.target.result; preview.style.display = "block"; };
+    
+    reader.onload = function(e){ 
+        uploadedBase64Image = e.target.result;
+        preview.src = uploadedBase64Image; 
+        preview.style.display = "block"; 
+    };
     reader.readAsDataURL(file);
 });
 
@@ -397,14 +399,16 @@ function toggleDepositFields(){
 
 async function addProduct(){
     const name = document.getElementById("productName").value.trim();
+    const storeName = document.getElementById("storeName").value.trim() || 'متجر معتمد';
     const category = document.getElementById("productCategory").value;
     const price = Number(document.getElementById("productPrice").value);
     const oldPrice = Number(document.getElementById("oldPrice").value) || null;
     const description = document.getElementById("productDescription").value.trim();
-    const quantity = Number(document.getElementById("productQuantity").value);
-    const image = document.getElementById("productImage").files[0];
     
-    const deliveryCompany = document.getElementById("deliveryCompany").value;
+    // تحديد رابط الصورة (إما المرفوعة من الجهاز أو الرابط المباشر)
+    const directUrl = document.getElementById("productImageUrl").value.trim();
+    const finalImageUrl = uploadedBase64Image || directUrl || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80';
+
     const homePrice = Number(document.getElementById("homePrice").value) || 600;
     const deskPrice = Number(document.getElementById("deskPrice").value) || 400;
 
@@ -413,8 +417,11 @@ async function addProduct(){
     const agreeRules = document.getElementById("agreeRules").checked;
     const button = document.getElementById("submitBtn");
 
-    if(!name || !category || !price || !description || !quantity || !image){
-        alert("❌ يرجى ملء جميع الحقول المطلوبة واختيار صورة للمنتج.");
+    document.getElementById("message").style.display = "none";
+    document.getElementById("errorMessage").style.display = "none";
+
+    if(!name || !category || !price || !description){
+        alert("❌ يرجى ملء جميع الحقول الأساسية المطلوب الحقول (*).");
         return;
     }
 
@@ -423,46 +430,42 @@ async function addProduct(){
         return;
     }
 
-    if(!agreeRules){ alert("❌ يجب الموافقة على القوانين."); return; }
+    if(!agreeRules){ 
+        alert("❌ يجب الموافقة على القوانين والشروط."); 
+        return; 
+    }
 
     button.disabled = true;
-    button.textContent = "⏳ جاري رفع الصورة وإضافة المنتج...";
+    button.textContent = "⏳ جاري حفظ المنتج في قاعدة البيانات...";
 
     try{
-        const fileExt = image.name.split('.').pop();
-        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-
-        const { error: uploadError } = await supabase.storage.from("products").upload(fileName, image);
-        if(uploadError) throw uploadError;
-
-        const { data: publicUrlData } = supabase.storage.from("products").getPublicUrl(fileName);
-        const imageUrl = publicUrlData.publicUrl;
-
-        const { error } = await supabase.from("products").insert([{
+        const { data, error } = await supabase.from("products").insert([{
             name: name,
+            store_name: storeName,
             category: category,
             price: price,
             old_price: oldPrice,
-            description: description,
-            quantity: quantity,
-            image_url: imageUrl,
-            delivery_company: deliveryCompany,
+            image_url: finalImageUrl,
             home_price: homePrice,
             desk_price: deskPrice,
             require_deposit: requireDeposit,
-            rip_number: ripNumber
-        }]);
+            rip_number: ripNumber,
+            sales_count: 0,
+            rating: 5.0
+        }]).select();
 
         if(error) throw error;
 
         document.getElementById("message").style.display = "block";
-        alert("تمت إضافة المنتج وإعدادات التوصيل بنجاح ✅");
-        window.location.href = "index.html";
+        
+        setTimeout(() => {
+            window.location.href = "index.html";
+        }, 1200);
 
     } catch(err){
-        console.error(err);
+        console.error("Error inserting product:", err);
+        document.getElementById("errorMessage").textContent = "❌ حدث خطأ: " + (err.message || "تعذر الإضافة");
         document.getElementById("errorMessage").style.display = "block";
-        alert("❌حدث خطأ أثناء الإضافة.");
     } finally{
         button.disabled = false;
         button.textContent = "➕ إضافة المنتج الآن";
