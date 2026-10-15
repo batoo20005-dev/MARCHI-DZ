@@ -4,9 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>إضافة منتج | MARCHI DZ</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -42,12 +40,6 @@ header{
     align-items:center;
     gap:10px;
     text-decoration:none;
-}
-
-.logo img{
-    width:55px;
-    height:55px;
-    object-fit:contain;
 }
 
 .logo-name{
@@ -239,7 +231,6 @@ textarea{
 <header>
 <div class="header">
 <a href="index.html" class="logo">
-<img src="logo.png" alt="MARCHI DZ">
 <div class="logo-name">
 <span class="marchi">MARCHI</span>
 <span class="dz"> DZ</span>
@@ -338,7 +329,7 @@ textarea{
 
 <div class="deposit-options" id="depositFields">
 <div class="form-group">
-<label>رقم ה- RIP / CCP الخاص بك للتحويل *</label>
+<label>رقم الـ RIP / CCP الخاص بك للتحويل *</label>
 <input type="text" id="ripNumber" placeholder="مثال: 00799999002345678901">
 </div>
 </div>
@@ -376,7 +367,6 @@ const supabase = window.supabase.createClient(
 
 let uploadedBase64Image = "";
 
-// معاينة وقراءة الصورة المرفوعة من الجهاز
 document.getElementById("productImageFile").addEventListener("change", function(){
     const file = this.files[0];
     if(!file) return;
@@ -405,7 +395,6 @@ async function addProduct(){
     const oldPrice = Number(document.getElementById("oldPrice").value) || null;
     const description = document.getElementById("productDescription").value.trim();
     
-    // تحديد رابط الصورة (إما المرفوعة من الجهاز أو الرابط المباشر)
     const directUrl = document.getElementById("productImageUrl").value.trim();
     const finalImageUrl = uploadedBase64Image || directUrl || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80';
 
@@ -421,7 +410,7 @@ async function addProduct(){
     document.getElementById("errorMessage").style.display = "none";
 
     if(!name || !category || !price || !description){
-        alert("❌ يرجى ملء جميع الحقول الأساسية المطلوب الحقول (*).");
+        alert("❌ يرجى ملء جميع الحقول الأساسية المطلوبة (*).");
         return;
     }
 
@@ -439,7 +428,7 @@ async function addProduct(){
     button.textContent = "⏳ جاري حفظ المنتج في قاعدة البيانات...";
 
     try{
-        const { data, error } = await supabase.from("products").insert([{
+        const productPayload = {
             name: name,
             store_name: storeName,
             category: category,
@@ -452,10 +441,18 @@ async function addProduct(){
             rip_number: ripNumber,
             sales_count: 0,
             rating: 5.0
-        }]).select();
+        };
 
-        if(error) throw error;
+        console.log("Sending product:", productPayload);
 
+        const { data, error } = await supabase.from("products").insert([productPayload]).select();
+
+        if(error) {
+            console.error("Supabase Error Details:", error);
+            throw error;
+        }
+
+        console.log("Product added successfully:", data);
         document.getElementById("message").style.display = "block";
         
         setTimeout(() => {
@@ -463,9 +460,10 @@ async function addProduct(){
         }, 1200);
 
     } catch(err){
-        console.error("Error inserting product:", err);
-        document.getElementById("errorMessage").textContent = "❌ حدث خطأ: " + (err.message || "تعذر الإضافة");
-        document.getElementById("errorMessage").style.display = "block";
+        console.error("Catch Error:", err);
+        const errBox = document.getElementById("errorMessage");
+        errBox.textContent = "❌ حدث خطأ: " + (err.message || "تعذر الإضافة");
+        errBox.style.display = "block";
     } finally{
         button.disabled = false;
         button.textContent = "➕ إضافة المنتج الآن";
