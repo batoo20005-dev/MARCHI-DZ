@@ -48,7 +48,7 @@ header{
     padding:0 20px;
 }
 
-/* بطاقة المتجر والمبيعات والديون */
+/* بطاقة إحصائيات المتجر والمحفظة */
 .store-stats-card{
     background:white;
     padding:25px;
@@ -67,7 +67,52 @@ header{
 .stat-box .value.sales{ color:#16a34a; }
 .stat-box .value.wallet{ color:#0284c7; }
 
-/* شريط تقدم التوثيق بالشارة الزرقاء */
+/* بطاقة شرح نظام أرباح وعمولات المنصة للتاجر */
+.fee-info-card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:25px;
+    box-shadow:0 4px 15px rgba(0,0,0,.04);
+    border-right:5px solid #16a34a;
+}
+
+.fee-info-card h3{
+    color:#102a43;
+    font-size:16px;
+    margin-bottom:10px;
+}
+
+.fee-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+    font-size:13px;
+}
+
+.fee-table th, .fee-table td{
+    padding:8px 12px;
+    text-align:right;
+    border-bottom:1px solid #e2e8f0;
+}
+
+.fee-table th{
+    background:#f8fafc;
+    color:#475569;
+}
+
+.gift-badge{
+    display:inline-block;
+    background:#dcfce7;
+    color:#15803d;
+    padding:4px 10px;
+    border-radius:6px;
+    font-weight:bold;
+    font-size:12px;
+    margin-top:8px;
+}
+
+/* شريط تقدم التوثيق */
 .verification-card{
     background:white;
     padding:20px;
@@ -167,6 +212,17 @@ header{
 
 .unlock-btn:hover{ background:#12813b; }
 
+.instruction-box{
+    background:#f0f9ff;
+    border:1px solid #bae6fd;
+    padding:12px;
+    border-radius:8px;
+    font-size:12px;
+    color:#0369a1;
+    margin-bottom:15px;
+    line-height:1.6;
+}
+
 @media(max-width:768px){
     .store-stats-card{ grid-template-columns:1fr; }
     .order-details{ grid-template-columns:1fr; }
@@ -188,15 +244,15 @@ header{
 
 <main class="container">
 
-<!-- تنبيه بلوغ الحد الأقصى للديون (500 دج) -->
+<!-- تنبيه الديون -->
 <div class="pay-debt-banner" id="debtBanner">
     <h3>⚠️ تنبيه هام: بلغت ديونك للمنصة الحد الأقصى (500 دج أو أكثر)!</h3>
     <p>يتعذر فتح طلبات جديدة حتى تسوية مستحقات المنصة عبر BaridiMob واستئناف المبيعات أوتوماتيكياً.</p>
-    <div style="font-family:monospace; font-weight:bold; margin:10px 0; font-size:16px;">RIP المنصة: 00799999001234567890</div>
+
     <button onclick="openChargeModal()">💳 تسديد الدين / شحن المحفظة أوتوماتيكياً</button>
 </div>
 
-<!-- إحصائيات المتجر والديون والمحفظة -->
+<!-- إحصائيات المتجر والمحفظة -->
 <div class="store-stats-card">
     <div class="stat-box">
         <h3>⭐ تقييم المتجر</h3>
@@ -214,6 +270,46 @@ header{
         <h3>💰 رصيد المحفظة</h3>
         <div class="value wallet" id="sellerWallet">0 دج</div>
     </div>
+</div>
+
+<!-- بطاقة توضيحية لنظام عمولات المنصة -->
+<div class="fee-info-card">
+    <h3>📊 كيف تحسب عمولة المنصة عند فتح الطلبيات؟</h3>
+    <p style="font-size:13px; color:#475569;">
+        تستلم أموالك كاملة من الزبون، وتقوم المنصة بخصم عمولة رمزية فقط عن كل طلبية تفتحها حسب الفئات التالية:
+    </p>
+    
+    <table class="fee-table">
+        <thead>
+            <tr>
+                <th>سعر الطلبية (DZD)</th>
+                <th>عمولة المنصة</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>أقل من 1,000 دج</td>
+                <td><strong style="color:#16a34a;">0 دج (مجاناً)</strong></td>
+            </tr>
+            <tr>
+                <td>من 1,000 دج إلى 9,999 دج</td>
+                <td>20 دج</td>
+            </tr>
+            <tr>
+                <td>من 10,000 دج إلى 49,999 دج</td>
+                <td>100 دج</td>
+            </tr>
+            <tr>
+                <td>من 50,000 دج إلى 100,000 دج</td>
+                <td>200 دج</td>
+            </tr>
+            <tr>
+                <td>أكثر من 100,000 دج</td>
+                <td>300 دج</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="gift-badge">🎁 تحصيل 500 دج كهدية ترحيبية مجانية في محفظتك عند التسجيل لتجربة المتجر!</div>
 </div>
 
 <!-- زر تسوية الديون وشحن المحفظة -->
@@ -243,27 +339,37 @@ header{
 
 <!-- نافذة الشحن وتسديد الديون الأوتوماتيكي -->
 <div class="charge-modal" id="chargeModal" style="display:none; position:fixed; top:0; right:0; bottom:0; left:0; background:rgba(0,0,0,0.6); z-index:2000; align-items:center; justify-content:center;">
-    <div style="background:white; max-width:500px; width:90%; padding:25px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+    <div style="background:white; max-width:520px; width:90%; padding:25px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.2); max-height:90vh; overflow-y:auto;">
         <h3 style="margin-bottom:10px; color:#102a43;">💳 تسديد الدين وشحن المحفظة أوتوماتيكياً</h3>
+        
+        <!-- دليل تعليمي للتاجر -->
+        <div class="instruction-box">
+            <strong>📌 طريقة الشحن بالوصل الأوتوماتيكي:</strong><br>
+            1️⃣ افتح تطبيق <b>BaridiMob</b> وحوّل المبلغ إلى RIP المنصة.<br>
+            2️⃣ اضغط على <b>"تنزيل الوصل" (Télécharger le Reçu)</b> من التطبيق أو خذ لقطة شاشة (Screenshot) واضحة للـ <b>QR Code</b> الموجود أسفل الوصل.<br>
+            3️⃣ ارفع الصورة هنا ليقرأها النظام فوراً ويقوم بتسديد دينك واحتساب الباقي في محفظتك!
+        </div>
+
         <p style="font-size:13px; color:#666; margin-bottom:15px;">
-            حول المبلغ عبر BaridiMob إلى RIP المنصة: <br>
-            <strong style="color:#16a34a; font-family:monospace; font-size:15px;">00799999001234567890</strong>
+            RIP المنصة لاستلام التحويلات: <br>
+            <strong style="color:#16a34a; font-family:monospace; font-size:16px;">00799999001234567890</strong>
         </p>
 
-        <div style="margin-bottom:15px;">
+        <div style="margin-bottom:12px;">
             <label style="font-size:13px; font-weight:bold; display:block; margin-bottom:5px;">المبلغ المحوّل (دج) *</label>
             <input type="number" id="payAmount" placeholder="مثال: 2000" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px;">
         </div>
 
-        <div style="margin-bottom:15px;">
-            <label style="font-size:13px; font-weight:bold; display:block; margin-bottom:5px;">رمز المعاملة / رقم الوصل *</label>
+        <div style="margin-bottom:12px;">
+            <label style="font-size:13px; font-weight:bold; display:block; margin-bottom:5px;">رقم المعاملة / N° Transaction (موجود بالوصل) *</label>
             <input type="text" id="payTxRef" placeholder="مثال: 009823412" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px;">
         </div>
 
         <!-- قسم رفع وصل BaridiMob -->
         <div style="background:#f8fafc; padding:15px; border-radius:12px; border:2px dashed #16a34a; text-align:center;">
-            <h4>📷 ارفع صورة وصل BaridiMob (Reçu)</h4>
-            <input type="file" id="payReceiptFile" accept="image/*" style="margin-top:8px;">
+            <h4>📷 ارفع صورة وصل BaridiMob المكتمل (Reçu)</h4>
+            <p style="font-size:11px; color:#64748b; margin-top:4px;">تأكد من وضوح مربع الـ QR Code في الصورة</p>
+            <input type="file" id="payReceiptFile" accept="image/*" style="margin-top:10px;">
             <div id="qrStatus" style="margin-top:8px; font-weight:bold; font-size:13px;"></div>
         </div>
 
@@ -294,7 +400,7 @@ let sellerData = {
     sales_count: currentUser.sales_count || 120,
     rating: 4.8,
     debt: currentUser.platform_debt || 0,
-    wallet: currentUser.wallet_balance || 500 // هدية ترحيبية تجريبية 500 دج
+    wallet: currentUser.wallet_balance || 500
 };
 
 document.getElementById("storeTitleHeader").textContent = sellerData.store_name;
@@ -366,8 +472,8 @@ async function loadOrders() {
                 ${!isUnlocked ? `
                 <div style="background:#fffbeb; border:1px dashed #f59e0b; padding:15px; border-radius:10px; text-align:center; margin-top:15px;">
                     <p style="color:#b45309; font-weight:bold;">🔒 معلومات الزبون ورقم الهاتف مغلقة!</p>
-                    <p style="font-size:13px; color:#78350f; margin-top:3px;">فتح الطلبية يخصم عمولة المنصة أو يسحبها من رصيد محفظتك.</p>
-                    <button class="unlock-btn" onclick="unlockOrder(${order.id},${order.platform_fee || 50})">🔓 فتح ومعاينة معلومات الزبون</button>
+                    <p style="font-size:13px; color:#78350f; margin-top:3px;">فتح الطلبية يخصم عمولة المنصة (${order.platform_fee || 20} دج) من رصيد محفظتك أو يضيفها لديونك.</p>
+                    <button class="unlock-btn" onclick="unlockOrder(${order.id},${order.platform_fee || 20})">🔓 فتح ومعاينة معلومات الزبون</button>
                 </div>
                 ` : `
                 <div style="margin-top:12px; color:#16a34a; font-weight:bold;">✅ تم فتح الطلب بنجاح.</div>
@@ -391,18 +497,15 @@ async function unlockOrder(orderId, orderFee) {
     }
 
     if (confirm(`هل تريد فتح معلومات هذه الطلبية؟ (عمولة المنصة: ${orderFee} دج)`)) {
-        // إذا كان لديه رصيد في المحفظة، نخصم منه أولاً
         if (sellerData.wallet >= orderFee) {
             sellerData.wallet -= orderFee;
         } else {
-            // إذا لم يكفِ الرصيد، يضاف لدين المنصة
             sellerData.debt += orderFee;
         }
 
         sellerData.sales_count += 1;
         updateDashboardUI();
         
-        // تحديث قاعدة البيانات
         await supabase.from('users').update({
             platform_debt: sellerData.debt,
             wallet_balance: sellerData.wallet,
@@ -432,7 +535,6 @@ async function handleSellerPaymentSubmit() {
     submitBtn.textContent = "⏳ جاري المعالجة والأتمتة...";
 
     try {
-        // 1. رفع صورة الوصل لـ Storage
         const fileExt = receiptFile.name.split('.').pop();
         const fileName = `pay_${Date.now()}_${Math.floor(Math.random()*1000)}.${fileExt}`;
 
@@ -448,7 +550,6 @@ async function handleSellerPaymentSubmit() {
 
         const receiptUrl = publicUrlData.publicUrl;
 
-        // 2. تطبيق خوارزمية تسديد الدين + تحويل المتبقي للمحفظة
         let currentDebt = sellerData.debt;
         let newDebt = 0;
         let addedToWallet = 0;
@@ -463,7 +564,6 @@ async function handleSellerPaymentSubmit() {
 
         let finalWallet = sellerData.wallet + addedToWallet;
 
-        // 3. تحديث جدول المستخدمين في قاعدة البيانات أوتوماتيكياً
         const { error: updateErr } = await supabase
             .from('users')
             .update({ 
