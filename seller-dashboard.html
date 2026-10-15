@@ -54,17 +54,18 @@ header{
     padding:25px;
     border-radius:15px;
     display:grid;
-    grid-template-columns:repeat(3, 1fr);
+    grid-template-columns:repeat(4, 1fr);
     gap:20px;
     margin-bottom:20px;
     box-shadow:0 4px 15px rgba(0,0,0,.04);
     text-align:center;
 }
 
-.stat-box h3{ font-size:14px; color:#64748b; margin-bottom:5px; }
-.stat-box .value{ font-size:24px; font-weight:bold; color:#102a43; }
+.stat-box h3{ font-size:13px; color:#64748b; margin-bottom:5px; }
+.stat-box .value{ font-size:22px; font-weight:bold; color:#102a43; }
 .stat-box .value.debt{ color:#dc2626; }
 .stat-box .value.sales{ color:#16a34a; }
+.stat-box .value.wallet{ color:#0284c7; }
 
 /* شريط تقدم التوثيق بالشارة الزرقاء */
 .verification-card{
@@ -192,10 +193,10 @@ header{
     <h3>⚠️ تنبيه هام: بلغت ديونك للمنصة الحد الأقصى (500 دج أو أكثر)!</h3>
     <p>يتعذر فتح طلبات جديدة حتى تسوية مستحقات المنصة عبر BaridiMob واستئناف المبيعات أوتوماتيكياً.</p>
     <div style="font-family:monospace; font-weight:bold; margin:10px 0; font-size:16px;">RIP المنصة: 00799999001234567890</div>
-    <button onclick="openChargeModal()">⚡ شحن الرصيد وقراءة الوصل أوتوماتيكياً</button>
+    <button onclick="openChargeModal()">💳 تسديد الدين / شحن المحفظة أوتوماتيكياً</button>
 </div>
 
-<!-- إحصائيات المتجر والديون -->
+<!-- إحصائيات المتجر والديون والمحفظة -->
 <div class="store-stats-card">
     <div class="stat-box">
         <h3>⭐ تقييم المتجر</h3>
@@ -206,14 +207,18 @@ header{
         <div class="value sales" id="totalSalesCount">0 مبيعة</div>
     </div>
     <div class="stat-box">
-        <h3>💳 الديون المستحقة للمنصة</h3>
+        <h3>💳 الديون المستحقة</h3>
         <div class="value debt" id="sellerDebt">0 دج</div>
+    </div>
+    <div class="stat-box">
+        <h3>💰 رصيد المحفظة</h3>
+        <div class="value wallet" id="sellerWallet">0 دج</div>
     </div>
 </div>
 
-<!-- زر تسوية الديون في أي وقت -->
+<!-- زر تسوية الديون وشحن المحفظة -->
 <div style="text-align:left; margin-bottom:20px;">
-    <button onclick="openChargeModal()" style="background:#102a43; color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">💳 شحن رصيد الطلبيات عبر BaridiMob</button>
+    <button onclick="openChargeModal()" style="background:#16a34a; color:white; border:none; padding:12px 22px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:15px;">💳 تسديد الدين / شحن محفظة البائع</button>
 </div>
 
 <!-- شريط تقدم التوثيق بالشارة الزرقاء ✔️ -->
@@ -236,29 +241,35 @@ header{
 
 </main>
 
-<!-- نافذة الشحن الأوتوماتيكي وقراءة الـ QR Code -->
+<!-- نافذة الشحن وتسديد الديون الأوتوماتيكي -->
 <div class="charge-modal" id="chargeModal" style="display:none; position:fixed; top:0; right:0; bottom:0; left:0; background:rgba(0,0,0,0.6); z-index:2000; align-items:center; justify-content:center;">
     <div style="background:white; max-width:500px; width:90%; padding:25px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
-        <h3 style="margin-bottom:10px; color:#102a43;">⚡ الشحن الأوتوماتيكي الفوري</h3>
+        <h3 style="margin-bottom:10px; color:#102a43;">💳 تسديد الدين وشحن المحفظة أوتوماتيكياً</h3>
         <p style="font-size:13px; color:#666; margin-bottom:15px;">
             حول المبلغ عبر BaridiMob إلى RIP المنصة: <br>
             <strong style="color:#16a34a; font-family:monospace; font-size:15px;">00799999001234567890</strong>
         </p>
 
-        <!-- قسم رفع وصل BaridiMob وقراءة الـ QR -->
-        <div style="background:#f8fafc; padding:20px; border-radius:12px; border:2px dashed #16a34a; text-align:center;">
-            <h4>📷 ارفع صورة وصل BaridiMob (Reçu)</h4>
-            <p style="font-size:12px; color:#666; margin:8px 0;">سيقرأ النظام الـ QR Code أوتوماتيكياً ويضيف الطلبيات ويصفر ديونك في الحال.</p>
-            
-            <input type="file" id="qrFileInput" accept="image/*" style="display:none;" onchange="handleQRUpload(event)">
-            <button onclick="document.getElementById('qrFileInput').click()" style="background:#16a34a; color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">
-                📤 اختيار صورة وصل التحويل
-            </button>
-            <div id="qrStatus" style="margin-top:10px; font-weight:bold; font-size:13px;"></div>
+        <div style="margin-bottom:15px;">
+            <label style="font-size:13px; font-weight:bold; display:block; margin-bottom:5px;">المبلغ المحوّل (دج) *</label>
+            <input type="number" id="payAmount" placeholder="مثال: 2000" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px;">
         </div>
 
-        <div style="text-align:left; margin-top:20px;">
-            <button onclick="closeChargeModal()" style="padding:10px 20px; background:#e2e8f0; color:#333; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">إغلاق النافذة</button>
+        <div style="margin-bottom:15px;">
+            <label style="font-size:13px; font-weight:bold; display:block; margin-bottom:5px;">رمز المعاملة / رقم الوصل *</label>
+            <input type="text" id="payTxRef" placeholder="مثال: 009823412" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px;">
+        </div>
+
+        <!-- قسم رفع وصل BaridiMob -->
+        <div style="background:#f8fafc; padding:15px; border-radius:12px; border:2px dashed #16a34a; text-align:center;">
+            <h4>📷 ارفع صورة وصل BaridiMob (Reçu)</h4>
+            <input type="file" id="payReceiptFile" accept="image/*" style="margin-top:8px;">
+            <div id="qrStatus" style="margin-top:8px; font-weight:bold; font-size:13px;"></div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button onclick="handleSellerPaymentSubmit()" id="paySubmitBtn" style="flex:1; background:#16a34a; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">تأكيد الدفع والتسوية</button>
+            <button onclick="closeChargeModal()" style="padding:10px 20px; background:#e2e8f0; color:#333; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">إغلاق</button>
         </div>
     </div>
 </div>
@@ -269,7 +280,7 @@ const supabase = window.supabase.createClient(
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
-// 🔒 حماية صفحة لوحة التحكم (التحقق أن المستخدم تاجر مسجل دخول)
+// 🔒 حماية صفحة لوحة التحكم
 let currentUser = JSON.parse(localStorage.getItem("marchi_user"));
 
 if (!currentUser || currentUser.role !== 'seller') {
@@ -282,7 +293,8 @@ let sellerData = {
     store_name: currentUser.store_name || "متجري",
     sales_count: currentUser.sales_count || 120,
     rating: 4.8,
-    debt: currentUser.debt || 0
+    debt: currentUser.platform_debt || 0,
+    wallet: currentUser.wallet_balance || 500 // هدية ترحيبية تجريبية 500 دج
 };
 
 document.getElementById("storeTitleHeader").textContent = sellerData.store_name;
@@ -290,6 +302,7 @@ document.getElementById("storeTitleHeader").textContent = sellerData.store_name;
 function updateDashboardUI() {
     document.getElementById("totalSalesCount").textContent = sellerData.sales_count + " مبيعة";
     document.getElementById("sellerDebt").textContent = sellerData.debt + " دج";
+    document.getElementById("sellerWallet").textContent = (sellerData.wallet || 0).toLocaleString() + " دج";
     document.getElementById("storeRating").textContent = sellerData.rating.toFixed(1) + " / 5.0";
 
     const progressPercent = Math.min((sellerData.sales_count / 1000) * 100, 100);
@@ -353,11 +366,11 @@ async function loadOrders() {
                 ${!isUnlocked ? `
                 <div style="background:#fffbeb; border:1px dashed #f59e0b; padding:15px; border-radius:10px; text-align:center; margin-top:15px;">
                     <p style="color:#b45309; font-weight:bold;">🔒 معلومات الزبون ورقم الهاتف مغلقة!</p>
-                    <p style="font-size:13px; color:#78350f; margin-top:3px;">فتح الطلبية يضيف 50 دج إلى ديونك للمنصة ويزيد عدد مبيعاتك الناجحة +1.</p>
-                    <button class="unlock-btn" onclick="unlockOrder(${order.id})">🔓 فتح ومعاينة معلومات الزبون</button>
+                    <p style="font-size:13px; color:#78350f; margin-top:3px;">فتح الطلبية يخصم عمولة المنصة أو يسحبها من رصيد محفظتك.</p>
+                    <button class="unlock-btn" onclick="unlockOrder(${order.id},${order.platform_fee || 50})">🔓 فتح ومعاينة معلومات الزبون</button>
                 </div>
                 ` : `
-                <div style="margin-top:12px; color:#16a34a; font-weight:bold;">✅ تم فتح الطلب بنجاح. أضيفت 50 دج لديونك.</div>
+                <div style="margin-top:12px; color:#16a34a; font-weight:bold;">✅ تم فتح الطلب بنجاح.</div>
                 `}
             </div>
             `;
@@ -370,18 +383,32 @@ async function loadOrders() {
     }
 }
 
-async function unlockOrder(orderId) {
+async function unlockOrder(orderId, orderFee) {
     if (sellerData.debt >= 500) {
-        alert("❌ وصلت ديونك إلى الحد الأقصى (500 دج). يرجى تسوية مستحقات المنصة أوتوماتيكياً عبر شحن الرصيد.");
+        alert("❌ وصلت ديونك إلى الحد الأقصى (500 دج). يرجى شحن الرصيد لتسوية الديون.");
         openChargeModal();
         return;
     }
 
-    if (confirm("هل تريد فتح معلومات هذه الطلبية؟ (سيتم تسجيل 50 دج كدين للمنصة وزيادة عداد مبيعاتك بـ +1)")) {
-        sellerData.debt += 50;
+    if (confirm(`هل تريد فتح معلومات هذه الطلبية؟ (عمولة المنصة: ${orderFee} دج)`)) {
+        // إذا كان لديه رصيد في المحفظة، نخصم منه أولاً
+        if (sellerData.wallet >= orderFee) {
+            sellerData.wallet -= orderFee;
+        } else {
+            // إذا لم يكفِ الرصيد، يضاف لدين المنصة
+            sellerData.debt += orderFee;
+        }
+
         sellerData.sales_count += 1;
         updateDashboardUI();
         
+        // تحديث قاعدة البيانات
+        await supabase.from('users').update({
+            platform_debt: sellerData.debt,
+            wallet_balance: sellerData.wallet,
+            sales_count: sellerData.sales_count
+        }).eq('id', sellerData.id);
+
         await supabase.from('orders').update({ unlocked: true }).eq('id', orderId);
         
         alert("🎉 تم فتح معلومات الطلب ورقم الهاتف بنجاح!");
@@ -389,98 +416,77 @@ async function unlockOrder(orderId) {
     }
 }
 
-// دالة فحص ومعالجة الـ QR Code من صورة الوصل المرفوعة
-async function handleQRUpload(event) {
-    const file = event.target.files[0];
-    const statusDiv = document.getElementById("qrStatus");
-    
-    if (!file) return;
+// 📌 معالجة تسديد الديون وشحن المحفظة أوتوماتيكياً
+async function handleSellerPaymentSubmit() {
+    const amountPaid = parseFloat(document.getElementById('payAmount').value);
+    const txRef = document.getElementById('payTxRef').value.trim();
+    const receiptFile = document.getElementById('payReceiptFile').files[0];
+    const submitBtn = document.getElementById('paySubmitBtn');
 
-    statusDiv.style.color = "#0284c7";
-    statusDiv.textContent = "⏳ جاري قراءة الـ QR Code وفحص وصل BaridiMob...";
+    if (!amountPaid || amountPaid <= 0 || !txRef || !receiptFile) {
+        alert("❌ يرجى إدخال المبلغ، رقم المعاملة، وإرفاق صورة وصل التحويل.");
+        return;
+    }
 
-    const html5QrCode = new Html5Qrcode("qrStatus");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "⏳ جاري المعالجة والأتمتة...";
 
     try {
-        const decodedText = await html5QrCode.scanFile(file, true);
-        const parsedData = parseBaridiMobQR(decodedText);
+        // 1. رفع صورة الوصل لـ Storage
+        const fileExt = receiptFile.name.split('.').pop();
+        const fileName = `pay_${Date.now()}_${Math.floor(Math.random()*1000)}.${fileExt}`;
 
-        if (!parsedData || !parsedData.txNumber) {
-            statusDiv.style.color = "#dc2626";
-            statusDiv.textContent = "❌ الـ QR Code غير واضح أو ليس وصل BaridiMob رسمي!";
-            return;
+        const { data: uploadData, error: uploadErr } = await supabase.storage
+            .from('product-images')
+            .upload(fileName, receiptFile);
+
+        if (uploadErr) throw new Error("فشل رفع الوصل: " + uploadErr.message);
+
+        const { data: publicUrlData } = supabase.storage
+            .from('product-images')
+            .getPublicUrl(fileName);
+
+        const receiptUrl = publicUrlData.publicUrl;
+
+        // 2. تطبيق خوارزمية تسديد الدين + تحويل المتبقي للمحفظة
+        let currentDebt = sellerData.debt;
+        let newDebt = 0;
+        let addedToWallet = 0;
+
+        if (amountPaid >= currentDebt) {
+            addedToWallet = amountPaid - currentDebt;
+            newDebt = 0;
+        } else {
+            newDebt = currentDebt - amountPaid;
+            addedToWallet = 0;
         }
 
-        // فحص هل تم استخدام رقم المعاملة من قبل
-        const { data: existingTx } = await supabase
-            .from('transactions')
-            .select('tx_number')
-            .eq('tx_number', parsedData.txNumber)
-            .single();
+        let finalWallet = sellerData.wallet + addedToWallet;
 
-        if (existingTx) {
-            statusDiv.style.color = "#dc2626";
-            statusDiv.textContent = "⚠️ خطأ: تم استخدام رقم هذا الوصل من قبل! ممنوع تكرار الشحن.";
-            return;
-        }
+        // 3. تحديث جدول المستخدمين في قاعدة البيانات أوتوماتيكياً
+        const { error: updateErr } = await supabase
+            .from('users')
+            .update({ 
+                platform_debt: newDebt,
+                wallet_balance: finalWallet
+            })
+            .eq('id', sellerData.id);
 
-        const amount = parsedData.amount || 500;
-        const ordersAllowed = Math.floor(amount / 50);
+        if (updateErr) throw updateErr;
 
-        if (ordersAllowed < 1) {
-            statusDiv.style.color = "#dc2626";
-            statusDiv.textContent = "❌ المبلغ المحول في الوصل أقل من 50 دج.";
-            return;
-        }
-
-        // حفظ المعاملة لحظرها مستقبلاً
-        await supabase.from('transactions').insert([{
-            tx_number: parsedData.txNumber,
-            seller_id: sellerData.id,
-            amount: amount,
-            orders_added: ordersAllowed
-        }]);
-
-        // تصفير أو تخفيض الدين فوري
-        sellerData.debt = Math.max(0, sellerData.debt - amount);
+        sellerData.debt = newDebt;
+        sellerData.wallet = finalWallet;
         updateDashboardUI();
 
-        statusDiv.style.color = "#16a34a";
-        statusDiv.textContent = `🎉 تم الشحن الأوتوماتيكي بنجاح! المبلغ: ${amount} دج = فتحت ${ordersAllowed} طلبية.`;
-
-        setTimeout(() => {
-            closeChargeModal();
-            loadOrders();
-        }, 2500);
+        alert(`🎉 تمت عملية الشحن والتسوية أوتوماتيكياً بنجاح!\n- الدين المتبقي: ${newDebt} دج\n- الرصيد الجديد في محفظتك: ${finalWallet.toLocaleString()} دج`);
+        closeChargeModal();
 
     } catch (err) {
         console.error(err);
-        statusDiv.style.color = "#dc2626";
-        statusDiv.textContent = "❌ تعذر قراءة الـ QR Code. تأكد من أن الصورة واضحة ومخزنة من تطبيق BaridiMob مباشرة.";
-    }
-}
-
-function parseBaridiMobQR(qrText) {
-    try {
-        let txNumber = "";
-        let amount = 0;
-
-        const txMatch = qrText.match(/(?:TX|TRANS|REF)[:=]?\s*([A-Za-z0-9]+)/i) || qrText.match(/\b\d{9,15}\b/);
-        const amtMatch = qrText.match(/(?:AMT|MONTANT|DA)[:=]?\s*(\d+(?:\.\d+)?)/i);
-
-        if (txMatch) txNumber = txMatch[1] || txMatch[0];
-        if (amtMatch) amount = parseFloat(amtMatch[1]);
-
-        if (!txNumber && qrText.length > 8) {
-            txNumber = qrText.trim();
-        }
-
-        return {
-            txNumber: txNumber,
-            amount: amount || 500
-        };
-    } catch (e) {
-        return null;
+        alert("❌ حدث خطأ: " + err.message);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "تأكيد الدفع والتسوية";
     }
 }
 
