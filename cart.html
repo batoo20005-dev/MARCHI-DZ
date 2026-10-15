@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>سلة المشتريات وإتمام الطلب | MARCHI DZ</title>
 
-<!-- مكتبة Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -77,7 +76,6 @@ header{
     gap:30px;
 }
 
-/* قائمة المنتجات */
 .cart-items{
     background:white;
     padding:25px;
@@ -93,9 +91,7 @@ header{
     border-bottom:1px solid #f0f2f4;
 }
 
-.cart-item:last-child{
-    border-bottom:none;
-}
+.cart-item:last-child{ border-bottom:none; }
 
 .cart-item img{
     width:80px;
@@ -135,7 +131,6 @@ header{
     padding:5px;
 }
 
-/* استمارة الشراء */
 .checkout-box{
     background:white;
     padding:25px;
@@ -152,6 +147,12 @@ header{
 }
 
 .form-group{ margin-bottom:15px; }
+
+.grid-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
 
 label{
     display:block;
@@ -171,7 +172,6 @@ input, select{
 
 input:focus, select:focus{ border-color:#16a34a; }
 
-/* خيارات التوصيل */
 .delivery-options{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -180,12 +180,13 @@ input:focus, select:focus{ border-color:#16a34a; }
 }
 
 .delivery-card{
-    border:1px solid #dfe5e9;
+    border:2px solid #dfe5e9;
     border-radius:8px;
     padding:12px;
     text-align:center;
     cursor:pointer;
     transition:.2s;
+    user-select:none;
 }
 
 .delivery-card.active{
@@ -193,9 +194,6 @@ input:focus, select:focus{ border-color:#16a34a; }
     background:#f0fdf4;
 }
 
-.delivery-card input{ display:none; }
-
-/* صندوق دفع العربون */
 .deposit-box{
     display:none;
     background:#fffbeb;
@@ -266,6 +264,7 @@ input:focus, select:focus{ border-color:#16a34a; }
 
 @media(max-width:800px){
     .cart-layout{ grid-template-columns:1fr; }
+    .grid-2{ grid-template-columns:1fr; }
 }
 </style>
 </head>
@@ -299,9 +298,15 @@ input:focus, select:focus{ border-color:#16a34a; }
 <div class="checkout-box">
 <h2>📦 طريقة الاستلام ومعلومات التوصيل</h2>
 
-<div class="form-group">
-<label>الاسم واللقب *</label>
-<input type="text" id="clientName" placeholder="مثال: محمد بن علي">
+<div class="grid-2">
+    <div class="form-group">
+    <label>الاسم *</label>
+    <input type="text" id="clientFirstName" placeholder="مثال: محمد">
+    </div>
+    <div class="form-group">
+    <label>اللقب *</label>
+    <input type="text" id="clientLastName" placeholder="مثال: بن علي">
+    </div>
 </div>
 
 <div class="form-group">
@@ -309,9 +314,75 @@ input:focus, select:focus{ border-color:#16a34a; }
 <input type="tel" id="clientPhone" placeholder="06XXXXXXXX / 05XXXXXXXX / 07XXXXXXXX">
 </div>
 
-<div class="form-group">
-<label>الولاية والبلدية *</label>
-<input type="text" id="clientAddress" placeholder="مثال: باتنة - بلدية عين التوتة">
+<div class="grid-2">
+    <div class="form-group">
+    <label>الولاية *</label>
+    <select id="clientWilaya">
+        <option value="">اختر الولاية (58 ولاية)</option>
+        <option value="01">01 - أدرار</option>
+        <option value="02">02 - الشلف</option>
+        <option value="03">03 - الأغواط</option>
+        <option value="04">04 - أم البواقي</option>
+        <option value="05">05 - باتنة</option>
+        <option value="06">06 - بجاية</option>
+        <option value="07">07 - بسكرة</option>
+        <option value="08">08 - بشار</option>
+        <option value="09">09 - البليدة</option>
+        <option value="10">10 - البويرة</option>
+        <option value="11">11 - تمنراست</option>
+        <option value="12">12 - تبسة</option>
+        <option value="13">13 - تلمسان</option>
+        <option value="14">14 - تيارت</option>
+        <option value="15">15 - تيزي وزو</option>
+        <option value="16">16 - الجزائر</option>
+        <option value="17">17 - الجلفة</option>
+        <option value="18">18 - جيجل</option>
+        <option value="19">19 - سطيف</option>
+        <option value="20">20 - سعيدة</option>
+        <option value="21">21 - سكيكدة</option>
+        <option value="22">22 - سيدي بلعباس</option>
+        <option value="23">23 - عنابة</option>
+        <option value="24">24 - قالمة</option>
+        <option value="25">25 - قسنطينة</option>
+        <option value="26">26 - المدية</option>
+        <option value="27">27 - مستغانم</option>
+        <option value="28">28 - المسيلة</option>
+        <option value="29">29 - معسكر</option>
+        <option value="30">30 - ورقلة</option>
+        <option value="31">31 - وهران</option>
+        <option value="32">32 - البيض</option>
+        <option value="33">33 - إليزي</option>
+        <option value="34">34 - برج بوعريريج</option>
+        <option value="35">35 - بومرداس</option>
+        <option value="36">36 - الطارف</option>
+        <option value="37">37 - تندوف</option>
+        <option value="38">38 - تسمسيلت</option>
+        <option value="39">39 - الوادي</option>
+        <option value="40">40 - خنشلة</option>
+        <option value="41">41 - سوق أهراس</option>
+        <option value="42">42 - تيبازة</option>
+        <option value="43">43 - ميلة</option>
+        <option value="44">44 - عين الدفلى</option>
+        <option value="45">45 - النعامة</option>
+        <option value="46">46 - عين تموشنت</option>
+        <option value="47">47 - غرداية</option>
+        <option value="48">48 - غليزان</option>
+        <option value="49">49 - تيميمون</option>
+        <option value="50">50 - برج باجي مختار</option>
+        <option value="51">51 - أولاد جلال</option>
+        <option value="52">52 - بني عباس</option>
+        <option value="53">53 - إن صالح</option>
+        <option value="54">54 - إن قزام</option>
+        <option value="55">55 - تقرت</option>
+        <option value="56">56 - جانت</option>
+        <option value="57">57 - المغير</option>
+        <option value="58">58 - المنيعة</option>
+    </select>
+    </div>
+    <div class="form-group">
+    <label>البلدية والعنوان *</label>
+    <input type="text" id="clientCommune" placeholder="مثال: عين التوتة - حي النصر">
+    </div>
 </div>
 
 <!-- نوع التوصيل -->
@@ -320,22 +391,22 @@ input:focus, select:focus{ border-color:#16a34a; }
 <div class="delivery-options">
     <div class="delivery-card active" id="typeHome" onclick="selectDeliveryType('home')">
         <strong>🏠 للمنزل</strong>
-        <div id="homePriceText">500 دج</div>
+        <div id="homePriceText">600 دج</div>
     </div>
     <div class="delivery-card" id="typeDesk" onclick="selectDeliveryType('desk')">
         <strong>🏢 للمكتب / Stop Desk</strong>
-        <div id="deskPriceText">300 دج</div>
+        <div id="deskPriceText">400 دج</div>
     </div>
 </div>
 </div>
 
-<!-- صندوق دفـع تسقاع / عربون الضمان إذا كان مفعل من البائع -->
+<!-- صندوق دفع العربون -->
 <div class="deposit-box" id="depositBox">
     <h4>⚠️ تنبيه: ضمان حجز الطلب (عربون التسقاع)</h4>
-    <p style="font-size: 12px; color: #78350f;">يشترط البائع تحويل مبلغ تسقاع لضمان جدية الطلب وعدم الإرجاع. يتم خصم هذا المبلغ من سعر المنتج الإجمالي عند الاستلام.</p>
-    <div class="rip-number" id="ripDisplay">RIP: 00799999000000000000</div>
+    <p style="font-size: 12px; color: #78350f;">يشترط البائع تحويل مبلغ تسقاع عبر BaridiMob لضمان جدية الطلب. يتم خصم هذا المبلغ عند الاستلام.</p>
+    <div class="rip-number" id="ripDisplay">CCP / RIP البائع: ...</div>
     
-    <label style="margin-top: 10px;">إرفاق صورة الوصل (Reçu BaridiMob) *</label>
+    <label style="margin-top: 10px;">إرفاق صورة وصل التحويل (BaridiMob) *</label>
     <input type="file" id="depositReceipt" accept="image/*">
 </div>
 
@@ -346,7 +417,7 @@ input:focus, select:focus{ border-color:#16a34a; }
 </div>
 <div class="summary-row">
 <span>تكلفة التوصيل:</span>
-<span id="deliveryCost">500 دج</span>
+<span id="deliveryCost">600 دج</span>
 </div>
 <div class="summary-row total">
 <span>المبلغ الصافي عند الاستلام:</span>
@@ -369,7 +440,6 @@ const supabase = window.supabase.createClient(
 let cart = JSON.parse(localStorage.getItem("marchiCart")) || [];
 let selectedDeliveryType = 'home'; 
 
-// أسعار افتراضية للتوصيل (يتم تحديثها تلقائياً حسب إعدادات البائع في المنتج)
 let homeDeliveryPrice = 600;
 let deskDeliveryPrice = 400;
 
@@ -397,7 +467,6 @@ function renderCart() {
     cart.forEach((item, index) => {
         subtotal += item.price * item.quantity;
         
-        // تفقد إعدادات التوصيل والضمان من المنتج الأول في السلة
         if(item.home_price) homeDeliveryPrice = item.home_price;
         if(item.desk_price) deskDeliveryPrice = item.desk_price;
         if(item.require_deposit) {
@@ -424,11 +493,9 @@ function renderCart() {
 
     container.innerHTML = itemsHTML;
 
-    // تحديث واجهة التوصيل
     document.getElementById("homePriceText").textContent = homeDeliveryPrice.toLocaleString() + " دج";
     document.getElementById("deskPriceText").textContent = deskDeliveryPrice.toLocaleString() + " دج";
 
-    // تفعيل خيار التسقاع عبر BaridiMob لو البائع طالبه
     if(requireDeposit) {
         document.getElementById("depositBox").style.display = "block";
         document.getElementById("ripDisplay").textContent = "CCP / RIP البائع: " + ripNumber;
@@ -445,8 +512,18 @@ function renderCart() {
 
 function selectDeliveryType(type) {
     selectedDeliveryType = type;
-    document.getElementById("typeHome").classList.toggle("active", type === 'home');
-    document.getElementById("typeDesk").classList.toggle("active", type === 'desk');
+    
+    const homeBtn = document.getElementById("typeHome");
+    const deskBtn = document.getElementById("typeDesk");
+
+    if (type === 'home') {
+        homeBtn.classList.add("active");
+        deskBtn.classList.remove("active");
+    } else {
+        deskBtn.classList.add("active");
+        homeBtn.classList.remove("active");
+    }
+    
     renderCart();
 }
 
@@ -464,14 +541,19 @@ function removeItem(index) {
 }
 
 async function submitOrder() {
-    const name = document.getElementById("clientName").value.trim();
+    const firstName = document.getElementById("clientFirstName").value.trim();
+    const lastName = document.getElementById("clientLastName").value.trim();
     const phone = document.getElementById("clientPhone").value.trim();
-    const address = document.getElementById("clientAddress").value.trim();
+    const wilaya = document.getElementById("clientWilaya").value;
+    const commune = document.getElementById("clientCommune").value.trim();
     const receiptFile = document.getElementById("depositReceipt").files[0];
     const button = document.getElementById("orderBtn");
 
     if (cart.length === 0) { alert("❌ سلتك فارغة!"); return; }
-    if (!name || !phone || !address) { alert("❌ يرجى أدخال بياناتك ورقم الهاتف والعنوان كاملة."); return; }
+    if (!firstName || !lastName || !phone || !wilaya || !commune) { 
+        alert("❌ يرجى ملء الاسم، اللقب، الهاتف، الولاية والبلدية."); 
+        return; 
+    }
 
     const isDepositRequired = document.getElementById("depositBox").style.display === "block";
     if (isDepositRequired && !receiptFile) {
@@ -485,7 +567,6 @@ async function submitOrder() {
     try {
         let receiptUrl = null;
 
-        // رفع الوصل إذا كان متاحاً
         if (receiptFile) {
             const fileName = `receipt_${Date.now()}_${Math.random().toString(36).substring(2)}`;
             const { error: uploadErr } = await supabase.storage.from("products").upload(fileName, receiptFile);
@@ -498,9 +579,10 @@ async function submitOrder() {
         let currentDeliveryFee = selectedDeliveryType === 'home' ? homeDeliveryPrice : deskDeliveryPrice;
 
         const { error } = await supabase.from("orders").insert([{
-            client_name: name,
+            client_name: `${firstName} ${lastName}`,
             client_phone: phone,
-            address: address,
+            wilaya: wilaya,
+            address: commune,
             delivery_type: selectedDeliveryType,
             delivery_fee: currentDeliveryFee,
             items: cart,
