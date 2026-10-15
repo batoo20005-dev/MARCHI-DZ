@@ -8,6 +8,8 @@
 
 <!-- مكتبة Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- مكتبة مسح وقراءة الـ QR Code من الصور -->
+<script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
 *{
@@ -107,7 +109,7 @@ header{
 }
 
 .pay-debt-banner button{
-    background:#dc2626;
+    background:#16a34a;
     color:white;
     border:none;
     padding:10px 20px;
@@ -185,9 +187,9 @@ header{
 <!-- تنبيه بلوغ الحد الأقصى للديون (500 دج) -->
 <div class="pay-debt-banner" id="debtBanner">
     <h3>⚠️ تنبيه هام: بلغت ديونك للمنصة الحد الأقصى (500 دج أو أكثر)!</h3>
-    <p>يتعذر فتح طلبات جديدة حتى تسوية مستحقات المنصة عبر BaridiMob واستئناف المبيعات.</p>
-    <div style="font-family:monospace; font-weight:bold; margin:10px 0; font-size:16px;">CCP / RIP المنصة: 00799999001234567890</div>
-    <button onclick="payDebt()">✅ تسوية الديون عبر BaridiMob</button>
+    <p>يتعذر فتح طلبات جديدة حتى تسوية مستحقات المنصة عبر BaridiMob واستئناف المبيعات أوتوماتيكياً.</p>
+    <div style="font-family:monospace; font-weight:bold; margin:10px 0; font-size:16px;">RIP المنصة: 00799999001234567890</div>
+    <button onclick="openChargeModal()">⚡ شحن الرصيد وقراءة الوصل أوتوماتيكياً</button>
 </div>
 
 <!-- إحصائيات المتجر والديون -->
@@ -204,6 +206,11 @@ header{
         <h3>💳 الديون المستحقة للمنصة</h3>
         <div class="value debt" id="sellerDebt">0 دج</div>
     </div>
+</div>
+
+<!-- زر سري لتسوية الديون في أي وقت -->
+<div style="text-align:left; margin-bottom:20px;">
+    <button onclick="openChargeModal()" style="background:#102a43; color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">💳 شحن رصيد الطلبيات عبر BaridiMob</button>
 </div>
 
 <!-- شريط تقدم التوثيق بالشارة الزرقاء ✔️ -->
@@ -226,27 +233,55 @@ header{
 
 </main>
 
+<!-- نافذة الشحن الأوتوماتيكي وقراءة الـ QR Code -->
+<div class="charge-modal" id="chargeModal" style="display:none; position:fixed; top:0; right:0; bottom:0; left:0; background:rgba(0,0,0,0.6); z-index:2000; align-items:center; justify-content:center;">
+    <div style="background:white; max-width:500px; width:90%; padding:25px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+        <h3 style="margin-bottom:10px; color:#102a43;">⚡ الشحن الأوتوماتيكي الفوري</h3>
+        <p style="font-size:13px; color:#666; margin-bottom:15px;">
+            حول المبلغ عبر BaridiMob إلى RIP المنصة: <br>
+            <strong style="color:#16a34a; font-family:monospace; font-size:15px;">00799999001234567890</strong>
+        </p>
+
+        <!-- قسم رفع وصل BaridiMob وقراءة الـ QR -->
+        <div style="background:#f8fafc; padding:20px; border-radius:12px; border:2px dashed #16a34a; text-align:center;">
+            <h4>📷 ارفع صورة وصل BaridiMob (Reçu)</h4>
+            <p style="font-size:12px; color:#666; margin:8px 0;">سيقرأ النظام الـ QR Code أوتوماتيكياً ويضيف الطلبيات ويصفر ديونك في الحال.</p>
+            
+            <input type="file" id="qrFileInput" accept="image/*" style="display:none;" onchange="handleQRUpload(event)">
+            <button onclick="document.getElementById('qrFileInput').click()" style="background:#16a34a; color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">
+                📤 اختيار صورة وصل التحويل
+            </button>
+            <div id="qrStatus" style="margin-top:10px; font-weight:bold; font-size:13px;"></div>
+        </div>
+
+        <div style="text-align:left; margin-top:20px;">
+            <button onclick="closeChargeModal()" style="padding:10px 20px; background:#e2e8f0; color:#333; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">إغلاق النافذة</button>
+        </div>
+    </div>
+</div>
+
 <script>
 const supabase = window.supabase.createClient(
     "https://lifxjoofdlcmbuskvsbg.supabase.co",
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
-// بيانات البائع الافتراضية للتجربة والتطوير
+// بيانات البائع الافتراضية للتجربة
 let sellerData = {
     id: 1,
     store_name: "متجر الجزائر الرقمي",
-    sales_count: 120,    // عدد المبيعات الناجحة
-    rating: 4.8,         // تقييم البائع
-    debt: 150            // الديون الحالية بـ DZD (كل فتح طلبية = 50 دج)
+    sales_count: 120,
+    rating: 4.8,
+    debt: 150
 };
+
+const MY_PLATFORM_RIP = "00799999001234567890";
 
 function updateDashboardUI() {
     document.getElementById("totalSalesCount").textContent = sellerData.sales_count + " مبيعة";
     document.getElementById("sellerDebt").textContent = sellerData.debt + " دج";
     document.getElementById("storeRating").textContent = sellerData.rating.toFixed(1) + " / 5.0";
 
-    // تحديث شريط التوثيق (1000 مبيعة)
     const progressPercent = Math.min((sellerData.sales_count / 1000) * 100, 100);
     document.getElementById("verifiedProgressBar").style.width = progressPercent + "%";
     document.getElementById("salesProgressText").textContent = `${sellerData.sales_count} / 1000 مبيعة`;
@@ -257,7 +292,6 @@ function updateDashboardUI() {
         document.getElementById("verifiedStatusText").innerHTML = `⏳ ينقصك ${1000 - sellerData.sales_count} مبيعة للتوثيق`;
     }
 
-    // تنبيه الديون إذا بلغت 500 دج أو أكثر
     if (sellerData.debt >= 500) {
         document.getElementById("debtBanner").style.display = "block";
     } else {
@@ -328,7 +362,8 @@ async function loadOrders() {
 
 async function unlockOrder(orderId) {
     if (sellerData.debt >= 500) {
-        alert("❌ وصلت ديونك إلى الحد الأقصى (500 دج). يرجى تسوية مستحقات المنصة عبر BaridiMob أولاً لفتح طلبات جديدة.");
+        alert("❌ وصلت ديونك إلى الحد الأقصى (500 دج). يرجى تسوية مستحقات المنصة أوتوماتيكياً عبر شحن الرصيد.");
+        openChargeModal();
         return;
     }
 
@@ -344,8 +379,107 @@ async function unlockOrder(orderId) {
     }
 }
 
-function payDebt() {
-    alert("📲 لتسوية الديون:\nقم بتحويل مبلغ الديون المستحقة إلى RIP التالي عبر BaridiMob:\nRIP: 00799999001234567890\nثم أرسل صورة الوصل لإعادة فتح الحساب فوراً!");
+// دالة فحص ومعالجة الـ QR Code من صورة الوصل المرفوعة
+async function handleQRUpload(event) {
+    const file = event.target.files[0];
+    const statusDiv = document.getElementById("qrStatus");
+    
+    if (!file) return;
+
+    statusDiv.style.color = "#0284c7";
+    statusDiv.textContent = "⏳ جاري قراءة الـ QR Code وفحص وصل BaridiMob...";
+
+    const html5QrCode = new Html5Qrcode("qrStatus");
+
+    try {
+        const decodedText = await html5QrCode.scanFile(file, true);
+        const parsedData = parseBaridiMobQR(decodedText);
+
+        if (!parsedData || !parsedData.txNumber) {
+            statusDiv.style.color = "#dc2626";
+            statusDiv.textContent = "❌ الـ QR Code غير واضح أو ليس وصل BaridiMob رسمي!";
+            return;
+        }
+
+        // فحص هل تم استخدام رقم المعاملة من قبل
+        const { data: existingTx } = await supabase
+            .from('transactions')
+            .select('tx_number')
+            .eq('tx_number', parsedData.txNumber)
+            .single();
+
+        if (existingTx) {
+            statusDiv.style.color = "#dc2626";
+            statusDiv.textContent = "⚠️ خطأ: تم استخدام رقم هذا الوصل من قبل! ممنوع تكرار الشحن.";
+            return;
+        }
+
+        const amount = parsedData.amount || 500;
+        const ordersAllowed = Math.floor(amount / 50);
+
+        if (ordersAllowed < 1) {
+            statusDiv.style.color = "#dc2626";
+            statusDiv.textContent = "❌ المبلغ المحول في الوصل أقل من 50 دج.";
+            return;
+        }
+
+        // حفظ المعاملة لحظرها مستقبلاً
+        await supabase.from('transactions').insert([{
+            tx_number: parsedData.txNumber,
+            seller_id: sellerData.id,
+            amount: amount,
+            orders_added: ordersAllowed
+        }]);
+
+        // تصفير أو تخفيض الدين فوري
+        sellerData.debt = Math.max(0, sellerData.debt - amount);
+        updateDashboardUI();
+
+        statusDiv.style.color = "#16a34a";
+        statusDiv.textContent = `🎉 تم الشحن الأوتوماتيكي بنجاح! المبلغ: ${amount} دج = فتحت ${ordersAllowed} طلبية.`;
+
+        setTimeout(() => {
+            closeChargeModal();
+            loadOrders();
+        }, 2500);
+
+    } catch (err) {
+        console.error(err);
+        statusDiv.style.color = "#dc2626";
+        statusDiv.textContent = "❌ تعذر قراءة الـ QR Code. تأكد من أن الصورة واضحة ومخزنة من تطبيق BaridiMob مباشرة.";
+    }
+}
+
+function parseBaridiMobQR(qrText) {
+    try {
+        let txNumber = "";
+        let amount = 0;
+
+        const txMatch = qrText.match(/(?:TX|TRANS|REF)[:=]?\s*([A-Za-z0-9]+)/i) || qrText.match(/\b\d{9,15}\b/);
+        const amtMatch = qrText.match(/(?:AMT|MONTANT|DA)[:=]?\s*(\d+(?:\.\d+)?)/i);
+
+        if (txMatch) txNumber = txMatch[1] || txMatch[0];
+        if (amtMatch) amount = parseFloat(amtMatch[1]);
+
+        if (!txNumber && qrText.length > 8) {
+            txNumber = qrText.trim();
+        }
+
+        return {
+            txNumber: txNumber,
+            amount: amount || 500
+        };
+    } catch (e) {
+        return null;
+    }
+}
+
+function openChargeModal() {
+    document.getElementById("chargeModal").style.display = "flex";
+}
+
+function closeChargeModal() {
+    document.getElementById("chargeModal").style.display = "none";
 }
 
 updateDashboardUI();
