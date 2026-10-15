@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الدخول أو إنشاء حساب | MARCHI DZ</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{ font-family:Arial, sans-serif; background:#f4f6f8; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.auth-card{ background:white; padding:30px; border-radius:15px; box-shadow:0 4px 20px rgba(0,0,0,0.08); width:100%; max-width:450px; }
+h2{ color:#102a43; text-align:center; margin-bottom:15px; }
+.tabs{ display:flex; margin-bottom:20px; border-bottom:2px solid #eee; }
+.tab{ flex:1; text-align:center; padding:10px; cursor:pointer; font-weight:bold; color:#777; }
+.tab.active{ color:#16a34a; border-bottom:2px solid #16a34a; margin-bottom:-2px; }
+.form-group{ margin-bottom:15px; }
+label{ display:block; margin-bottom:5px; font-weight:bold; font-size:14px; }
+input, select{ width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; font-size:15px; outline:none; }
+button{ width:100%; background:#16a34a; color:white; border:none; padding:13px; border-radius:8px; font-weight:bold; font-size:16px; cursor:pointer; margin-top:10px; }
+button:hover{ background:#12813b; }
+.msg{ text-align:center; margin-top:12px; font-weight:bold; font-size:14px; }
+</style>
+</head>
+<body>
+
+<div class="auth-card">
+    <div class="tabs">
+        <div class="tab active" id="loginTab" onclick="switchMode('login')">تسجيل الدخول</div>
+        <div class="tab" id="registerTab" onclick="switchMode('register')">حساب جديد</div>
+    </div>
+
+    <!-- نموذج تسجيل الدخول -->
+    <div id="loginForm">
+        <h2>🔑 أهلاً بك من جديد</h2>
+        <div class="form-group">
+            <label>رقم الهاتف</label>
+            <input type="text" id="loginPhone" placeholder="0661111111">
+        </div>
+        <div class="form-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="loginPass" placeholder="******">
+        </div>
+        <button onclick="handleLogin()">دخول</button>
+    </div>
+
+    <!-- نموذج إنشاء حساب -->
+    <div id="registerForm" style="display:none;">
+        <h2>📝 انضم إلى MARCHI DZ</h2>
+        <div class="form-group">
+            <label>الاسم الكامل</label>
+            <input type="text" id="regName" placeholder="محمد بن علي">
+        </div>
+        <div class="form-group">
+            <label>رقم الهاتف</label>
+            <input type="text" id="regPhone" placeholder="0661111111">
+        </div>
+        <div class="form-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="regPass" placeholder="******">
+        </div>
+        <div class="form-group">
+            <label>نوع الحساب</label>
+            <select id="regRole" onchange="toggleStoreField()">
+                <option value="buyer">👤 مشتري (أتصفح وأشتري المنتجات)</option>
+                <option value="seller">🏪 بائع / تاجر (أرغب في عرض وبيع سلعي)</option>
+            </select>
+        </div>
+        <div class="form-group" id="storeField" style="display:none;">
+            <label>اسم المتجر</label>
+            <input type="text" id="regStoreName" placeholder="مثال: متجر الهواتف الذكية">
+        </div>
+        <button onclick="handleRegister()">إنشاء الحساب</button>
+    </div>
+
+    <div class="msg" id="authMsg"></div>
+    <div style="text-align:center; margin-top:15px;">
+        <a href="index.html" style="color:#666; text-decoration:none; font-size:13px;">← العودة للمتجر كزائر</a>
+    </div>
+</div>
+
+<script>
+const supabase = window.supabase.createClient(
+    "https://lifxjoofdlcmbuskvsbg.supabase.co",
+    "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
+);
+
+function switchMode(mode) {
+    if(mode === 'login') {
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('registerForm').style.display = 'none';
+        document.getElementById('loginTab').classList.add('active');
+        document.getElementById('registerTab').classList.remove('active');
+    } else {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('registerForm').style.display = 'block';
+        document.getElementById('registerTab').classList.add('active');
+        document.getElementById('loginTab').classList.remove('active');
+    }
+}
+
+function toggleStoreField() {
+    const role = document.getElementById('regRole').value;
+    document.getElementById('storeField').style.display = role === 'seller' ? 'block' : 'none';
+}
+
+async function handleRegister() {
+    const name = document.getElementById('regName').value.trim();
+    const phone = document.getElementById('regPhone').value.trim();
+    const pass = document.getElementById('regPass').value.trim();
+    const role = document.getElementById('regRole').value;
+    const storeName = document.getElementById('regStoreName').value.trim();
+    const msg = document.getElementById('authMsg');
+
+    if(!name || !phone || !pass) {
+        alert("يرجى ملء جميع الحقول الإلزامية");
+        return;
+    }
+
+    if(role === 'seller' && !storeName) {
+        alert("يرجى إدخال اسم متجرك");
+        return;
+    }
+
+    const { data, error } = await supabase.from('users').insert([{
+        full_name: name,
+        phone: phone,
+        password: pass,
+        role: role,
+        store_name: role === 'seller' ? storeName : null
+    }]).select();
+
+    if(error) {
+        msg.style.color = '#dc2626';
+        msg.textContent = "❌ رقم الهاتف مستخدم من قبل أو حدث خطأ.";
+        return;
+    }
+
+    msg.style.color = '#16a34a';
+    msg.textContent = "🎉 تم إنشاء الحساب بنجاح! جاري تسجيل الدخول...";
+    
+    setTimeout(() => {
+        localStorage.setItem("marchi_user", JSON.stringify(data[0]));
+        if(role === 'seller') {
+            window.location.href = "seller-dashboard.html";
+        } else {
+            window.location.href = "index.html";
+        }
+    }, 1500);
+}
+
+async function handleLogin() {
+    const phone = document.getElementById('loginPhone').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
+    const msg = document.getElementById('authMsg');
+
+    if(!phone || !pass) {
+        alert("يرجى إدخال الهاتف وكلمة المرور");
+        return;
+    }
+
+    const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('phone', phone)
+        .eq('password', pass)
+        .single();
+
+    if(error || !data) {
+        msg.style.color = '#dc2626';
+        msg.textContent = "❌ خطأ في رقم الهاتف أو كلمة المرور.";
+        return;
+    }
+
+    localStorage.setItem("marchi_user", JSON.stringify(data));
+    
+    msg.style.color = '#16a34a';
+    msg.textContent = "🎉 أهلاً بك! يتم توجيهك...";
+
+    setTimeout(() => {
+        if(data.role === 'seller') {
+            window.location.href = "seller-dashboard.html";
+        } else {
+            window.location.href = "index.html";
+        }
+    }, 1000);
+}
+</script>
+
+</body>
+</html>
