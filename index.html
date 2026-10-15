@@ -158,17 +158,18 @@ header{
 
 .cart-count{
     position:absolute;
-    top:-10px;
+    top:-8px;
     right:-10px;
-    width:19px;
-    height:19px;
+    width:20px;
+    height:20px;
     background:#16a34a;
     color:white;
     border-radius:50%;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:10px;
+    font-size:11px;
+    font-weight:bold;
 }
 
 /* ================= NAV ================= */
@@ -270,26 +271,6 @@ header{
 
 .hero-button:hover{
     background:#12813b;
-}
-
-.slider-dots{
-    position:absolute;
-    bottom:20px;
-    left:50%;
-    transform:translateX(-50%);
-    display:flex;
-    gap:8px;
-}
-
-.slider-dot{
-    width:9px;
-    height:9px;
-    border-radius:50%;
-    background:white;
-}
-
-.slider-dot.active{
-    background:#16a34a;
 }
 
 /* ================= FEATURES ================= */
@@ -465,10 +446,6 @@ header{
     transition:.3s;
 }
 
-.product:hover img{
-    transform:scale(1.05);
-}
-
 .product-info{
     padding:16px;
     flex:1;
@@ -566,37 +543,6 @@ footer{
     gap:50px;
 }
 
-.footer-logo{
-    font-size:28px;
-    font-weight:900;
-    margin-bottom:12px;
-}
-
-.footer-about{
-    color:#ccd6df;
-    line-height:1.8;
-    max-width:400px;
-}
-
-.footer-title{
-    margin-bottom:18px;
-}
-
-.footer-links{
-    list-style:none;
-}
-
-.footer-links li{
-    margin-bottom:11px;
-    color:#ccd6df;
-    font-size:14px;
-    cursor:pointer;
-}
-
-.footer-links li:hover{
-    color:#4ade80;
-}
-
 .copyright{
     max-width:1400px;
     margin:40px auto 0;
@@ -607,72 +553,11 @@ footer{
     font-size:13px;
 }
 
-/* ================= MOBILE ================= */
-
-@media(max-width:1100px){
-    .categories{
-        grid-template-columns:repeat(5,1fr);
-    }
-    .products{
-        grid-template-columns:repeat(4,1fr);
-    }
-}
-
 @media(max-width:800px){
-    .top-header{
-        flex-wrap:wrap;
-        padding:12px 15px;
-    }
-    .logo{
-        width:100%;
-    }
-    .search{
-        order:3;
-        width:100%;
-        flex:auto;
-    }
-    .header-actions{
-        position:absolute;
-        top:20px;
-        left:15px;
-    }
-    .header-action span:not(.action-icon){
-        display:none;
-    }
-    .nav-container{
-        overflow-x:auto;
-        justify-content:flex-start;
-        gap:28px;
-        padding:0 15px;
-    }
-    .hero{
-        margin:10px;
-        height:380px;
-    }
-    .hero-content{
-        right:30px;
-        left:30px;
-    }
-    .hero-content h1{
-        font-size:34px;
-    }
-    .features{
-        margin:0 10px;
-        grid-template-columns:repeat(2,1fr);
-        gap:20px;
-    }
-    .feature{
-        border:none;
-    }
-    .categories{
-        grid-template-columns:repeat(4,1fr);
-    }
-    .products{
-        grid-template-columns:repeat(2,1fr);
-    }
-    .footer-container{
-        grid-template-columns:repeat(2,1fr);
-    }
+    .top-header{ flex-wrap:wrap; padding:12px 15px; }
+    .logo{ width:100%; }
+    .search{ order:3; width:100%; flex:auto; }
+    .products{ grid-template-columns:repeat(2,1fr); }
 }
 </style>
 </head>
@@ -702,9 +587,22 @@ footer{
 <button onclick="searchProducts()">🔍</button>
 </div>
 
-<!-- ACTIONS -->
-<div class="header-actions" id="headerActions">
-<!-- سيتم ملء الأزرار ديناميكياً حسب حالة تسجيل الدخول -->
+<!-- ACTIONS (أزرار الهيدر الشاملة) -->
+<div class="header-actions">
+    <!-- زر الحساب وتسجيل الدخول -->
+    <div id="userAccountSection">
+        <a href="auth.html" class="header-action" style="color: #102a43; font-weight: bold;">
+            <span class="action-icon">👤</span>
+            <span>تسجيل الدخول / حساب جديد</span>
+        </a>
+    </div>
+
+    <!-- زر السلة مع العداد الأوتوماتيكي الأصلي -->
+    <a href="cart.html" class="header-action cart">
+        <span class="action-icon">🛒</span>
+        <span>السلة</span>
+        <span class="cart-count" id="cartCount">0</span>
+    </a>
 </div>
 
 </div>
@@ -727,12 +625,6 @@ footer{
 <h1>كل ما تحتاجه<br>في مكان واحد</h1>
 <p>آلاف المنتجات، أفضل الأسعار، وتوصيل سريع إلى جميع الولايات الجزائرية 🇩🇿</p>
 <button class="hero-button" onclick="scrollToProducts()">تسوق الآن</button>
-</div>
-<div class="slider-dots">
-<span class="slider-dot active"></span>
-<span class="slider-dot"></span>
-<span class="slider-dot"></span>
-<span class="slider-dot"></span>
 </div>
 </section>
 
@@ -785,7 +677,6 @@ footer{
 <h2 class="section-title" id="productsTitle">منتجات مميزة 🔥</h2>
 </div>
 
-<!-- هنا سيتم جلب المنتجات ديناميكياً من قاعدة بيانات Supabase -->
 <div class="products" id="productGrid">
 <p style="grid-column: 1/-1; text-align:center; padding: 40px; color: #777;">جاري تحميل المنتجات...</p>
 </div>
@@ -794,44 +685,6 @@ footer{
 
 <!-- ================= FOOTER ================= -->
 <footer>
-<div class="footer-container">
-<div>
-<div class="footer-logo">
-<span class="marchi">MARCHI</span>
-<span class="dz"> DZ</span>
-</div>
-<p class="footer-about">
-سوق إلكتروني جزائري يجمع المنتجات والبائعين الموثوقين في مكان واحد، لتجربة تسوق سهلة وآمنة.
-</p>
-</div>
-<div>
-<h3 class="footer-title">روابط مهمة</h3>
-<ul class="footer-links">
-<li>الرئيسية</li>
-<li>من نحن</li>
-<li>تواصل معنا</li>
-<li>الأسئلة الشائعة</li>
-</ul>
-</div>
-<div>
-<h3 class="footer-title">التسوق</h3>
-<ul class="footer-links">
-<li>الفئات</li>
-<li>العروض</li>
-<li>المنتجات الجديدة</li>
-<li>المتاجر الموثوقة</li>
-</ul>
-</div>
-<div>
-<h3 class="footer-title">المساعدة</h3>
-<ul class="footer-links">
-<li>الدعم</li>
-<li>تتبع الطلب</li>
-<li>سياسة الاسترجاع</li>
-<li>الشروط والأحكام</li>
-</ul>
-</div>
-</div>
 <div class="copyright">
 © 2026 MARCHI DZ — جميع الحقوق محفوظة 🇩🇿
 </div>
@@ -839,65 +692,46 @@ footer{
 
 
 <script>
-/* =========================
-   SUPABASE CONNECTION
-========================= */
 const supabase = window.supabase.createClient(
     "https://lifxjoofdlcmbuskvsbg.supabase.co",
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
 /* =========================
-   CHECK USER AUTH & RENDER HEADER
+   CHECK LOGIN STATUS & RENDER
 ========================= */
-function checkUserHeader() {
+function checkUserLogin() {
     const user = JSON.parse(localStorage.getItem("marchi_user"));
-    const actionsBox = document.getElementById("headerActions");
-
-    let html = '';
+    const accountSec = document.getElementById("userAccountSection");
 
     if (!user) {
-        // زائر غير مسجل
-        html = `
-            <a href="auth.html" class="header-action" style="color: #16a34a; font-weight: bold;">
+        accountSec.innerHTML = `
+            <a href="auth.html" class="header-action" style="color: #102a43; font-weight: bold;">
                 <span class="action-icon">👤</span>
                 <span>تسجيل الدخول / حساب جديد</span>
             </a>
         `;
     } else if (user.role === 'seller') {
-        // تاجر مسجل
-        html = `
-            <a href="seller-dashboard.html" class="header-action" style="color: #102a43; font-weight: bold;">
-                <span class="action-icon">🏪</span>
-                <span>لوحة التحكم (${user.store_name || 'متجري'})</span>
-            </a>
-            <a href="add-product.html" class="header-action" style="color: #16a34a; font-weight: bold;">
-                <span class="action-icon">➕</span>
-                <span>إضافة منتج</span>
-            </a>
-            <button onclick="logout()" style="background:#dc2626; color:white; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; font-size:13px;">خروج</button>
+        accountSec.innerHTML = `
+            <div style="display:flex; align-items:center; gap:12px;">
+                <a href="seller-dashboard.html" class="header-action" style="color: #16a34a; font-weight: bold;">
+                    <span class="action-icon">🏪</span>
+                    <span>لوحة البائع (${user.store_name || 'متجري'})</span>
+                </a>
+                <button onclick="logout()" style="background:#fee2e2; color:#991b1b; border:none; padding:5px 10px; border-radius:6px; font-weight:bold; font-size:12px;">خروج</button>
+            </div>
         `;
     } else {
-        // مشتري مسجل
-        html = `
-            <span class="header-action" style="color: #102a43; font-weight: bold;">
-                <span class="action-icon">👤</span>
-                <span>أهلاً، ${user.full_name}</span>
-            </span>
-            <button onclick="logout()" style="background:#dc2626; color:white; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; font-size:13px;">خروج</button>
+        accountSec.innerHTML = `
+            <div style="display:flex; align-items:center; gap:12px;">
+                <span class="header-action" style="color: #102a43; font-weight: bold;">
+                    <span class="action-icon">👤</span>
+                    <span>أهلاً، ${user.full_name}</span>
+                </span>
+                <button onclick="logout()" style="background:#fee2e2; color:#991b1b; border:none; padding:5px 10px; border-radius:6px; font-weight:bold; font-size:12px;">خروج</button>
+            </div>
         `;
     }
-
-    // زر السلة يظهر للجميع دائماً
-    html += `
-        <a href="cart.html" class="header-action cart">
-            <span class="action-icon">🛒</span>
-            <span>السلة</span>
-            <span class="cart-count" id="cartCount">0</span>
-        </a>
-    `;
-
-    actionsBox.innerHTML = html;
 }
 
 function logout() {
@@ -906,7 +740,7 @@ function logout() {
     window.location.reload();
 }
 
-checkUserHeader();
+checkUserLogin();
 
 /* =========================
    LOAD PRODUCTS FROM SUPABASE
@@ -942,7 +776,7 @@ async function loadProductsFromSupabase() {
             const isVerified = salesCount >= 1000 && rating >= 4.5;
             
             const verifiedBadgeHTML = isVerified 
-                ? `<span class="verified-icon" title="متجر موثوق">✔️ موثوق</span>` 
+                ? `<span class="verified-icon">✔️ موثوق</span>` 
                 : '';
 
             const storeName = product.store_name || 'متجر معتمد';
@@ -982,14 +816,13 @@ async function loadProductsFromSupabase() {
 
     } catch (err) {
         console.error("Error loading products:", err);
-        document.getElementById('productGrid').innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding: 40px; color: #991b1b;">حدث خطأ أثناء تحميل المنتجات ❌</p>';
     }
 }
 
 loadProductsFromSupabase();
 
 /* =========================
-   CART LOGIC
+   REAL CART (LOCALSTORAGE & COUNT)
 ========================= */
 let cart = JSON.parse(localStorage.getItem("marchiCart")) || [];
 
@@ -1025,9 +858,6 @@ function addToCartDynamic(product) {
 
 updateCartCount();
 
-/* =========================
-   FAVORITE & SEARCH & FILTERS
-========================= */
 function toggleFavorite(button){
     button.classList.toggle("liked");
     button.textContent = button.classList.contains("liked") ? "♥" : "♡";
@@ -1051,12 +881,6 @@ function searchProducts(){
     document.getElementById("productsTitle").textContent = search ? "نتائج البحث 🔎" : "منتجات مميزة 🔥";
     document.getElementById("products").scrollIntoView({ behavior:"smooth" });
 }
-
-document.getElementById("searchInput").addEventListener("keydown", function(event){
-    if(event.key === "Enter"){
-        searchProducts();
-    }
-});
 
 function filterCategory(category, element){
     const products = document.querySelectorAll(".product");
