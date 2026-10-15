@@ -35,18 +35,7 @@ header{
     justify-content:space-between;
 }
 
-.logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    text-decoration:none;
-}
-
-.logo-name{
-    font-size:24px;
-    font-weight:900;
-}
-
+.logo-name{ font-size:24px; font-weight:900; }
 .marchi{ color:#102a43; }
 .dz{ color:#16a34a; }
 
@@ -67,11 +56,7 @@ header{
     margin-bottom:30px;
 }
 
-.title h1{
-    font-size:32px;
-    margin-bottom:10px;
-}
-
+.title h1{ font-size:32px; margin-bottom:10px; }
 .title p{ color:#777; }
 
 .form-box{
@@ -230,19 +215,19 @@ textarea{
 
 <header>
 <div class="header">
-<a href="index.html" class="logo">
+<a href="seller-dashboard.html" class="logo">
 <div class="logo-name">
 <span class="marchi">MARCHI</span>
 <span class="dz"> DZ</span>
 </div>
 </a>
-<a href="index.html" class="back">← العودة للرئيسية</a>
+<a href="seller-dashboard.html" class="back">← العودة للوحة التحكم</a>
 </div>
 </header>
 
 <main class="container">
 <div class="title">
-<h1>➕ إضافة منتج جديد</h1>
+<h1>➕ إضافة منتج جديد لمتجرك</h1>
 <p>أدخل التفاصيل، خيارات التوصيل، وشروط حجز الطلب</p>
 </div>
 
@@ -253,11 +238,6 @@ textarea{
 <div class="form-group">
 <label>اسم المنتج *</label>
 <input type="text" id="productName" placeholder="مثال: سماعات لاسلكية عالية الجودة">
-</div>
-
-<div class="form-group">
-<label>اسم المتجر *</label>
-<input type="text" id="storeName" value="متجر الجزائر الرقمي" placeholder="اسم متجرك في المنصة">
 </div>
 
 <div class="form-group">
@@ -283,7 +263,7 @@ textarea{
 <input type="number" id="productPrice" placeholder="4500" min="1">
 </div>
 <div class="form-group">
-<label>السعر القديم (اختياري)</label>
+<label>السعر القديم قبل الخصم (اختياري)</label>
 <input type="number" id="oldPrice" placeholder="5300" min="1">
 </div>
 </div>
@@ -353,7 +333,7 @@ textarea{
 
 <button class="submit-btn" id="submitBtn" onclick="addProduct()">➕ إضافة المنتج الآن</button>
 
-<div class="message" id="message">تمت إضافة المنتج بنجاح ✅ جاري تحويلك للرئيسية...</div>
+<div class="message" id="message">تمت إضافة المنتج بنجاح ✅ جاري تحويلك للوحة التحكم...</div>
 <div class="error-message" id="errorMessage">حدث خطأ أثناء إضافة المنتج ❌</div>
 
 </div>
@@ -364,6 +344,14 @@ const supabase = window.supabase.createClient(
     "https://lifxjoofdlcmbuskvsbg.supabase.co",
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
+
+// 🔒 حماية الصفحة: التأكد من تسجيل الدخول كتاجر
+let currentUser = JSON.parse(localStorage.getItem("marchi_user"));
+
+if (!currentUser || currentUser.role !== 'seller') {
+    alert("⚠️ هذه الصفحة خاصة بالتجار المعتمدين فقط! يرجى تسجيل الدخول كتاجر.");
+    window.location.href = "auth.html";
+}
 
 let uploadedBase64Image = "";
 
@@ -389,7 +377,7 @@ function toggleDepositFields(){
 
 async function addProduct(){
     const name = document.getElementById("productName").value.trim();
-    const storeName = document.getElementById("storeName").value.trim() || 'متجر معتمد';
+    const storeName = currentUser.store_name || 'متجر معتمد';
     const category = document.getElementById("productCategory").value;
     const price = Number(document.getElementById("productPrice").value);
     const oldPrice = Number(document.getElementById("oldPrice").value) || null;
@@ -443,24 +431,18 @@ async function addProduct(){
             rating: 5.0
         };
 
-        console.log("Sending product:", productPayload);
-
         const { data, error } = await supabase.from("products").insert([productPayload]).select();
 
-        if(error) {
-            console.error("Supabase Error Details:", error);
-            throw error;
-        }
+        if(error) throw error;
 
-        console.log("Product added successfully:", data);
         document.getElementById("message").style.display = "block";
         
         setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = "seller-dashboard.html";
         }, 1200);
 
     } catch(err){
-        console.error("Catch Error:", err);
+        console.error("Error inserting product:", err);
         const errBox = document.getElementById("errorMessage");
         errBox.textContent = "❌ حدث خطأ: " + (err.message || "تعذر الإضافة");
         errBox.style.display = "block";
