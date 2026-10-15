@@ -10,7 +10,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-
 *{
     margin:0;
     padding:0;
@@ -33,7 +32,6 @@ header{
     margin:auto;
     min-height:75px;
     padding:10px 20px;
-
     display:flex;
     align-items:center;
     justify-content:space-between;
@@ -57,13 +55,8 @@ header{
     font-weight:900;
 }
 
-.marchi{
-    color:#102a43;
-}
-
-.dz{
-    color:#16a34a;
-}
+.marchi{ color:#102a43; }
+.dz{ color:#16a34a; }
 
 .back{
     color:#16a34a;
@@ -87,9 +80,7 @@ header{
     margin-bottom:10px;
 }
 
-.title p{
-    color:#777;
-}
+.title p{ color:#777; }
 
 .form-box{
     background:white;
@@ -98,9 +89,16 @@ header{
     box-shadow:0 5px 25px rgba(0,0,0,.06);
 }
 
-.form-group{
-    margin-bottom:22px;
+.form-section-title{
+    font-size:18px;
+    font-weight:bold;
+    color:#102a43;
+    margin:25px 0 15px;
+    padding-bottom:8px;
+    border-bottom:2px solid #f0f2f4;
 }
+
+.form-group{ margin-bottom:22px; }
 
 label{
     display:block;
@@ -108,23 +106,17 @@ label{
     font-weight:bold;
 }
 
-input,
-select,
-textarea{
+input, select, textarea{
     width:100%;
     padding:13px 15px;
-
     border:1px solid #dfe5e9;
     border-radius:8px;
-
     outline:none;
     font-size:15px;
     background:white;
 }
 
-input:focus,
-select:focus,
-textarea:focus{
+input:focus, select:focus, textarea:focus{
     border-color:#16a34a;
 }
 
@@ -133,7 +125,7 @@ textarea{
     resize:vertical;
 }
 
-.price-row{
+.grid-2{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:15px;
@@ -153,43 +145,38 @@ textarea{
 
 .image-preview{
     display:none;
-
     width:180px;
     height:180px;
-
     object-fit:cover;
     border-radius:10px;
-
     margin:15px auto 0;
+}
+
+.deposit-options{
+    background:#fffbeb;
+    border:1px solid #fcd34d;
+    padding:20px;
+    border-radius:10px;
+    display:none;
+    margin-top:15px;
 }
 
 .rules-box{
     margin-top:25px;
     padding:20px;
-
     background:#f8fafc;
     border:1px solid #e5e9ec;
     border-radius:10px;
 }
 
-.rules-box h3{
-    margin-bottom:15px;
-}
-
-.rules-box ul{
-    padding-right:20px;
-}
-
-.rules-box li{
-    margin-bottom:9px;
-    line-height:1.6;
-}
+.rules-box h3{ margin-bottom:15px; }
+.rules-box ul{ padding-right:20px; }
+.rules-box li{ margin-bottom:9px; line-height:1.6; }
 
 .agree-rules{
     display:flex;
     align-items:flex-start;
     gap:10px;
-
     margin-top:18px;
     cursor:pointer;
 }
@@ -202,785 +189,286 @@ textarea{
 
 .submit-btn{
     width:100%;
-
     padding:16px;
-
     border:none;
     border-radius:9px;
-
     background:#16a34a;
     color:white;
-
     font-size:17px;
     font-weight:bold;
-
     cursor:pointer;
 }
 
-.submit-btn:hover{
-    background:#12813b;
-}
-
-.submit-btn:disabled{
-    background:#9ca3af;
-    cursor:not-allowed;
-}
+.submit-btn:hover{ background:#12813b; }
+.submit-btn:disabled{ background:#9ca3af; cursor:not-allowed; }
 
 .message{
     display:none;
-
     margin-top:20px;
     padding:15px;
-
     border-radius:8px;
-
     text-align:center;
-
     background:#dcfce7;
     color:#166534;
 }
 
 .error-message{
     display:none;
-
     margin-top:20px;
     padding:15px;
-
     border-radius:8px;
-
     text-align:center;
-
     background:#fee2e2;
     color:#991b1b;
 }
 
 @media(max-width:600px){
-
-    .price-row{
-        grid-template-columns:1fr;
-    }
-
-    .form-box{
-        padding:20px;
-    }
-
-    .title h1{
-        font-size:26px;
-    }
-
+    .grid-2{ grid-template-columns:1fr; }
+    .form-box{ padding:20px; }
+    .title h1{ font-size:26px; }
 }
-
 </style>
-
 </head>
 
 <body>
 
 <header>
-
 <div class="header">
-
 <a href="index.html" class="logo">
-
 <img src="logo.png" alt="MARCHI DZ">
-
 <div class="logo-name">
-
 <span class="marchi">MARCHI</span>
 <span class="dz"> DZ</span>
-
 </div>
-
 </a>
-
-<a href="index.html" class="back">
-← العودة للرئيسية
-</a>
-
+<a href="index.html" class="back">← العودة للرئيسية</a>
 </div>
-
 </header>
 
-
 <main class="container">
-
 <div class="title">
-
-<h1>➕ إضافة منتج</h1>
-
-<p>
-أضف منتجك ليظهر في متجر MARCHI DZ
-</p>
-
+<h1>➕ إضافة منتج جديد</h1>
+<p>أدخل التفاصيل، خيارات التوصيل، وشروط حجز الطلب</p>
 </div>
-
 
 <div class="form-box">
 
-
-<!-- اسم المنتج -->
+<div class="form-section-title">📦 1. المعلومات الأساسية للمنتج</div>
 
 <div class="form-group">
-
-<label>
-اسم المنتج *
-</label>
-
-<input
-type="text"
-id="productName"
-placeholder="مثال: سماعات لاسلكية"
->
-
+<label>اسم المنتج *</label>
+<input type="text" id="productName" placeholder="مثال: سماعات لاسلكية">
 </div>
 
-
-<!-- الفئة -->
-
 <div class="form-group">
-
-<label>
-الفئة *
-</label>
-
+<label>الفئة *</label>
 <select id="productCategory">
-
-<option value="">
-اختر الفئة
-</option>
-
-<option value="سيارات">
-🚗 السيارات
-</option>
-
-<option value="ألعاب">
-🎮 الألعاب
-</option>
-
-<option value="ساعات">
-⌚ الساعات
-</option>
-
-<option value="أحذية">
-👟 الأحذية
-</option>
-
-<option value="ملابس">
-👕 الملابس
-</option>
-
-<option value="رياضة">
-🏋️ الرياضة
-</option>
-
-<option value="جمال">
-💄 الجمال
-</option>
-
-<option value="منزل">
-🏠 المنزل
-</option>
-
-<option value="هواتف">
-📱 الهواتف
-</option>
-
-<option value="إلكترونيات">
-🎧 الإلكترونيات
-</option>
-
+<option value="">اختر الفئة</option>
+<option value="سيارات">🚗 السيارات</option>
+<option value="ألعاب">🎮 الألعاب</option>
+<option value="ساعات">⌚ الساعات</option>
+<option value="أحذية">👟 الأحذية</option>
+<option value="ملابس">👕 الملابس</option>
+<option value="رياضة">🏋️ الرياضة</option>
+<option value="جمال">💄 الجمال</option>
+<option value="منزل">🏠 المنزل</option>
+<option value="هواتف">📱 الهواتف</option>
+<option value="إلكترونيات">🎧 الإلكترونيات</option>
 </select>
-
 </div>
 
-
-<!-- السعر -->
-
-<div class="price-row">
+<div class="grid-2">
+<div class="form-group">
+<label>السعر بالدينار (DZD) *</label>
+<input type="number" id="productPrice" placeholder="4500" min="1">
+</div>
+<div class="form-group">
+<label>السعر القديم (اختياري)</label>
+<input type="number" id="oldPrice" placeholder="5300" min="1">
+</div>
+</div>
 
 <div class="form-group">
-
-<label>
-السعر بالدينار *
-</label>
-
-<input
-type="number"
-id="productPrice"
-placeholder="4500"
-min="1"
-step="1"
->
-
-</div>
-
-
-<div class="form-group">
-
-<label>
-السعر القديم بالدينار
-</label>
-
-<input
-type="number"
-id="oldPrice"
-placeholder="5300"
-min="1"
-step="1"
->
-
-</div>
-
-</div>
-
-
-<!-- الصورة -->
-
-<div class="form-group">
-
-<label>
-صورة المنتج
-</label>
-
+<label>صورة المنتج *</label>
 <div class="image-box">
-
-<p>
-اختر صورة من جهازك
-</p>
-
-<input
-type="file"
-id="productImage"
-accept="image/*"
->
-
-<img
-id="imagePreview"
-class="image-preview"
-alt="معاينة المنتج"
->
-
+<p>اختر صورة ممتازة لمنتجك</p>
+<input type="file" id="productImage" accept="image/*">
+<img id="imagePreview" class="image-preview" alt="معاينة المنتج">
 </div>
-
 </div>
-
-
-<!-- الوصف -->
 
 <div class="form-group">
-
-<label>
-وصف المنتج *
-</label>
-
-<textarea
-id="productDescription"
-placeholder="اكتب وصفًا مختصرًا للمنتج..."
-></textarea>
-
+<label>وصف المنتج *</label>
+<textarea id="productDescription" placeholder="اكتب وصفًا مفصلاً للمنتج..."></textarea>
 </div>
-
-
-<!-- الكمية -->
 
 <div class="form-group">
-
-<label>
-الكمية المتوفرة *
-</label>
-
-<input
-type="number"
-id="productQuantity"
-placeholder="10"
-min="1"
-step="1"
->
-
+<label>الكمية المتوفرة *</label>
+<input type="number" id="productQuantity" placeholder="10" min="1">
 </div>
 
+<div class="form-section-title">🚚 2. خيارات التوصيل</div>
+
+<div class="form-group">
+<label>شركة التوصيل المتعامل معها</label>
+<select id="deliveryCompany">
+<option value="Yalidine">Yalidine Express</option>
+<option value="ZR Express">ZR Express</option>
+
+<option value="Anderson">Anderson Express</option>
+<option value="Kazi Tour">Kazi Tour</option>
+
+<option value="أخرى">شركة أخرى / توصيل خاص</option>
+</select>
+</div>
+
+<div class="grid-2">
+<div class="form-group">
+<label>سعر التوصيل للمنزل (DZD) *</label>
+<input type="number" id="homePrice" placeholder="600" value="600">
+</div>
+<div class="form-group">
+<label>سعر التوصيل للمكتب / Stop Desk (DZD) *</label>
+<input type="number" id="deskPrice" placeholder="400" value="400">
+</div>
+</div>
+
+<div class="form-section-title">💳 3. حماية الـ Retour (تسقاع / عربون الضمان)</div>
+
+<div class="form-group">
+<label>هل تتطلب دفـع تسقاع/عربون مسبق لحجز الطلب؟</label>
+<select id="requireDepositSelect" onchange="toggleDepositFields()">
+<option value="no">❌ لا (الدفع كامل عند الاستلام)</option>
+<option value="yes">✅ نعم (يتطلب تحويل تسقاع عبر BaridiMob)</option>
+</select>
+</div>
+
+<div class="deposit-options" id="depositFields">
+<div class="form-group">
+<label>رقم ה- RIP / CCP الخاص بك للتحويل *</label>
+<input type="text" id="ripNumber" placeholder="مثال: 00799999002345678901">
+</div>
+</div>
 
 <!-- القوانين -->
-
 <div class="rules-box">
-
-<h3>
-📜 قوانين بيع المنتجات
-</h3>
-
+<h3>📜 قوانين MARCHI DZ</h3>
 <ul>
-
-<li>
-🚫 يمنع بيع أي منتج غير قانوني أو محظور.
-</li>
-
-<li>
-🚫 يمنع بيع الأسلحة والمخدرات والمواد الخطرة أو الممنوعة.
-</li>
-
-<li>
-🚫 يمنع بيع المنتجات المسروقة أو المقلدة.
-</li>
-
-<li>
-🚫 يمنع وضع معلومات أو صور مضللة عن المنتج.
-</li>
-
-<li>
-💰 يجب أن يكون سعر المنتج أكبر من 0 دج.
-</li>
-
-<li>
-📝 يجب أن تكون معلومات المنتج صحيحة.
-</li>
-
-<li>
-📦 البائع مسؤول عن توفر المنتج وجودته.
-</li>
-
-<li>
-💰 رسوم MARCHI DZ هي 50 دج عن كل عملية بيع مكتملة فوق 1000 دج.
-</li>
-
-<li>
-⚠️ يحق لـ MARCHI DZ إزالة المنتجات المخالفة وتعليق الحساب.
-</li>
-
+<li>🚫 يمنع بيع أي منتج غير قانوني أو مقلد.</li>
+<li>📦 البائع مسؤول عن صحة رقم الـ RIP وسرعة شحن الطلب.</li>
+<li>💰 رسوم المنصة هي 50 دج عن كل بيعة ناجحة فوق 1000 دج.</li>
 </ul>
 
-
 <label class="agree-rules">
-
-<input
-type="checkbox"
-id="agreeRules"
->
-
-<span>
-أوافق على قوانين MARCHI DZ وأتعهد بأن المنتج قانوني والمعلومات التي قدمتها صحيحة.
-</span>
-
+<input type="checkbox" id="agreeRules">
+<span>أوافق على جميع الشروط وأتعهد بأن كافة المعلومات صحيحة.</span>
 </label>
-
 </div>
-
 
 <br>
 
+<button class="submit-btn" id="submitBtn" onclick="addProduct()">➕ إضافة المنتج الآن</button>
 
-<!-- زر الإضافة -->
-
-<button
-class="submit-btn"
-id="submitBtn"
-onclick="addProduct()"
->
-
-➕ إضافة المنتج
-
-</button>
-
-
-<div
-class="message"
-id="message"
->
-تمت إضافة المنتج بنجاح ✅
-</div>
-
-
-<div
-class="error-message"
-id="errorMessage"
->
-حدث خطأ أثناء إضافة المنتج ❌
-</div>
-
+<div class="message" id="message">تمت إضافة المنتج بنجاح ✅</div>
+<div class="error-message" id="errorMessage">حدث خطأ أثناء إضافة المنتج ❌</div>
 
 </div>
-
 </main>
 
-
 <script>
-
-/* =================================
-   SUPABASE
-================================= */
-
 const supabase = window.supabase.createClient(
-
     "https://lifxjoofdlcmbuskvsbg.supabase.co",
-
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
-
 );
 
-
-/* =================================
-   IMAGE PREVIEW
-================================= */
-
-document
-.getElementById("productImage")
-.addEventListener("change", function(){
-
+document.getElementById("productImage").addEventListener("change", function(){
     const file = this.files[0];
-
-    if(!file){
-        return;
-    }
-
-    const preview =
-        document.getElementById("imagePreview");
-
+    if(!file) return;
+    const preview = document.getElementById("imagePreview");
     const reader = new FileReader();
-
-    reader.onload = function(event){
-
-        preview.src = event.target.result;
-
-        preview.style.display = "block";
-
-    };
-
+    reader.onload = function(e){ preview.src = e.target.result; preview.style.display = "block"; };
     reader.readAsDataURL(file);
-
 });
 
-
-/* =================================
-   ADD PRODUCT
-================================= */
-
-async function addProduct(){
-
-    const name =
-        document
-        .getElementById("productName")
-        .value
-        .trim();
-
-
-    const category =
-        document
-        .getElementById("productCategory")
-        .value;
-
-
-    const price =
-        Number(
-            document
-            .getElementById("productPrice")
-            .value
-        );
-
-
-    const oldPriceValue =
-        document
-        .getElementById("oldPrice")
-        .value;
-
-
-    const oldPrice =
-        oldPriceValue
-        ? Number(oldPriceValue)
-        : null;
-
-
-    const description =
-        document
-        .getElementById("productDescription")
-        .value
-        .trim();
-
-
-    const quantity =
-        Number(
-            document
-            .getElementById("productQuantity")
-            .value
-        );
-
-
-    const image =
-        document
-        .getElementById("productImage")
-        .files[0];
-
-
-    const agreeRules =
-        document
-        .getElementById("agreeRules")
-        .checked;
-
-
-    const button =
-        document
-        .getElementById("submitBtn");
-
-
-    /* إخفاء الرسائل */
-
-    document
-    .getElementById("message")
-    .style.display = "none";
-
-
-    document
-    .getElementById("errorMessage")
-    .style.display = "none";
-
-
-    /* التحقق */
-
-    if(!name){
-
-        alert("❌ اكتب اسم المنتج.");
-
-        return;
-
-    }
-
-
-    if(!category){
-
-        alert("❌ اختر فئة المنتج.");
-
-        return;
-
-    }
-
-
-    if(!price || price <= 0){
-
-        alert("❌ يجب أن يكون السعر أكبر من 0 دج.");
-
-        return;
-
-    }
-
-
-    if(oldPrice !== null && oldPrice <= 0){
-
-        alert("❌ السعر القديم يجب أن يكون أكبر من 0.");
-
-        return;
-
-    }
-
-
-    if(!description){
-
-        alert("❌ اكتب وصف المنتج.");
-
-        return;
-
-    }
-
-
-    if(!quantity || quantity <= 0){
-
-        alert("❌ الكمية يجب أن تكون أكبر من 0.");
-
-        return;
-
-    }
-
-
-    if(!image){
-
-        alert("❌ اختر صورة المنتج.");
-
-        return;
-
-    }
-
-
-    if(!agreeRules){
-
-        alert("❌ يجب الموافقة على قوانين MARCHI DZ.");
-
-        return;
-
-    }
-
-
-    /* منع الملفات الكبيرة */
-
-    if(image.size > 5 * 1024 * 1024){
-
-        alert("❌ حجم الصورة يجب أن يكون أقل من 5MB.");
-
-        return;
-
-    }
-
-
-    /* منع أنواع ملفات غير الصور */
-
-    if(!image.type.startsWith("image/")){
-
-        alert("❌ الملف المختار ليس صورة.");
-
-        return;
-
-    }
-
-
-    /* تعطيل الزر */
-
-    button.disabled = true;
-
-    button.textContent = "⏳ جاري إضافة المنتج...";
-
-
-    try{
-
-
-        /* =================================
-           حفظ المنتج في قاعدة البيانات
-        ================================= */
-
-        const { data, error } =
-
-        await supabase
-
-        .from("products")
-
-        .insert([{
-
-            name: name,
-
-            category: category,
-
-            price: price,
-
-            old_price: oldPrice,
-
-            description: description,
-
-            quantity: quantity,
-
-            image_url: null
-
-        }])
-
-        .select();
-
-
-        if(error){
-
-            console.error(error);
-
-            throw error;
-
-        }
-
-
-        console.log("Product:", data);
-
-
-        /* نجاح */
-
-        document
-        .getElementById("message")
-        .style.display = "block";
-
-
-        alert(
-            "تمت إضافة المنتج بنجاح ✅"
-        );
-
-
-        /* تنظيف */
-
-        document
-        .getElementById("productName")
-        .value = "";
-
-
-        document
-        .getElementById("productCategory")
-        .value = "";
-
-
-        document
-        .getElementById("productPrice")
-        .value = "";
-
-
-        document
-        .getElementById("oldPrice")
-        .value = "";
-
-
-        document
-        .getElementById("productDescription")
-        .value = "";
-
-
-        document
-        .getElementById("productQuantity")
-        .value = "";
-
-
-        document
-        .getElementById("productImage")
-        .value = "";
-
-
-        document
-        .getElementById("imagePreview")
-        .style.display = "none";
-
-
-        document
-        .getElementById("agreeRules")
-        .checked = false;
-
-
-    }
-
-    catch(error){
-
-        console.error(
-            "Supabase error:",
-            error
-        );
-
-
-        document
-        .getElementById("errorMessage")
-        .textContent =
-            "❌ لم تتم إضافة المنتج. تأكد من إعدادات Supabase وRLS.";
-
-
-        document
-        .getElementById("errorMessage")
-        .style.display = "block";
-
-
-        alert(
-            "حدث خطأ أثناء إضافة المنتج ❌"
-        );
-
-    }
-
-
-    finally{
-
-        button.disabled = false;
-
-        button.textContent =
-            "➕ إضافة المنتج";
-
-    }
-
+function toggleDepositFields(){
+    const val = document.getElementById("requireDepositSelect").value;
+    document.getElementById("depositFields").style.display = val === 'yes' ? 'block' : 'none';
 }
 
+async function addProduct(){
+    const name = document.getElementById("productName").value.trim();
+    const category = document.getElementById("productCategory").value;
+    const price = Number(document.getElementById("productPrice").value);
+    const oldPrice = Number(document.getElementById("oldPrice").value) || null;
+    const description = document.getElementById("productDescription").value.trim();
+    const quantity = Number(document.getElementById("productQuantity").value);
+    const image = document.getElementById("productImage").files[0];
+    
+    const deliveryCompany = document.getElementById("deliveryCompany").value;
+    const homePrice = Number(document.getElementById("homePrice").value) || 600;
+    const deskPrice = Number(document.getElementById("deskPrice").value) || 400;
+
+    const requireDeposit = document.getElementById("requireDepositSelect").value === 'yes';
+    const ripNumber = document.getElementById("ripNumber").value.trim();
+    const agreeRules = document.getElementById("agreeRules").checked;
+    const button = document.getElementById("submitBtn");
+
+    if(!name || !category || !price || !description || !quantity || !image){
+        alert("❌ يرجى ملء جميع الحقول المطلوبة واختيار صورة للمنتج.");
+        return;
+    }
+
+    if(requireDeposit && !ripNumber){
+        alert("❌ يرجى إدخال رقم الـ RIP الخاص بك لاستلام التسقاع عبر BaridiMob.");
+        return;
+    }
+
+    if(!agreeRules){ alert("❌ يجب الموافقة على القوانين."); return; }
+
+    button.disabled = true;
+    button.textContent = "⏳ جاري رفع الصورة وإضافة المنتج...";
+
+    try{
+        const fileExt = image.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage.from("products").upload(fileName, image);
+        if(uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabase.storage.from("products").getPublicUrl(fileName);
+        const imageUrl = publicUrlData.publicUrl;
+
+        const { error } = await supabase.from("products").insert([{
+            name: name,
+            category: category,
+            price: price,
+            old_price: oldPrice,
+            description: description,
+            quantity: quantity,
+            image_url: imageUrl,
+            delivery_company: deliveryCompany,
+            home_price: homePrice,
+            desk_price: deskPrice,
+            require_deposit: requireDeposit,
+            rip_number: ripNumber
+        }]);
+
+        if(error) throw error;
+
+        document.getElementById("message").style.display = "block";
+        alert("تمت إضافة المنتج وإعدادات التوصيل بنجاح ✅");
+        window.location.href = "index.html";
+
+    } catch(err){
+        console.error(err);
+        document.getElementById("errorMessage").style.display = "block";
+        alert("❌حدث خطأ أثناء الإضافة.");
+    } finally{
+        button.disabled = false;
+        button.textContent = "➕ إضافة المنتج الآن";
+    }
+}
 </script>
 
 </body>
-
 </html>
