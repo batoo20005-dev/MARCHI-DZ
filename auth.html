@@ -40,7 +40,6 @@ body {
 .marchi { color: #102a43; }
 .dz { color: #16a34a; }
 
-/* أزرار التبديل العلوية */
 .tab-header {
     display: flex;
     background: #f1f5f9;
@@ -69,17 +68,10 @@ body {
     box-shadow: 0 3px 8px rgba(0,0,0,0.06);
 }
 
-.form-section {
-    display: none;
-}
+.form-section { display: none; }
+.form-section.active { display: block; }
 
-.form-section.active {
-    display: block;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
+.form-group { margin-bottom: 15px; }
 
 .grid-2 {
     display: grid;
@@ -105,9 +97,7 @@ input, select {
     background: #ffffff;
 }
 
-input:focus, select:focus {
-    border-color: #16a34a;
-}
+input:focus, select:focus { border-color: #16a34a; }
 
 .forgot-link {
     display: block;
@@ -229,7 +219,6 @@ input:focus, select:focus {
                     <option value="15 - تيزي وزو">15 - تيزي وزو</option>
                     <option value="06 - بجاية">06 - بجاية</option>
                     <option value="19 - سطيف">19 - سطيف</option>
-                    <!-- باقي الولايات يمكن إضافتها بسهولة -->
                 </select>
             </div>
             <div class="form-group">
@@ -305,9 +294,7 @@ const supabase = window.supabase.createClient(
 
 let currentOtp = "";
 let regTimerInterval = null;
-let forgotTimerInterval = null;
 
-// دوال التنقل البسيطة والمستقرة
 function openLogin() {
     document.getElementById('authMsg').textContent = "";
     document.getElementById('sectionLogin').classList.add('active');
@@ -361,7 +348,6 @@ function validateAge() {
     }
 }
 
-// إرسال الكود مع عداد 60 ثانية
 function sendOtpCode() {
     const phone = document.getElementById('regPhone').value.trim();
     if (!phone || phone.length < 9) {
@@ -420,12 +406,13 @@ async function handleRegister() {
         phone: phone,
         password: pass,
         role: role,
-        store_name: role === 'seller' ? storeName : null
+        store_name: role === 'seller' ? storeName : null,
+        wallet_balance: role === 'seller' ? 500 : 0
     }]).select();
 
     if (error) {
         msg.style.color = '#dc2626';
-        msg.textContent = "رقم الهاتف مستخدم مسبقاً.";
+        msg.textContent = "خطأ في التسجيل: " + error.message;
         return;
     }
 
