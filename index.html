@@ -999,7 +999,7 @@ async function loadProductReviews() {
 
     const container = document.getElementById("reviewsContainer");
     if (!reviews || reviews.length === 0) {
-        container.innerHTML = "<p style='color:#777;'>لا توجد تقييمات بعد. كن أول من يقيّمي!</p>";
+        container.innerHTML = "<p style='color:#777;'>لا توجد تقييمات بعد. كن أول من يقيّمني!</p>";
         return;
     }
 
@@ -1054,14 +1054,17 @@ async function submitProductReview(name, rating, comment) {
 
 loadProductReviews();
 
-// ================= خدمة العملاء والرد الآلي =================
+// ================= خدمة العملاء والرد الآلي (المصححة 100%) =================
 function toggleSupportChat() {
     const box = document.getElementById('supportChatBox');
-    box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
+    if (!box) return;
+    box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
 }
 
 function sendBotReply(type) {
     const chatBody = document.getElementById('chatBody');
+    if (!chatBody) return;
+
     let userText = "";
     let botReply = "";
 
@@ -1080,13 +1083,12 @@ function sendBotReply(type) {
     }
 
     chatBody.innerHTML += `<div class="chat-msg user">${userText}</div>`;
+    chatBody.scrollTop = chatBody.scrollHeight;
 
     setTimeout(() => {
         chatBody.innerHTML += `<div class="chat-msg bot">${botReply}</div>`;
         chatBody.scrollTop = chatBody.scrollHeight;
     }, 400);
-
-    chatBody.scrollTop = chatBody.scrollHeight;
 }
 </script>
 
