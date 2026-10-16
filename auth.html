@@ -9,6 +9,7 @@
 <style>
 *{ margin:0; padding:0; box-sizing:border-box; }
 
+/* 🌌 خلفية عصرية مزودة بتقنية الجراديانت والأشكال التجريدية للمنتجات (إلكترونيات، ألبسة، أجهزة) */
 body {
     font-family: Arial, Tahoma, sans-serif;
     min-height: 100vh;
@@ -16,53 +17,74 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
-    background: linear-gradient(135deg, #0b132b 0%, #1c2541 100%);
+    background: 
+        radial-gradient(circle at 15% 15%, rgba(22, 163, 74, 0.25) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(16, 42, 67, 0.8) 0%, transparent 50%),
+        linear-gradient(135deg, #0a192f 0%, #102a43 50%, #0f172a 100%);
+    background-attachment: fixed;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* خلفية زخرفية للمنتجات بطريقة عصرية */
+body::before {
+    content: "🎧 📱 👕 👟 ⌚ 🎮 🚗 🏠 💻 🛍️";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 85px;
+    letter-spacing: 40px;
+    opacity: 0.05;
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    width: 100%;
+    text-align: center;
 }
 
 .auth-card {
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
     padding: 35px 30px;
-    border-radius: 16px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
     width: 100%;
     max-width: 480px;
+    position: relative;
+    z-index: 10;
 }
 
-/* 🎨 الهوية البصرية وشعار الموقع */
+/* 🎨 الشعار الرسمي والاحترافي لـ MARCHI DZ */
 .logo-header {
     text-align: center;
-    margin-bottom: 25px;
-    border-bottom: 2px solid #f1f5f9;
-    padding-bottom: 15px;
+    margin-bottom: 22px;
+    border-bottom: 2px dashed #e2e8f0;
+    padding-bottom: 18px;
 }
 
-.brand-badge {
-    width: 65px;
-    height: 65px;
-    background: #102a43;
-    color: white;
-    border-radius: 50%;
+.logo-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
-    margin: 0 auto 10px;
-    box-shadow: 0 5px 15px rgba(16, 42, 67, 0.3);
-    border: 3px solid #16a34a;
+    gap: 8px;
+    margin-bottom: 5px;
 }
 
 .logo-name {
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 900;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+    line-height: 1;
 }
+
 .marchi { color: #102a43; }
 .dz { color: #16a34a; }
 
 .logo-slogan {
-    font-size: 12px;
+    font-size: 13px;
     color: #64748b;
-    margin-top: 4px;
+    margin-top: 6px;
     font-weight: bold;
 }
 
@@ -71,32 +93,32 @@ body {
     display: flex;
     background: #f1f5f9;
     padding: 5px;
-    border-radius: 10px;
+    border-radius: 12px;
     margin-bottom: 22px;
 }
 
 .tab-btn {
     flex: 1;
     text-align: center;
-    padding: 10px;
+    padding: 12px;
     cursor: pointer;
     font-weight: bold;
     color: #64748b;
-    border-radius: 8px;
+    border-radius: 9px;
     border: none;
     background: transparent;
     font-size: 14px;
-    transition: 0.2s;
+    transition: all 0.2s ease;
 }
 
 .tab-btn.active {
-    background: #ffffff;
-    color: #16a34a;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    background: #ffffff !important;
+    color: #16a34a !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
 }
 
 .form-section { display: none; }
-.form-section.active { display: block; }
+.form-section.active { display: block !important; }
 
 .form-group { margin-bottom: 15px; }
 
@@ -118,10 +140,11 @@ input, select {
     width: 100%;
     padding: 11px 13px;
     border: 1.5px solid #cbd5e1;
-    border-radius: 8px;
+    border-radius: 9px;
     font-size: 14px;
     outline: none;
     background: #ffffff;
+    transition: border-color 0.2s;
 }
 
 input:focus, select:focus { border-color: #16a34a; }
@@ -143,11 +166,12 @@ input:focus, select:focus { border-color: #16a34a; }
     color: white;
     border: none;
     padding: 13px;
-    border-radius: 8px;
+    border-radius: 9px;
     font-weight: bold;
     font-size: 15px;
     cursor: pointer;
     margin-top: 10px;
+    transition: background 0.2s;
 }
 .btn-submit:hover { background: #12813b; }
 .btn-submit:disabled { background: #94a3b8; cursor: not-allowed; }
@@ -181,19 +205,20 @@ input:focus, select:focus { border-color: #16a34a; }
 <body>
 
 <div class="auth-card">
-    <!-- 🛡️ الهوية والشعار الرسمي للموقع -->
+    <!-- 🛍️ الشعار الرسمي الأصلي لموقع MARCHI DZ -->
     <div class="logo-header">
-        <div class="brand-badge">🏪</div>
-        <div class="logo-name">
-            <span class="marchi">MARCHI</span><span class="dz"> DZ</span>
+        <div class="logo-container">
+            <div class="logo-name">
+                <span class="marchi">MARCHI</span><span class="dz"> DZ</span>
+            </div>
         </div>
         <div class="logo-slogan">تسوق بثقة، استلم براحة 🇩🇿</div>
     </div>
 
     <!-- أزرار التبديل -->
     <div class="tab-header" id="mainTabs">
-        <button class="tab-btn active" id="btnTabLogin" onclick="openLogin()">تسجيل الدخول</button>
-        <button class="tab-btn" id="btnTabRegister" onclick="openRegister()">حساب جديد</button>
+        <button class="tab-btn active" id="btnTabLogin" type="button" onclick="switchTab('login')">تسجيل الدخول</button>
+        <button class="tab-btn" id="btnTabRegister" type="button" onclick="switchTab('register')">حساب جديد</button>
     </div>
 
     <!-- 1. نموذج تسجيل الدخول -->
@@ -205,9 +230,9 @@ input:focus, select:focus { border-color: #16a34a; }
         <div class="form-group">
             <label>كلمة المرور *</label>
             <input type="password" id="loginPass" placeholder="******">
-            <a class="forgot-link" onclick="openForgot()">نسيت كلمة المرور؟</a>
+            <a class="forgot-link" onclick="switchTab('forgot')">نسيت كلمة المرور؟</a>
         </div>
-        <button class="btn-submit" onclick="handleLogin()">تسجيل الدخول</button>
+        <button class="btn-submit" type="button" onclick="handleLogin()">تسجيل الدخول</button>
     </div>
 
     <!-- 2. نموذج إنشاء حساب جديد -->
@@ -275,13 +300,13 @@ input:focus, select:focus { border-color: #16a34a; }
             <input type="password" id="regPass" placeholder="******">
         </div>
 
-        <button class="btn-submit" id="sendOtpBtn" onclick="sendOtpCode()">إرسال رمز التحقق</button>
+        <button class="btn-submit" id="sendOtpBtn" type="button" onclick="sendOtpCode()">إرسال رمز التحقق</button>
 
         <div class="otp-box" id="regOtpBox">
             <label style="color:#15803d; font-weight:bold;">رمز التحقق: <span id="regOtpDisplay" style="font-family:monospace;">1234</span></label>
             <input type="text" id="regOtpInput" placeholder="أدخل الكود" style="text-align:center; letter-spacing:4px; font-weight:bold; margin:8px 0;">
             <div style="font-size:12px; color:#b45309; margin-bottom:5px;">ينتهي خلال: <span id="regTimer">60</span> ثانية</div>
-            <button class="btn-submit" id="confirmRegBtn" onclick="handleRegister()">تأكيد وإنشاء الحساب</button>
+            <button class="btn-submit" id="confirmRegBtn" type="button" onclick="handleRegister()">تأكيد وإنشاء الحساب</button>
         </div>
     </div>
 
@@ -292,7 +317,7 @@ input:focus, select:focus { border-color: #16a34a; }
             <label>رقم هاتفك المسجل *</label>
             <input type="tel" id="forgotPhone" placeholder="06XXXXXXXX">
         </div>
-        <button class="btn-submit" onclick="sendForgotOtp()">إرسال كود التحقق</button>
+        <button class="btn-submit" type="button" onclick="sendForgotOtp()">إرسال كود التحقق</button>
 
         <div class="otp-box" id="forgotOtpBox">
             <label style="color:#15803d; font-weight:bold;">رمز التحقق: <span id="forgotOtpDisplay" style="font-family:monospace;">5678</span></label>
@@ -302,10 +327,10 @@ input:focus, select:focus { border-color: #16a34a; }
                 <label>كلمة المرور الجديدة *</label>
                 <input type="password" id="newPassInput" placeholder="كلمة مرور جديدة">
             </div>
-            <button class="btn-submit" id="confirmForgotBtn" onclick="handleResetPassword()">تغيير كلمة المرور</button>
+            <button class="btn-submit" id="confirmForgotBtn" type="button" onclick="handleResetPassword()">تغيير كلمة المرور</button>
         </div>
         
-        <button onclick="openLogin()" style="background:none; border:none; color:#64748b; font-weight:bold; cursor:pointer; width:100%; margin-top:12px; font-size:13px;">← العودة لتسجيل الدخول</button>
+        <button onclick="switchTab('login')" type="button" style="background:none; border:none; color:#64748b; font-weight:bold; cursor:pointer; width:100%; margin-top:12px; font-size:13px;">← العودة لتسجيل الدخول</button>
     </div>
 
     <div class="msg" id="authMsg"></div>
@@ -324,32 +349,28 @@ const supabase = window.supabase.createClient(
 let currentOtp = "";
 let regTimerInterval = null;
 
-function openLogin() {
+function switchTab(tabName) {
     document.getElementById('authMsg').textContent = "";
-    document.getElementById('sectionLogin').classList.add('active');
+    
+    document.getElementById('sectionLogin').classList.remove('active');
     document.getElementById('sectionRegister').classList.remove('active');
     document.getElementById('sectionForgot').classList.remove('active');
-    document.getElementById('mainTabs').style.display = 'flex';
-    document.getElementById('btnTabLogin').classList.add('active');
-    document.getElementById('btnTabRegister').classList.remove('active');
-}
-
-function openRegister() {
-    document.getElementById('authMsg').textContent = "";
-    document.getElementById('sectionLogin').classList.remove('active');
-    document.getElementById('sectionRegister').classList.add('active');
-    document.getElementById('sectionForgot').classList.remove('active');
-    document.getElementById('mainTabs').style.display = 'flex';
-    document.getElementById('btnTabRegister').classList.add('active');
+    
     document.getElementById('btnTabLogin').classList.remove('active');
-}
+    document.getElementById('btnTabRegister').classList.remove('active');
 
-function openForgot() {
-    document.getElementById('authMsg').textContent = "";
-    document.getElementById('sectionLogin').classList.remove('active');
-    document.getElementById('sectionRegister').classList.remove('active');
-    document.getElementById('sectionForgot').classList.add('active');
-    document.getElementById('mainTabs').style.display = 'none';
+    if (tabName === 'login') {
+        document.getElementById('sectionLogin').classList.add('active');
+        document.getElementById('btnTabLogin').classList.add('active');
+        document.getElementById('mainTabs').style.display = 'flex';
+    } else if (tabName === 'register') {
+        document.getElementById('sectionRegister').classList.add('active');
+        document.getElementById('btnTabRegister').classList.add('active');
+        document.getElementById('mainTabs').style.display = 'flex';
+    } else if (tabName === 'forgot') {
+        document.getElementById('sectionForgot').classList.add('active');
+        document.getElementById('mainTabs').style.display = 'none';
+    }
 }
 
 function toggleStoreField() {
