@@ -20,7 +20,7 @@ body{
     color:#172033;
 }
 
-button,input{
+button,input,textarea,select{
     font-family:inherit;
 }
 
@@ -267,7 +267,7 @@ header{
 .section-title{ font-size:25px; font-weight:800; }
 .view-all{ color:#16a34a; font-size:14px; font-weight:bold; }
 
-/* ================= CATEGories ================= */
+/* ================= CATEGORIES ================= */
 
 .categories{
     display:grid;
@@ -420,6 +420,23 @@ header{
 }
 .add-cart:hover{ background:#16a34a; }
 
+/* ================= REVIEWS SECTION ================= */
+.reviews-section {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    margin-top: 50px;
+    box-shadow: 0 5px 25px rgba(0,0,0,.05);
+}
+
+.review-form {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    border: 1px solid #e2e8f0;
+}
+
 /* ================= FOOTER ================= */
 
 footer{
@@ -439,7 +456,7 @@ footer{
     font-size:13px;
 }
 
-/* ================= خدمة العملاء العائمة (مستقلة عن الصفحة) ================= */
+/* ================= خدمة العملاء العائمة (مستقلة وثابتة أسفل اليسار) ================= */
 
 .support-float-btn {
     position: fixed;
@@ -673,6 +690,39 @@ footer{
 
 <div class="products" id="productGrid">
 <p style="grid-column: 1/-1; text-align:center; padding: 40px; color: #777;">جاري تحميل المنتجات...</p>
+</div>
+</section>
+
+
+<!-- ================= REVIEWS SECTION ================= -->
+<section class="container">
+<div class="reviews-section">
+    <h3 style="color:#102a43; margin-bottom:20px; font-size:22px;">⭐ تقييمات وآراء العملاء بالمنصة</h3>
+
+    <!-- نموذج إضافة تقييم -->
+    <div class="review-form">
+        <h4 style="margin-bottom:12px; font-size:15px; color:#334155;">✍️ شاركنا رأيك أو قيّم تجربتك مع MARCHI DZ:</h4>
+        
+        <input type="text" id="reviewerName" placeholder="اسمك الكامل *" style="width:100%; padding:11px; margin-bottom:12px; border:1px solid #cbd5e1; border-radius:8px; outline:none;">
+        
+        <select id="reviewerRating" style="width:100%; padding:11px; margin-bottom:12px; border:1px solid #cbd5e1; border-radius:8px; outline:none;">
+            <option value="">اختر التقييم بالنجوم *</option>
+            <option value="5">⭐⭐⭐⭐⭐ (5/5) ممتاز جداً</option>
+            <option value="4">⭐⭐⭐⭐ (4/5) جيد جداً</option>
+            <option value="3">⭐⭐⭐ (3/5) متوسط</option>
+            <option value="2">⭐⭐ (2/5) مقبول</option>
+            <option value="1">⭐ (1/5) سيء</option>
+        </select>
+        
+        <textarea id="reviewerComment" placeholder="اكتب رأيك حول جودة المنتجات أو التوصيل *" rows="3" style="width:100%; padding:11px; margin-bottom:12px; border:1px solid #cbd5e1; border-radius:8px; outline:none; resize:none;"></textarea>
+        
+        <button onclick="handleReviewSubmit()" style="background:#16a34a; color:white; border:none; padding:12px 25px; border-radius:8px; font-weight:bold; cursor:pointer;">إرسال التقييم</button>
+    </div>
+
+    <!-- قائمة عرض التقييمات -->
+    <div id="reviewsContainer">
+        <p style="color:#777;">جاري تحميل التقييمات...</p>
+    </div>
 </div>
 </section>
 
@@ -935,7 +985,76 @@ function scrollToProducts(){
     document.getElementById("products").scrollIntoView({ behavior:"smooth" });
 }
 
-// دوال الرد الآلي لخدمة العملاء
+// ================= نظام التقييمات والمراجعات (Product Reviews) =================
+async function loadProductReviews() {
+    const { data: reviews, error } = await supabase
+        .from('product_reviews')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error("خطأ في جلب التقييمات:", error);
+        return;
+    }
+
+    const container = document.getElementById("reviewsContainer");
+    if (!reviews || reviews.length === 0) {
+        container.innerHTML = "<p style='color:#777;'>لا توجد تقييمات بعد. كن أول من يقيّمي!</p>";
+        return;
+    }
+
+    let html = "";
+    reviews.forEach(rev => {
+        const stars = "⭐".repeat(rev.rating);
+        html += `
+            <div style="background:#f8fafc; padding:15px; border-radius:10px; margin-bottom:12px; border:1px solid #e2e8f0;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong>👤 ${rev.reviewer_name}</strong>
+                    <span>${stars} (${rev.rating}/5)</span>
+                </div>
+                <p style="margin-top:8px; font-size:14px; color:#334155; line-height:1.5;">${rev.comment}</p>
+                <small style="color:#94a3b8; font-size:11px;">📅 ${new Date(rev.created_at).toLocaleDateString('ar-DZ')}</small>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+}
+
+function handleReviewSubmit() {
+    const name = document.getElementById("reviewerName").value.trim();
+    const rating = document.getElementById("reviewerRating").value;
+    const comment = document.getElementById("reviewerComment").value.trim();
+
+    submitProductReview(name, rating, comment);
+}
+
+async function submitProductReview(name, rating, comment) {
+    if (!name || !rating || !comment) {
+        alert("❌ يرجى ملء كافة حقول التقييم واختيار عدد النجوم.");
+        return;
+    }
+
+    const { error } = await supabase.from('product_reviews').insert([{
+        product_id: 1, 
+        reviewer_name: name,
+        rating: parseInt(rating),
+        comment: comment
+    }]);
+
+    if (!error) {
+        alert("🎉 شكرًا لك! تم تقديم تقييمك بنجاح.");
+        document.getElementById("reviewerName").value = "";
+        document.getElementById("reviewerRating").value = "";
+        document.getElementById("reviewerComment").value = "";
+        loadProductReviews();
+    } else {
+        alert("❌ حدث خطأ أثناء إرسال التقييم: " + error.message);
+    }
+}
+
+loadProductReviews();
+
+// ================= خدمة العملاء والرد الآلي =================
 function toggleSupportChat() {
     const box = document.getElementById('supportChatBox');
     box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
