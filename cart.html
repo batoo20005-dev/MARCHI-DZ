@@ -471,7 +471,7 @@ async function loadBuyerProfile() {
     }
 }
 
-// حساب عمولة المنصة حسب سلم الفئات
+// حساب عمولة المنصة للعرض المبدئي في الواجهة
 function calculatePlatformFee(amount) {
     if (amount < 1000) return 0;
     if (amount < 10000) return 20;
@@ -603,7 +603,7 @@ function removeItem(index) {
 }
 
 async function submitOrder() {
-    // 🔒 التحقق الأمني من الجلسة في سيرفر Supabase
+    // 🔒 التحقق الأمني من الجلسة المشفرة في خادم Supabase
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
         alert("⚠️ يجب عليك تسجيل الدخول أولاً قبل تأكيد الطلب!");
@@ -616,7 +616,7 @@ async function submitOrder() {
     const phone = document.getElementById("clientPhone").value.trim();
     const wilaya = document.getElementById("clientWilaya").value;
     const commune = document.getElementById("clientCommune").value.trim();
-    const receiptFile = document.getElementById("depositReceipt").files[0];
+    const receiptFile = document.getElementById("depositReceipt")?.files[0];
     const button = document.getElementById("orderBtn");
 
     if (cart.length === 0) { alert("❌ سلتك فارغة!"); return; }
@@ -632,7 +632,7 @@ async function submitOrder() {
     }
 
     button.disabled = true;
-    button.textContent = "⏳ جاري معالجة الطلب وإرساله...";
+    button.textContent = "⏳ جاري المعالجة والتحقق المالي من الخادم...";
 
     try {
         let receiptUrl = null;
@@ -641,35 +641,29 @@ async function submitOrder() {
             if (!receiptUrl) throw new Error("فشل رفع صورة الوصل.");
         }
 
-        let currentDeliveryFee = selectedDeliveryType === 'home' ? homeDeliveryPrice : deskDeliveryPrice;
-        let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        let platformFee = calculatePlatformFee(subtotal);
-        let sellerId = cart[0]?.seller_id || null;
+        // 🛡️ معالجة كل منتج بحساب السعر والعمولة الآمن من الخادم (Server-Side RPC)
+        for (const item of cart) {
+            const { error } = await supabase.rpc('create_secure_order', {
+                p_product_id: item.id,
+                p_quantity: item.quantity,
+                p_client_name: `${firstName} ${lastName}`,
+                p_client_phone: phone,
+                p_wilaya: wilaya,
+                p_address: commune,
+                p_delivery_type: selectedDeliveryType,
+                p_deposit_receipt_url: receiptUrl
+            });
 
-        const { error } = await supabase.from("orders").insert([{
-            client_name: `${firstName} ${lastName}`,
-            client_phone: phone,
-            wilaya: wilaya,
-            address: commune,
-            delivery_type: selectedDeliveryType,
-            items: cart,
-            total_price: subtotal + currentDeliveryFee,
-            platform_fee: platformFee,
-            seller_id: sellerId,
-            buyer_id: session.user.id,
-            deposit_receipt_url: receiptUrl,
-            unlocked: false
-        }]);
+            if (error) throw error;
+        }
 
-        if (error) throw error;
-
-        alert("🎉 تم إرسال طلبك بنجاح! سيتصل بك البائع قريباً للشحن والتأكيد.");
+        alert("🎉 تم إرسال طلبك بنجاح وحساب المستحقات من الخادم بأمان!");
         localStorage.removeItem("marchiCart");
         window.location.href = "index.html";
 
     } catch (err) {
         console.error("Order error:", err);
-        alert("❌ حدث خطأ أثناء إرسال الطلب: " + (err.message || "تعذر الاتصال"));
+        alert("❌ حدث خطأ أثناء إرسال الطلب: " + (err.message || "تعذر الاتصال بالخادم"));
     } finally {
         button.disabled = false;
         button.textContent = "✅ تأكيد الطلب الآن";
