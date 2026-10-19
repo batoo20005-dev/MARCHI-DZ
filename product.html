@@ -4,11 +4,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تفاصيل المنتج | MARCHI DZ</title>
 
-<title>المنتج | MARCHI DZ</title>
+<!-- مكتبة Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-
 *{
     margin:0;
     padding:0;
@@ -31,7 +32,6 @@ header{
     margin:auto;
     min-height:82px;
     padding:10px 25px;
-
     display:flex;
     align-items:center;
     gap:25px;
@@ -45,24 +45,13 @@ header{
     color:#172033;
 }
 
-.logo img{
-    width:58px;
-    height:58px;
-    object-fit:contain;
-}
-
 .logo-name{
     font-size:25px;
     font-weight:900;
 }
 
-.marchi{
-    color:#102a43;
-}
-
-.dz{
-    color:#16a34a;
-}
+.marchi{ color:#102a43; }
+.dz{ color:#16a34a; }
 
 .logo-slogan{
     font-size:11px;
@@ -73,12 +62,9 @@ header{
 .search{
     flex:1;
     height:48px;
-
     display:flex;
-
     border:1px solid #dfe5e9;
     border-radius:10px;
-
     overflow:hidden;
 }
 
@@ -96,6 +82,7 @@ header{
     background:#102a43;
     color:white;
     font-size:18px;
+    cursor:pointer;
 }
 
 .actions{
@@ -106,6 +93,9 @@ header{
 .action{
     font-size:15px;
     cursor:pointer;
+    text-decoration:none;
+    color:#172033;
+    font-weight:bold;
 }
 
 /* PRODUCT */
@@ -121,19 +111,16 @@ header{
     margin-bottom:25px;
     color:#16a34a;
     font-weight:bold;
-    cursor:pointer;
+    text-decoration:none;
 }
 
 .product-page{
     background:white;
     border-radius:16px;
     padding:30px;
-
     display:grid;
     grid-template-columns:1fr 1fr;
-
     gap:50px;
-
     box-shadow:0 5px 25px rgba(0,0,0,.05);
 }
 
@@ -141,11 +128,9 @@ header{
     height:520px;
     background:#f3f4f5;
     border-radius:15px;
-
     display:flex;
     align-items:center;
     justify-content:center;
-
     overflow:hidden;
 }
 
@@ -163,19 +148,27 @@ header{
 }
 
 h1{
-    font-size:34px;
+    font-size:30px;
     margin-bottom:15px;
+    color:#102a43;
 }
 
-.rating{
-    color:#f5a623;
-    margin-bottom:20px;
+.store-badge{
+    display:inline-block;
+    background:#e0f2fe;
+    color:#0369a1;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:15px;
 }
 
 .description{
     color:#666;
     line-height:1.9;
     margin-bottom:25px;
+    white-space:pre-line;
 }
 
 .price{
@@ -184,40 +177,49 @@ h1{
     color:#102a43;
 }
 
-.old-price{
-    color:#999;
-    font-size:16px;
-    text-decoration:line-through;
-    margin-right:10px;
+.delivery-options-view{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin:20px 0;
 }
 
-.discount{
-    display:inline-block;
-    background:#16a34a;
-    color:white;
-    padding:5px 10px;
-    border-radius:5px;
-    font-size:13px;
-    margin-right:8px;
+.del-card{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    padding:12px;
+    border-radius:8px;
+    font-size:14px;
+    text-align:center;
 }
+
+.deposit-alert-box{
+    display:none;
+    background:#fffbeb;
+    border:1px solid #fcd34d;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+.deposit-alert-box h4{ color:#92400e; margin-bottom:5px; font-size:15px; }
+.rip-box{ background:white; padding:8px; border:1px dashed #d97706; border-radius:6px; font-family:monospace; font-weight:bold; text-align:center; margin-top:5px; color:#b45309; }
 
 .quantity{
     display:flex;
     align-items:center;
     gap:15px;
-    margin:30px 0;
+    margin:25px 0;
 }
 
 .quantity button{
     width:38px;
     height:38px;
-
     border:1px solid #ddd;
     background:white;
-
     border-radius:7px;
-
     font-size:20px;
+    cursor:pointer;
 }
 
 .quantity span{
@@ -228,17 +230,14 @@ h1{
 .add-cart{
     width:100%;
     padding:16px;
-
     border:none;
     border-radius:9px;
-
     background:#16a34a;
     color:white;
-
     font-size:17px;
     font-weight:bold;
-
     cursor:pointer;
+    transition:.2s;
 }
 
 .add-cart:hover{
@@ -247,10 +246,8 @@ h1{
 
 .info{
     margin-top:25px;
-
     display:grid;
     grid-template-columns:repeat(3,1fr);
-
     gap:10px;
 }
 
@@ -262,6 +259,21 @@ h1{
     font-size:13px;
 }
 
+.reviews-container{
+    margin-top:40px;
+    background:white;
+    border-radius:16px;
+    padding:30px;
+    box-shadow:0 5px 25px rgba(0,0,0,.05);
+    display:none;
+}
+
+.reviews-container h2{ font-size:20px; margin-bottom:20px; border-bottom:2px solid #f1f5f9; padding-bottom:10px; }
+.review-card{ padding:15px 0; border-bottom:1px solid #f1f5f9; }
+.review-card:last-child{ border-bottom:none; }
+.rev-name{ font-weight:bold; margin-bottom:4px; }
+.rev-stars{ color:#f5a623; margin-bottom:6px; }
+
 footer{
     margin-top:70px;
     background:#102a43;
@@ -271,277 +283,272 @@ footer{
 }
 
 @media(max-width:800px){
-
-    .top-header{
-        flex-wrap:wrap;
-    }
-
-    .logo{
-        width:100%;
-    }
-
-    .search{
-        width:100%;
-        flex:auto;
-    }
-
-    .actions{
-        display:none;
-    }
-
-    .product-page{
-        grid-template-columns:1fr;
-        gap:25px;
-    }
-
-    .product-image{
-        height:350px;
-    }
-
-    h1{
-        font-size:27px;
-    }
-
-    .info{
-        grid-template-columns:1fr;
-    }
-
+    .top-header{ flex-wrap:wrap; }
+    .logo{ width:100%; }
+    .search{ width:100%; flex:auto; }
+    .actions{ display:none; }
+    .product-page{ grid-template-columns:1fr; gap:25px; }
+    .product-image{ height:350px; }
+    h1{ font-size:24px; }
+    .info{ grid-template-columns:1fr; }
 }
 
 </style>
 </head>
 
-
 <body>
 
 <header>
-
 <div class="top-header">
-
 <a href="index.html" class="logo">
-
-<img src="logo.png" alt="MARCHI DZ">
-
 <div>
-
 <div class="logo-name">
 <span class="marchi">MARCHI</span>
 <span class="dz"> DZ</span>
 </div>
-
-<div class="logo-slogan">
-تسوق بثقة، استلم براحة
+<div class="logo-slogan">تسوق بثقة، استلم براحة</div>
 </div>
-
-</div>
-
 </a>
 
-
 <div class="search">
-
-<input
-type="text"
-placeholder="ابحث عن أي منتج..."
->
-
-<button>
-🔍
-</button>
-
+<input type="text" id="searchInput" placeholder="ابحث عن أي منتج...">
+<button onclick="searchProducts()">🔍</button>
 </div>
-
 
 <div class="actions">
-
-<div class="action">
-👤 تسجيل الدخول
+<a href="auth.html" class="action">👤 الحساب</a>
+<a href="cart.html" class="action">🛒 السلة</a>
 </div>
-
-<div class="action">
-🛒 السلة
 </div>
-
-</div>
-
-</div>
-
 </header>
-
 
 <main class="container">
 
-<a href="index.html" class="back">
-← العودة إلى المنتجات
-</a>
+<a href="index.html" class="back">← العودة إلى المنتجات</a>
 
-
-<div class="product-page">
-
-
-<div class="product-image">
-
-<img
-src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1000&q=85"
-alt="سماعات لاسلكية"
->
-
+<div id="productMainContainer">
+    <div style="text-align:center; padding:60px; background:white; border-radius:16px;">
+        <h2>جاري تحميل تفاصيل المنتج من قاعدة البيانات... ⏳</h2>
+    </div>
 </div>
 
-
-<div>
-
-<div class="category">
-إلكترونيات
-</div>
-
-
-<h1>
-سماعات لاسلكية احترافية
-</h1>
-
-
-<div class="rating">
-★★★★★
-<span style="color:#777">
-(124 تقييم)
-</span>
-</div>
-
-
-<p class="description">
-
-استمتع بصوت عالي الجودة مع سماعات لاسلكية
-بتصميم عصري ومريح للاستخدام اليومي.
-بطارية تدوم لفترة طويلة واتصال سريع عبر Bluetooth.
-
-</p>
-
-
-<div>
-
-<span class="price">
-4,500 دج
-</span>
-
-<span class="old-price">
-5,300 دج
-</span>
-
-<span class="discount">
--15%
-</span>
-
-</div>
-
-
-<div class="quantity">
-
-<strong>
-الكمية:
-</strong>
-
-<button onclick="decreaseQuantity()">
-−
-</button>
-
-<span id="quantity">
-1
-</span>
-
-<button onclick="increaseQuantity()">
-+
-</button>
-
-</div>
-
-
-<button
-class="add-cart"
-onclick="addToCart()"
->
-🛒 أضف إلى السلة
-</button>
-
-
-<div class="info">
-
-<div class="info-box">
-🚚
-<br>
-توصيل سريع
-</div>
-
-<div class="info-box">
-💳
-<br>
-الدفع عند الاستلام
-</div>
-
-<div class="info-box">
-🛡️
-<br>
-منتج موثوق
-</div>
-
-</div>
-
-</div>
-
+<!-- قسم التقييمات -->
+<div class="reviews-container" id="reviewsSection">
+    <h2>💬 تقييمات المشترين</h2>
+    <div id="reviewsList"></div>
 </div>
 
 </main>
 
-
 <footer>
-
-<strong>
-MARCHI DZ
-</strong>
-
+<strong>MARCHI DZ</strong>
 <br><br>
-
 سوق إلكتروني جزائري — تسوق بثقة، استلم براحة 🇩🇿
-
 </footer>
 
-
 <script>
+const supabase = window.supabase.createClient(
+    "https://lifxjoofdlcmbuskvsbg.supabase.co",
+    "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
+);
 
+let currentProduct = null;
 let quantity = 1;
+let homePrice = 600;
+let deskPrice = 400;
+
+// 🛡️ دالة تطهير النصوص لمنع ثغرات XSS
+function escapeHTML(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+async function loadProductDetails() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
+    if (!productId) {
+        document.getElementById("productMainContainer").innerHTML = `
+            <div style="text-align:center; padding:50px; background:white; border-radius:16px;">
+                <h2>❌ لم يتم تحديد المنتج المطلوبة</h2>
+                <br>
+                <a href="index.html" class="back">العودة للتسوق</a>
+            </div>
+        `;
+        return;
+    }
+
+    const { data: product, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', productId)
+        .single();
+
+    if (error || !product) {
+        document.getElementById("productMainContainer").innerHTML = `
+            <div style="text-align:center; padding:50px; background:white; border-radius:16px;">
+                <h2>❌ عذراً، المنتج غير موجود أو تم حذفه من المنصة</h2>
+                <br>
+                <a href="index.html" class="back">العودة للتسوق</a>
+            </div>
+        `;
+        return;
+    }
+
+    currentProduct = product;
+    homePrice = product.home_price || 600;
+    deskPrice = product.desk_price || 400;
+
+    renderUI(product);
+    loadReviews(productId);
+}
+
+function renderUI(p) {
+    const safeName = escapeHTML(p.name);
+    const safeDesc = escapeHTML(p.description || "لا يوجد وصف إضافي لهذا المنتج.");
+    const safeStore = escapeHTML(p.store_name || "متجر معتمد");
+    const safeCategory = escapeHTML(p.category || "إلكترونيات ومنتجات عامة");
+    const safeImg = p.image_url ? escapeHTML(p.image_url) : 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1000&q=85';
+
+    document.title = `${safeName} | MARCHI DZ`;
+
+    let depositHTML = "";
+    if (p.require_deposit) {
+        depositHTML = `
+            <div class="deposit-alert-box" style="display:block;">
+                <h4>⚠️ تنبيه: مطلوب عربون تسقاع لحجز الطلب</h4>
+                <p style="font-size:12px; color:#78350f;">يشترط التاجر تحويل مبلغ تسقاع عبر BaridiMob لضمان الجدية.</p>
+                <div class="rip-box">RIP: ${escapeHTML(p.rip_number || 'غير متوفر')}</div>
+            </div>
+        `;
+    }
+
+    document.getElementById("productMainContainer").innerHTML = `
+        <div class="product-page">
+            <div class="product-image">
+                <img src="${safeImg}" alt="${safeName}">
+            </div>
+
+            <div>
+                <div class="category">${safeCategory}</div>
+                <div class="store-badge">🏪 متجر: ${safeStore}</div>
+                <h1>${safeName}</h1>
+
+                <div class="rating">
+                    ★★★★★ <span style="color:#777; font-size:13px;">(منتج موثوق)</span>
+                </div>
+
+                <p class="description">${safeDesc}</p>
+
+                <div>
+                    <span class="price">${p.price.toLocaleString()} دج</span>
+                </div>
+
+                <div class="delivery-options-view">
+                    <div class="del-card">🏠 توصيل للمنزل<br><strong>${homePrice.toLocaleString()} دج</strong></div>
+                    <div class="del-card">🏢 توصيل للمكتب (Stop Desk)<br><strong>${deskPrice.toLocaleString()} دج</strong></div>
+                </div>
+
+                ${depositHTML}
+
+                <div class="quantity">
+                    <strong>الكمية:</strong>
+                    <button onclick="decreaseQuantity()">−</button>
+                    <span id="quantity">1</span>
+                    <button onclick="increaseQuantity()">+</button>
+                </div>
+
+                <button class="add-cart" onclick="addToCart()">🛒 أضف إلى السلة</button>
+
+                <div class="info">
+                    <div class="info-box">🚚<br>توصيل سريع 58 ولاية</div>
+                    <div class="info-box">💳<br>الدفع عند الاستلام</div>
+                    <div class="info-box">🛡️<br>حماية المشتري</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+async function loadReviews(productId) {
+    const { data: reviews } = await supabase
+        .from('product_reviews')
+        .select('*')
+        .eq('product_id', productId)
+        .order('created_at', { ascending: false });
+
+    if (reviews && reviews.length > 0) {
+        document.getElementById("reviewsSection").style.display = "block";
+        const listContainer = document.getElementById("reviewsList");
+        let html = "";
+        reviews.forEach(r => {
+            const stars = "⭐".repeat(r.rating || 5);
+            html += `
+                <div class="review-card">
+                    <div class="rev-name">${escapeHTML(r.reviewer_name)}</div>
+                    <div class="rev-stars">${stars}</div>
+                    <p style="color:#666; font-size:14px;">${escapeHTML(r.comment || '')}</p>
+                </div>
+            `;
+        });
+        listContainer.innerHTML = html;
+    }
+}
 
 function increaseQuantity(){
-
     quantity++;
-
-    document.getElementById("quantity").textContent =
-        quantity;
-
+    document.getElementById("quantity").textContent = quantity;
 }
 
 function decreaseQuantity(){
-
     if(quantity > 1){
-
         quantity--;
-
-        document.getElementById("quantity").textContent =
-            quantity;
-
+        document.getElementById("quantity").textContent = quantity;
     }
-
 }
 
 function addToCart(){
+    if (!currentProduct) return;
 
-    alert(
-        "تمت إضافة " +
-        quantity +
-        " من المنتج إلى السلة 🛒"
-    );
+    let cart = JSON.parse(localStorage.getItem("marchiCart")) || [];
+    const existingIndex = cart.findIndex(item => item.id === currentProduct.id);
 
+    if (existingIndex > -1) {
+        cart[existingIndex].quantity += quantity;
+    } else {
+        cart.push({
+            id: currentProduct.id,
+            name: currentProduct.name,
+            price: currentProduct.price,
+            image: currentProduct.image_url,
+            seller_id: currentProduct.seller_id,
+            home_price: currentProduct.home_price,
+            desk_price: currentProduct.desk_price,
+            require_deposit: currentProduct.require_deposit,
+            rip_number: currentProduct.rip_number,
+            quantity: quantity
+        });
+    }
+
+    localStorage.setItem("marchiCart", JSON.stringify(cart));
+    alert("🎉 تمت إضافة المنتج إلى السلة بنجاح!");
+    window.location.href = "cart.html";
 }
 
+function searchProducts() {
+    const query = document.getElementById("searchInput").value.trim();
+    if (query) {
+        window.location.href = `index.html?search=${encodeURIComponent(query)}`;
+    }
+}
+
+// تشغيل جلب بيانات المنتج عند فتح الصفحة
+loadProductDetails();
 </script>
 
 </body>
