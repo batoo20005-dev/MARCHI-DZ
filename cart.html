@@ -383,7 +383,7 @@ input:focus, select:focus{ border-color:#16a34a; }
     </div>
     <div class="form-group">
     <label>البلدية والعنوان *</label>
-    <input type="text" id="clientCommune" placeholder="مثال: عين التوتة - حي النصر">
+    <input type="text" id="clientCommune" placeholder="مثال: حي النصر">
     </div>
 </div>
 
@@ -444,55 +444,52 @@ const supabase = window.supabase.createClient(
 );
 
 let cart = JSON.parse(localStorage.getItem("marchiCart")) || [];
-let currentUser = JSON.parse(localStorage.getItem("marchi_user"));
-
 let selectedDeliveryType = 'home'; 
 let homeDeliveryPrice = 600;
 let deskDeliveryPrice = 400;
 
-// التعبئة التلقائية لبيانات المشتري إن كان مسجلاً
-document.addEventListener("DOMContentLoaded", () => {
-    if (currentUser) {
-        if(currentUser.full_name) {
-            const parts = currentUser.full_name.split(" ");
-            document.getElementById("clientFirstName").value = parts[0] || "";
-            document.getElementById("clientLastName").value = parts.slice(1).join(" ") || "";
-        }
-        if(currentUser.phone) {
-            document.getElementById("clientPhone").value = currentUser.phone;
-        }
-    }
-});
+// 🛡️ التعبئة التلقائية لبيانات المشتري من الجلسة الآمنة الحقيقية
+async function loadBuyerProfile() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
 
-// 📌 دالة حساب عمولة المنصة الجديدة حسب سلم الفئات
-function calculatePlatformFee(amount) {
-    if (amount < 1000) {
-        return 0; // أقل من 1000 دج: مجاناً
-    } else if (amount >= 1000 && amount < 10000) {
-        return 20; // من 1000 دج إلى 9999 دج: 20 دج
-    } else if (amount >= 10000 && amount < 50000) {
-        return 100; // من 10000 دج إلى 49999 دج: 100 دج
-    } else if (amount >= 50000 && amount <= 100000) {
-        return 200; // من 50000 دج إلى 100000 دج: 200 دج
-    } else {
-        return 300; // فوق 100000 دج
+        if (profile) {
+            if (profile.full_name) {
+                const parts = profile.full_name.split(" ");
+                document.getElementById("clientFirstName").value = parts[0] || "";
+                document.getElementById("clientLastName").value = parts.slice(1).join(" ") || "";
+            }
+            if (profile.phone) {
+                document.getElementById("clientPhone").value = profile.phone;
+            }
+        }
     }
 }
 
-// 📌 دالة رفع صورة وصل التحويل لـ Storage
+// حساب عمولة المنصة حسب سلم الفئات
+function calculatePlatformFee(amount) {
+    if (amount < 1000) return 0;
+    if (amount < 10000) return 20;
+    if (amount < 50000) return 100;
+    if (amount <= 100000) return 200;
+    return 300;
+}
+
 async function uploadReceiptFile(file) {
     if (!file) return null;
     const fileExt = file.name.split('.').pop();
     const fileName = `receipt_${Date.now()}_${Math.floor(Math.random()*1000)}.${fileExt}`;
 
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
         .from('product-images')
         .upload(fileName, file);
 
-    if (error) {
-        console.error("Receipt Upload Error:", error);
-        return null;
-    }
+    if (error) return null;
 
     const { data: publicUrlData } = supabase.storage
         .from('product-images')
@@ -568,7 +565,6 @@ function renderCart() {
     document.getElementById("subTotal").textContent = subtotal.toLocaleString() + " دج";
     document.getElementById("deliveryCost").textContent = currentDeliveryFee.toLocaleString() + " دج";
     
-    // عرض قيمة العمولة بوضوح
     if (platformFee === 0) {
         document.getElementById("platformFeeText").textContent = "0 دج (مجاني < 1000 دج)";
     } else {
@@ -580,7 +576,6 @@ function renderCart() {
 
 function selectDeliveryType(type) {
     selectedDeliveryType = type;
-    
     const homeBtn = document.getElementById("typeHome");
     const deskBtn = document.getElementById("typeDesk");
 
@@ -591,7 +586,6 @@ function selectDeliveryType(type) {
         deskBtn.classList.add("active");
         homeBtn.classList.remove("active");
     }
-    
     renderCart();
 }
 
@@ -609,9 +603,10 @@ function removeItem(index) {
 }
 
 async function submitOrder() {
-    // 🔒 التحقق أولاً من أن المشتري مسجل دخول في المنصة
-    if (!currentUser) {
-        alert("⚠️ يجب عليك تسجيل الدخول أو إنشاء حساب أولاً قبل تأكيد الطلب!");
+    // 🔒 التحقق الأمني من الجلسة في سيرفر Supabase
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+        alert("⚠️ يجب عليك تسجيل الدخول أولاً قبل تأكيد الطلب!");
         window.location.href = "auth.html";
         return;
     }
@@ -626,7 +621,7 @@ async function submitOrder() {
 
     if (cart.length === 0) { alert("❌ سلتك فارغة!"); return; }
     if (!firstName || !lastName || !phone || !wilaya || !commune) { 
-        alert("❌ يرجى ملء كافة البيانات الحقول المطلوبة (الاسم، اللقب، الهاتف، الولاية والبلدية)."); 
+        alert("❌ يرجى ملء كافة الحقول المطلوبة (الاسم، اللقب، الهاتف، الولاية والبلدية)."); 
         return; 
     }
 
@@ -643,15 +638,11 @@ async function submitOrder() {
         let receiptUrl = null;
         if (isDepositRequired && receiptFile) {
             receiptUrl = await uploadReceiptFile(receiptFile);
-            if (!receiptUrl) {
-                throw new Error("فشل رفع صورة الوصل. أعد المحاولة.");
-            }
+            if (!receiptUrl) throw new Error("فشل رفع صورة الوصل.");
         }
 
         let currentDeliveryFee = selectedDeliveryType === 'home' ? homeDeliveryPrice : deskDeliveryPrice;
         let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        
-        // حساب رسم المنصة بالفئات الجديدة
         let platformFee = calculatePlatformFee(subtotal);
         let sellerId = cart[0]?.seller_id || null;
 
@@ -663,9 +654,9 @@ async function submitOrder() {
             delivery_type: selectedDeliveryType,
             items: cart,
             total_price: subtotal + currentDeliveryFee,
-            platform_fee: platformFee, // تسجيل رسم الفئة المحدد
+            platform_fee: platformFee,
             seller_id: sellerId,
-            buyer_id: currentUser.id,
+            buyer_id: session.user.id,
             deposit_receipt_url: receiptUrl,
             unlocked: false
         }]);
@@ -685,6 +676,7 @@ async function submitOrder() {
     }
 }
 
+loadBuyerProfile();
 renderCart();
 </script>
 </body>
