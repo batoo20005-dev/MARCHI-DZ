@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>تسجيل الدخول | MARCHI DZ</title>
 
-<!-- مكتبة Supabase -->
+<!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -18,7 +18,7 @@
 }
 
 body {
-    background-color: #f3f6f9;
+    background-color: #e2e8f0;
     color: #1a2533;
     min-height: 100vh;
     display: flex;
@@ -44,7 +44,7 @@ body {
 
 .nav-links a {
     text-decoration: none;
-    color: #475569;
+    color: #334155;
     font-size: 14px;
     font-weight: bold;
     display: flex;
@@ -53,148 +53,174 @@ body {
     transition: 0.2s;
 }
 
-.nav-links a:hover, .nav-links a.active {
+.nav-links a.active {
     color: #10b981;
+    border-bottom: 2px solid #10b981;
+    padding-bottom: 2px;
 }
 
 .lang-selector {
     background: white;
-    border: 1px solid #e2e8f0;
-    padding: 6px 12px;
-    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    padding: 6px 14px;
+    border-radius: 20px;
     font-size: 13px;
     display: flex;
     align-items: center;
     gap: 8px;
     cursor: pointer;
+    font-weight: bold;
 }
 
-/* الحاوية الرئيسية */
+/* الحاوية الرئيسية المتطابقة مع الصورة */
 .main-wrapper {
-    max-width: 1250px;
+    max-width: 1150px;
     width: 95%;
     margin: 10px auto 30px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.1fr 1fr;
     background: white;
-    border-radius: 24px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+    border-radius: 30px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
     overflow: hidden;
-    min-height: 650px;
+    min-height: 680px;
 }
 
-/* القسم الأيسر - الهوية البصرية */
+/* القسم الأيسر - الصورة والبوستر الجانبي المطابق 100% */
 .brand-side {
-    background: linear-gradient(135deg, #052e16 0%, #065f46 50%, #047857 100%);
     position: relative;
+    background: #022c22 url("https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1200&q=80") center/cover no-repeat;
     padding: 40px;
     color: white;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
+    border-radius: 30px 0 0 30px;
 }
 
-.brand-header {
+/* التراكب الأخضر المنحني مثل الصورة */
+.brand-side::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(6, 78, 59, 0.92) 0%, rgba(4, 120, 87, 0.85) 60%, rgba(16, 185, 129, 0.4) 100%);
+    z-index: 1;
+}
+
+.brand-side-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.brand-logo-box {
     display: flex;
     align-items: center;
     gap: 12px;
-    z-index: 2;
 }
 
-.brand-logo-img {
-    width: 50px;
-    height: 50px;
+.brand-logo-icon {
+    width: 55px;
+    height: 55px;
     background: white;
-    border-radius: 12px;
-    padding: 6px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
 }
 
 .brand-title {
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 900;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    color: white;
 }
 
 .brand-title span { color: #34d399; }
 
-.brand-sub {
-    font-size: 12px;
-    opacity: 0.8;
+.brand-slogan-text {
+    font-size: 13px;
+    opacity: 0.9;
+    margin-top: 2px;
 }
 
-.brand-hero-text {
-    margin-top: 30px;
-    z-index: 2;
-}
-
-.brand-hero-text h1 {
-    font-size: 32px;
-    line-height: 1.3;
+.brand-hero-title {
+    font-size: 34px;
+    font-weight: 900;
+    line-height: 1.25;
+    margin-top: 20px;
     margin-bottom: 12px;
 }
 
-.brand-hero-text p {
+.brand-hero-title span { color: #6ee7b7; }
+
+.brand-desc {
     font-size: 14px;
-    opacity: 0.9;
     line-height: 1.6;
-    max-width: 420px;
+    opacity: 0.95;
+    max-width: 400px;
 }
 
-.brand-features {
+/* الأيقونات الثلاثة أسفل البوستر */
+.brand-features-row {
     display: flex;
-    gap: 15px;
-    margin-top: 25px;
-    z-index: 2;
+    gap: 12px;
+    margin-top: 30px;
 }
 
-.feature-pill {
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 10px 15px;
-    border-radius: 12px;
+.brand-feature-item {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 12px 10px;
+    border-radius: 16px;
     text-align: center;
     flex: 1;
 }
 
-.feature-pill span {
-    font-size: 20px;
+.brand-feature-item .icon {
+    font-size: 22px;
     display: block;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
 }
 
-.feature-pill strong {
+.brand-feature-item span {
     font-size: 11px;
+    font-weight: bold;
     display: block;
+    line-height: 1.3;
 }
 
-.dz-badge {
-    position: absolute;
-    bottom: -15px;
-    right: -15px;
-    font-size: 70px;
-    opacity: 0.15;
-    user-select: none;
+.made-in-dz {
+    font-size: 18px;
+    font-weight: bold;
+    color: #a7f3d0;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 /* القسم الأيمن - نموذج الدخول */
 .auth-side {
-    padding: 50px;
+    padding: 45px 50px;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
 .auth-header {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .auth-header h2 {
-    font-size: 28px;
+    font-size: 30px;
+    font-weight: 800;
     color: #0f172a;
     display: flex;
     align-items: center;
@@ -205,18 +231,19 @@ body {
     color: #64748b;
     font-size: 14px;
     margin-top: 8px;
+    line-height: 1.5;
 }
 
 .form-group {
-    margin-bottom: 18px;
+    margin-bottom: 16px;
 }
 
 .form-group label {
     display: block;
     font-size: 13px;
     font-weight: bold;
-    color: #334155;
-    margin-bottom: 8px;
+    color: #1e293b;
+    margin-bottom: 6px;
 }
 
 .input-box {
@@ -227,25 +254,24 @@ body {
 
 .input-box input, .input-box select {
     width: 100%;
-    padding: 13px 42px 13px 15px;
+    padding: 12px 42px 12px 15px;
     border: 1px solid #cbd5e1;
     border-radius: 10px;
     font-size: 14px;
     outline: none;
     transition: 0.2s;
-    background: #f8fafc;
+    background: #ffffff;
 }
 
 .input-box input:focus, .input-box select:focus {
     border-color: #10b981;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
 }
 
 .input-icon {
     position: absolute;
     right: 14px;
-    color: #94a3b8;
+    color: #64748b;
     font-size: 16px;
     pointer-events: none;
 }
@@ -254,8 +280,10 @@ body {
     position: absolute;
     left: 14px;
     cursor: pointer;
-    color: #94a3b8;
+    color: #64748b;
+    font-size: 16px;
     user-select: none;
+    padding: 5px;
 }
 
 .form-options {
@@ -263,7 +291,7 @@ body {
     justify-content: space-between;
     align-items: center;
     font-size: 13px;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
 }
 
 .remember-me {
@@ -281,6 +309,7 @@ body {
     cursor: pointer;
 }
 
+/* زر تسجيل الدخول الأخضر الكبير المطابق للصورة */
 .btn-submit {
     width: 100%;
     padding: 14px;
@@ -295,7 +324,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .btn-submit:hover {
@@ -307,8 +336,8 @@ body {
     align-items: center;
     text-align: center;
     color: #94a3b8;
-    font-size: 12px;
-    margin: 22px 0;
+    font-size: 13px;
+    margin: 20px 0;
 }
 
 .divider::before, .divider::after {
@@ -317,13 +346,43 @@ body {
     border-bottom: 1px solid #e2e8f0;
 }
 
-.divider span { padding: 0 10px; }
+.divider span { padding: 0 12px; }
+
+/* أزرار التسجيل عبر Google و Apple المطابقة للصورة */
+.social-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-social {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: white;
+    color: #1e293b;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-social:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
 
 .toggle-auth {
     text-align: center;
     font-size: 14px;
     color: #64748b;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .toggle-auth a {
@@ -331,20 +390,20 @@ body {
     font-weight: bold;
     text-decoration: none;
     cursor: pointer;
+    margin-right: 5px;
 }
 
 .security-note {
-    margin-top: 25px;
+    margin-top: 20px;
     text-align: center;
     font-size: 12px;
-    color: #94a3b8;
+    color: #64748b;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
 }
 
-/* إخفاء قسم التسجيل افتراضياً */
 #registerFields {
     display: none;
 }
@@ -359,7 +418,7 @@ body {
 
 <body>
 
-<!-- شريط الملاحة العلوي -->
+<!-- شريط الملاحة العلوي المطابق للصورة -->
 <nav class="top-nav">
     <div class="lang-selector">
         🇩🇿 العربية ▾
@@ -375,46 +434,46 @@ body {
 <!-- الحاوية الرئيسية -->
 <div class="main-wrapper">
 
-    <!-- القسم الأيسر: الشعار والهوية البصرية -->
+    <!-- القسم الأيسر: البوستر المطابق للصورة 100% -->
     <div class="brand-side">
-        <div class="brand-header">
-            <div class="brand-logo-img">
-                <span style="font-size: 24px;">🛒</span>
+        <div class="brand-side-content">
+            <div class="brand-logo-box">
+                <div class="brand-logo-icon">
+                    <span style="font-size: 28px;">🛍️</span>
+                </div>
+                <div>
+                    <div class="brand-title">MARCHI <span>DZ</span></div>
+                    <div class="brand-slogan-text">متجرك الإلكتروني الجزائري</div>
+                </div>
             </div>
+
             <div>
-                <div class="brand-title">MARCHI <span>DZ</span></div>
-                <div class="brand-sub">متجرك الإلكتروني الجزائري</div>
-            </div>
-        </div>
+                <div class="brand-hero-title">تسوق كل ما تحتاجه<br>من <span>مكان واحد</span></div>
+                <p class="brand-desc">اكتشف آلاف المنتجات من أفضل المتاجر الجزائرية بأشكال مميزة وخيارات توصيل موثوقة إلى 58 ولاية.</p>
 
-        <div class="brand-hero-text">
-            <h1>تسوق كل ما تحتاجه<br>من مكان واحد</h1>
-            <p>اكتشف آلاف المنتجات من أفضل المتاجر الجزائرية بأسعار مميزة وخدمات توصيل موثوقة إلى 58 ولاية.</p>
-
-            <div class="brand-features">
-                <div class="feature-pill">
-                    <span>🔰</span>
-                    <strong>منتجات أصلية</strong>
-                </div>
-                <div class="feature-pill">
-                    <span>🚚</span>
-                    <strong>توصيل 58 ولاية</strong>
-                </div>
-                <div class="feature-pill">
-                    <span>💵</span>
-                    <strong>دفع عند الاستلام</strong>
+                <div class="brand-features-row">
+                    <div class="brand-feature-item">
+                        <span class="icon">🔰</span>
+                        <span>منتجات أصلية من تجار موثوقين</span>
+                    </div>
+                    <div class="brand-feature-item">
+                        <span class="icon">🚚</span>
+                        <span>توصيل لكل ولايات الجزائر</span>
+                    </div>
+                    <div class="brand-feature-item">
+                        <span class="icon">🛡️</span>
+                        <span>دفع آمن عند الاستلام</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div style="font-size: 12px; opacity: 0.7;">
-            صنع في الجزائر 🇩🇿
+            <div class="made-in-dz">
+                <span>صنع في الجزائر 🇩🇿</span>
+            </div>
         </div>
-
-        <div class="dz-badge">🇩🇿</div>
     </div>
 
-    <!-- القسم الأيمن: نموذج تسجيل الدخول / إنشاء حساب -->
+    <!-- القسم الأيمن: نموذج الدخول المطابق للصورة -->
     <div class="auth-side">
 
         <div class="auth-header">
@@ -424,13 +483,13 @@ body {
 
         <form id="authForm">
             
-            <!-- حقول إضافية تنشط فقط عند اختيار إنشاء حساب جديد -->
+            <!-- حقول إضافية تنشط فقط عند فتح وضع إنشاء حساب جديد -->
             <div id="registerFields">
                 <div class="form-group">
                     <label>الاسم الكامل *</label>
                     <div class="input-box">
                         <span class="input-icon">👤</span>
-                        <input type="text" id="fullName" placeholder="مثال: محمد بن علي">
+                        <input type="text" id="fullName" placeholder="أدخل اسمك الكامل">
                     </div>
                 </div>
 
@@ -449,17 +508,17 @@ body {
                     <label>اسم المتجر *</label>
                     <div class="input-box">
                         <span class="input-icon">🏬</span>
-                        <input type="text" id="storeName" placeholder="مثال: متجر الأمل للألكترونيات">
+                        <input type="text" id="storeName" placeholder="مثال: متجر الأمل">
                     </div>
                 </div>
             </div>
 
             <!-- البريد الإلكتروني -->
             <div class="form-group">
-                <label>البريد الإلكتروني *</label>
+                <label>البريد الإلكتروني أو رقم الهاتف *</label>
                 <div class="input-box">
                     <span class="input-icon">✉️</span>
-                    <input type="email" id="email" placeholder="أدخل بريدك الإلكتروني" required>
+                    <input type="email" id="email" placeholder="أدخل بريدك الإلكتروني أو رقم هاتفك" required>
                 </div>
             </div>
 
@@ -469,7 +528,7 @@ body {
                 <div class="input-box">
                     <span class="input-icon">🔒</span>
                     <input type="password" id="password" placeholder="أدخل كلمة المرور" required>
-                    <span class="toggle-pass" onclick="togglePasswordVisibility()">👁️</span>
+                    <span class="toggle-pass" id="togglePassBtn">👁️</span>
                 </div>
             </div>
 
@@ -477,9 +536,10 @@ body {
                 <label class="remember-me">
                     <input type="checkbox" id="rememberMe" checked> تذكرني
                 </label>
-                <a href="#" class="forgot-link" onclick="handleForgotPassword(); return false;">نسيت كلمة المرور؟</a>
+                <a class="forgot-link" id="forgotBtn">نسيت كلمة المرور؟</a>
             </div>
 
+            <!-- زر تسجيل الدخول الأخضر -->
             <button type="submit" class="btn-submit" id="submitBtn">
                 <span>تسجيل الدخول</span> ➔
             </button>
@@ -489,9 +549,19 @@ body {
             <span>أو</span>
         </div>
 
+        <!-- أزرار التسجيل عبر Google و Apple -->
+        <div class="social-buttons" id="socialBox">
+            <button class="btn-social" onclick="alert('سيكون الخيار متاحاً قريباً عبر تحديث التوكن 🌐');">
+                <span style="font-size: 16px;">🌐</span> المتابعة عبر Google
+            </button>
+            <button class="btn-social" onclick="alert('سيكون الخيار متاحاً قريباً عبر تحديث التوكن 🍎');">
+                <span style="font-size: 16px;">🍎</span> المتابعة عبر Apple
+            </button>
+        </div>
+
         <div class="toggle-auth">
             <span id="toggleText">ليس لديك حساب؟</span>
-            <a onclick="switchAuthMode()" id="toggleLink">إنشاء حساب جديد</a>
+            <a id="switchAuthBtn">إنشاء حساب جديد 👤</a>
         </div>
 
         <div class="security-note">
@@ -511,45 +581,65 @@ const supabase = window.supabase.createClient(
 
 let isLoginMode = true;
 
-// ربط زر الفورم برمجياً للحد من مشاكل الأحداث
-document.getElementById("authForm").addEventListener("submit", handleAuth);
+// 🛠️ ربط كافة العناصر والأحداث برمجياً لضمان اشتغال الأزرار 100%
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // 1. زر إظهار/إخفاء كلمة المرور
+    document.getElementById("togglePassBtn").addEventListener("click", function() {
+        const passInput = document.getElementById("password");
+        if (passInput.type === "password") {
+            passInput.type = "text";
+            this.textContent = "🙈";
+        } else {
+            passInput.type = "password";
+            this.textContent = "👁️";
+        }
+    });
 
-function togglePasswordVisibility() {
-    const passInput = document.getElementById("password");
-    passInput.type = passInput.type === "password" ? "text" : "password";
-}
+    // 2. زر التحويل بين تسجيل الدخول وإنشاء حساب
+    document.getElementById("switchAuthBtn").addEventListener("click", switchAuthMode);
+
+    // 3. زر نسيت كلمة المرور
+    document.getElementById("forgotBtn").addEventListener("click", handleForgotPassword);
+
+    // 4. نموذج الإرسال الرئيسية
+    document.getElementById("authForm").addEventListener("submit", handleAuth);
+});
 
 function toggleStoreField(role) {
     const storeGroup = document.getElementById("storeNameGroup");
-    storeGroup.style.display = role === "seller" ? "block" : "none";
+    storeGroup.style.display = (role === "seller") ? "block" : "none";
 }
 
 function switchAuthMode() {
     isLoginMode = !isLoginMode;
     const regFields = document.getElementById("registerFields");
     const loginOpt = document.getElementById("loginOptions");
+    const socialBox = document.getElementById("socialBox");
     const title = document.getElementById("formTitle");
     const sub = document.getElementById("formSub");
     const btn = document.getElementById("submitBtn");
     const toggleText = document.getElementById("toggleText");
-    const toggleLink = document.getElementById("toggleLink");
+    const switchBtn = document.getElementById("switchAuthBtn");
 
     if (isLoginMode) {
         regFields.style.display = "none";
         loginOpt.style.display = "flex";
+        socialBox.style.display = "flex";
         title.textContent = "مرحباً بك مجدداً 👋";
         sub.textContent = "سجل دخولك إلى حسابك للمتابعة في التسوق واستكشاف أحدث العروض";
         btn.innerHTML = "<span>تسجيل الدخول</span> ➔";
         toggleText.textContent = "ليس لديك حساب؟";
-        toggleLink.textContent = "إنشاء حساب جديد";
+        switchBtn.textContent = "إنشاء حساب جديد 👤";
     } else {
         regFields.style.display = "block";
         loginOpt.style.display = "none";
+        socialBox.style.display = "none";
         title.textContent = "إنشاء حساب جديد ✨";
         sub.textContent = "انضم إلى منصة MARCHI DZ واكتشف عالم التسوق والتجارة الإلكترونية";
         btn.innerHTML = "<span>تأكيد التسجيل</span> ➔";
         toggleText.textContent = "لديك حساب بالفعل؟";
-        toggleLink.textContent = "تسجيل الدخول";
+        switchBtn.textContent = "تسجيل الدخول 🔑";
     }
 }
 
@@ -560,7 +650,7 @@ async function handleAuth(event) {
     const submitBtn = document.getElementById("submitBtn");
 
     if(!email || !password) {
-        alert("❌ يرجى ملء كافة الحقول المتبقية.");
+        alert("❌ يرجى ملء كافة الحقول المطلوبة.");
         return;
     }
 
@@ -569,7 +659,7 @@ async function handleAuth(event) {
 
     try {
         if (isLoginMode) {
-            // 1. تسجيل الدخول
+            // تسجيل الدخول الحقيقي
             const { data, error } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password
@@ -577,7 +667,7 @@ async function handleAuth(event) {
 
             if (error) throw error;
 
-            // جلب بيانات ملف المستخدم من جدول profiles
+            // جلب بيانات الرتبة والبروفايل
             const { data: profile } = await supabase
                 .from('profiles')
                 .select('*')
@@ -587,11 +677,11 @@ async function handleAuth(event) {
             const userSessionData = profile || { id: data.user.id, full_name: email.split('@')[0], role: 'buyer' };
             localStorage.setItem("marchi_user", JSON.stringify(userSessionData));
 
-            alert("🎉 تم تسجيل الدخول بنجاح! أهلاً بك.");
+            alert("🎉 تم تسجيل الدخول بنجاح!");
             redirectUserByRole(userSessionData.role);
 
         } else {
-            // 2. إنشاء حساب جديد
+            // إنشاء حساب جديد
             const fullName = document.getElementById("fullName").value.trim();
             const role = document.getElementById("userRole").value;
             const storeName = document.getElementById("storeName").value.trim();
@@ -618,7 +708,6 @@ async function handleAuth(event) {
             if (error) throw error;
 
             if (data.user) {
-                // حفظ الملف الشخصي بالجدول
                 await supabase.from('profiles').insert([{
                     id: data.user.id,
                     full_name: fullName,
@@ -642,7 +731,7 @@ async function handleAuth(event) {
 
     } catch (err) {
         console.error("Auth Error:", err);
-        alert("❌ حدث خطأ: " + (err.message || "تعذر الاتصال بالسيرفر"));
+        alert("❌ خطأ: " + (err.message || "تعذر الاتصال بالسيرفر"));
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = isLoginMode ? "<span>تسجيل الدخول</span> ➔" : "<span>تأكيد التسجيل</span> ➔";
@@ -650,13 +739,13 @@ async function handleAuth(event) {
 }
 
 async function handleForgotPassword() {
-    const email = prompt("يرجى إدخال بريدك الإلكتروني لإرسال رابط إعادة تعيين كلمة المرور:");
+    const email = prompt("يرجى إدخال بريدك الإلكتروني لإعادة تعيين كلمة المرور:");
     if (email) {
         const { error } = await supabase.auth.resetPasswordForEmail(email);
         if (error) {
             alert("❌ خطأ: " + error.message);
         } else {
-            alert("📧 تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك بنجاح.");
+            alert("📧 تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.");
         }
     }
 }
