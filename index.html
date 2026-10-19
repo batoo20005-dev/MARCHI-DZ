@@ -356,6 +356,7 @@ header{
     justify-content:center;
     align-items:center;
     overflow:hidden;
+    cursor: pointer;
 }
 
 .product-image img{
@@ -378,7 +379,9 @@ header{
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
+    cursor: pointer;
 }
+.product-name:hover{ color: #16a34a; }
 
 .seller-badge-box{
     font-size:12px;
@@ -596,7 +599,7 @@ footer{
 
 <!-- SEARCH -->
 <div class="search">
-<input id="searchInput" type="text" placeholder="ابحث عن أي منتج...">
+<input id="searchInput" type="text" placeholder="ابحث عن أي منتج..." onkeypress="if(event.key === 'Enter') searchProducts()">
 <button onclick="searchProducts()">🔍</button>
 </div>
 
@@ -770,6 +773,9 @@ const supabase = window.supabase.createClient(
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
+// تخزين مؤقت للمنتجات المجلوبة لتجنب الأخطاء
+let loadedProducts = [];
+
 function checkUserLogin() {
     const user = JSON.parse(localStorage.getItem("marchi_user"));
     const accountSec = document.getElementById("userAccountSection");
@@ -837,15 +843,17 @@ async function loadProductsFromSupabase() {
 
         if (error) throw error;
 
+        loadedProducts = products || [];
         const grid = document.getElementById('productGrid');
-        if (!products || products.length === 0) {
+        
+        if (loadedProducts.length === 0) {
             grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding: 40px; color: #777;">لا توجد منتجات مضافة حالياً.</p>';
             return;
         }
 
         grid.innerHTML = '';
 
-        products.forEach(product => {
+        loadedProducts.forEach(product => {
             const discountHTML = product.old_price && product.old_price > product.price 
                 ? `<span class="discount">-${Math.round((1 - product.price / product.old_price) * 100)}%</span>` 
                 : '';
@@ -861,15 +869,17 @@ async function loadProductsFromSupabase() {
             const storeName = product.store_name || 'متجر معتمد';
 
             const productHTML = `
-                <div class="product" data-category="${product.category}" data-name="${product.name}" data-id="${product.id}">
+                <div class="product" data-category="${product.category || ''}" data-name="${product.name}" data-id="${product.id}">
                     ${discountHTML}
                     <button class="favorite" onclick="toggleFavorite(this)">♡</button>
-                    <div class="product-image">
+                    
+                    <div class="product-image" onclick="window.location.href='product.html?id=${product.id}'">
                         <img src="${product.image_url || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80'}" alt="${product.name}">
                     </div>
+
                     <div class="product-info">
                         <div>
-                            <div class="product-name">${product.name}</div>
+                            <div class="product-name" onclick="window.location.href='product.html?id=${product.id}'">${product.name}</div>
                             <div class="seller-badge-box">
                                 <span class="seller-name">🏪 ${storeName}</span>
                                 ${verifiedBadgeHTML}
@@ -883,7 +893,7 @@ async function loadProductsFromSupabase() {
                                 ${product.price.toLocaleString()} دج
                                 ${oldPriceHTML}
                             </div>
-                            <button class="add-cart" onclick='addToCartDynamic(${JSON.stringify(product).replace(/'/g, "&apos;")})'>
+                            <button class="add-cart" onclick="addToCartById(${product.id})">
                                 🛒 أضف للسلة
                             </button>
                         </div>
@@ -908,7 +918,14 @@ function updateCartCount(){
     if(countEl) countEl.textContent = total;
 }
 
-function addToCartDynamic(product) {
+// 🛡️ دالة آمنة لإضافة المنتج للسلة عبر معرّفه (ID) حصراً لمنع أخطاء النصوص والأقواس
+function addToCartById(productId) {
+    const product = loadedProducts.find(p => p.id === productId);
+    if (!product) {
+        alert("❌ عذراً، لم يتم العثور على المنتج.");
+        return;
+    }
+
     const existing = cart.find(item => item.id === product.id);
 
     if (existing) {
@@ -929,7 +946,7 @@ function addToCartDynamic(product) {
 
     localStorage.setItem("marchiCart", JSON.stringify(cart));
     updateCartCount();
-    alert("تمت إضافة المنتج إلى السلة 🛒");
+    alert("🎉 تمت إضافة المنتج إلى السلة بنجاح!");
 }
 
 updateCartCount();
@@ -1054,7 +1071,7 @@ async function submitProductReview(name, rating, comment) {
 
 loadProductReviews();
 
-// ================= خدمة العملاء والرد الآلي (المصححة 100%) =================
+// ================= خدمة العملاء والرد الآلي =================
 function toggleSupportChat() {
     const box = document.getElementById('supportChatBox');
     if (!box) return;
