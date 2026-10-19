@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>تسجيل الدخول | MARCHI DZ</title>
 
-<!-- Supabase SDK -->
+<!-- مكتبة Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -50,12 +50,11 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
+    transition: 0.2s;
 }
 
-.nav-links a.active {
+.nav-links a:hover, .nav-links a.active {
     color: #10b981;
-    border-bottom: 2px solid #10b981;
-    padding-bottom: 2px;
 }
 
 .lang-selector {
@@ -112,12 +111,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.brand-logo-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
 }
 
 .brand-title {
@@ -254,6 +247,7 @@ body {
     right: 14px;
     color: #94a3b8;
     font-size: 16px;
+    pointer-events: none;
 }
 
 .toggle-pass {
@@ -261,6 +255,7 @@ body {
     left: 14px;
     cursor: pointer;
     color: #94a3b8;
+    user-select: none;
 }
 
 .form-options {
@@ -283,6 +278,7 @@ body {
     color: #10b981;
     text-decoration: none;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .btn-submit {
@@ -370,9 +366,9 @@ body {
     </div>
 
     <div class="nav-links">
-        <a href="index.html">🏠 الرئيسية</a>
+        <a href="index.html" class="active">🏠 الرئيسية</a>
         <a href="index.html#products">تصفح المنتجات</a>
-        <a href="#">مساعدة</a>
+        <a href="#" onclick="alert('لأي استفسار، تواصل مع الدعم عبر الشات المباشر في الصفحة الرئيسية 🇩🇿'); return false;">مساعدة</a>
     </div>
 </nav>
 
@@ -426,9 +422,9 @@ body {
             <p id="formSub">سجل دخولك إلى حسابك للمتابعة في التسوق واستكشاف أحدث العروض</p>
         </div>
 
-        <form id="authForm" onsubmit="handleAuth(event)">
+        <form id="authForm">
             
-            <!-- حقول إضافية فقط عند إنشاء حساب جديد -->
+            <!-- حقول إضافية تنشط فقط عند اختيار إنشاء حساب جديد -->
             <div id="registerFields">
                 <div class="form-group">
                     <label>الاسم الكامل *</label>
@@ -481,7 +477,7 @@ body {
                 <label class="remember-me">
                     <input type="checkbox" id="rememberMe" checked> تذكرني
                 </label>
-                <a href="#" class="forgot-link">نسيت كلمة المرور؟</a>
+                <a href="#" class="forgot-link" onclick="handleForgotPassword(); return false;">نسيت كلمة المرور؟</a>
             </div>
 
             <button type="submit" class="btn-submit" id="submitBtn">
@@ -507,13 +503,16 @@ body {
 </div>
 
 <script>
-// تهيئة السيرفر بأمان
+// الربط المباشر مع Supabase
 const supabase = window.supabase.createClient(
     "https://lifxjoofdlcmbuskvsbg.supabase.co",
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
 let isLoginMode = true;
+
+// ربط زر الفورم برمجياً للحد من مشاكل الأحداث
+document.getElementById("authForm").addEventListener("submit", handleAuth);
 
 function togglePasswordVisibility() {
     const passInput = document.getElementById("password");
@@ -560,8 +559,13 @@ async function handleAuth(event) {
     const password = document.getElementById("password").value;
     const submitBtn = document.getElementById("submitBtn");
 
+    if(!email || !password) {
+        alert("❌ يرجى ملء كافة الحقول المتبقية.");
+        return;
+    }
+
     submitBtn.disabled = true;
-    submitBtn.innerHTML = "⏳ جاري المعالجة...";
+    submitBtn.innerHTML = "⏳ جاري معالجة الطلب...";
 
     try {
         if (isLoginMode) {
@@ -573,18 +577,18 @@ async function handleAuth(event) {
 
             if (error) throw error;
 
-            // جلب ملف المستخدم والصلاحيات
+            // جلب بيانات ملف المستخدم من جدول profiles
             const { data: profile } = await supabase
                 .from('profiles')
                 .select('*')
                 .eq('id', data.user.id)
                 .single();
 
-            // حفظ بيانات الجلسة محلية
-            localStorage.setItem("marchi_user", JSON.stringify(profile || { id: data.user.id, role: 'buyer' }));
+            const userSessionData = profile || { id: data.user.id, full_name: email.split('@')[0], role: 'buyer' };
+            localStorage.setItem("marchi_user", JSON.stringify(userSessionData));
 
-            alert("🎉 أهلاً بك! تم تسجيل الدخول بنجاح.");
-            redirectUserByRole(profile ? profile.role : 'buyer');
+            alert("🎉 تم تسجيل الدخول بنجاح! أهلاً بك.");
+            redirectUserByRole(userSessionData.role);
 
         } else {
             // 2. إنشاء حساب جديد
@@ -592,8 +596,19 @@ async function handleAuth(event) {
             const role = document.getElementById("userRole").value;
             const storeName = document.getElementById("storeName").value.trim();
 
-            if (!fullName) throw new Error("يرجى إدخال اسمك الكامل.");
-            if (role === 'seller' && !storeName) throw new Error("يرجى إدخال اسم متجرك.");
+            if (!fullName) {
+                alert("❌ يرجى إدخال اسمك الكامل.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = "<span>تأكيد التسجيل</span> ➔";
+                return;
+            }
+            
+            if (role === 'seller' && !storeName) {
+                alert("❌ يرجى إدخال اسم متجرك.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = "<span>تأكيد التسجيل</span> ➔";
+                return;
+            }
 
             const { data, error } = await supabase.auth.signUp({
                 email: email,
@@ -603,22 +618,22 @@ async function handleAuth(event) {
             if (error) throw error;
 
             if (data.user) {
-                // إنشاء ملف الشخصية في جدول profiles
-                const { error: profileErr } = await supabase.from('profiles').insert([{
+                // حفظ الملف الشخصي بالجدول
+                await supabase.from('profiles').insert([{
                     id: data.user.id,
                     full_name: fullName,
                     role: role,
                     store_name: role === 'seller' ? storeName : null
                 }]);
 
-                if (profileErr) console.error("Profile creation error:", profileErr);
-
-                localStorage.setItem("marchi_user", JSON.stringify({
+                const newUser = {
                     id: data.user.id,
                     full_name: fullName,
                     role: role,
                     store_name: storeName
-                }));
+                };
+
+                localStorage.setItem("marchi_user", JSON.stringify(newUser));
 
                 alert("🎉 تم إنشاء حسابك بنجاح!");
                 redirectUserByRole(role);
@@ -626,10 +641,23 @@ async function handleAuth(event) {
         }
 
     } catch (err) {
-        alert("❌ خطأ: " + (err.message || "تعذر الاتصال بالخادم"));
+        console.error("Auth Error:", err);
+        alert("❌ حدث خطأ: " + (err.message || "تعذر الاتصال بالسيرفر"));
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = isLoginMode ? "<span>تسجيل الدخول</span> ➔" : "<span>تأكيد التسجيل</span> ➔";
+    }
+}
+
+async function handleForgotPassword() {
+    const email = prompt("يرجى إدخال بريدك الإلكتروني لإرسال رابط إعادة تعيين كلمة المرور:");
+    if (email) {
+        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        if (error) {
+            alert("❌ خطأ: " + error.message);
+        } else {
+            alert("📧 تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك بنجاح.");
+        }
     }
 }
 
