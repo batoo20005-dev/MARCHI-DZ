@@ -238,6 +238,7 @@ header{
 <div style="display:flex; gap:15px; align-items:center;">
     <a href="add-product.html" style="color:#4ade80; text-decoration:none; font-weight:bold;">➕ إضافة منتج</a>
     <a href="index.html" style="color:white; text-decoration:none; font-weight:bold;">🏪 العودة للمتجر</a>
+    <button onclick="handleLogout()" style="background:#fee2e2; color:#991b1b; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">خروج</button>
 </div>
 </div>
 </header>
@@ -366,24 +367,64 @@ const supabase = window.supabase.createClient(
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
-// 🔒 حماية صفحة لوحة التحكم
-let currentUser = JSON.parse(localStorage.getItem("marchi_user"));
-
-if (!currentUser || currentUser.role !== 'seller') {
-    alert("⚠️ هذه الصفحة خاصة بالتجار المعتمدين فقط! يرجى تسجيل الدخول كتاجر.");
-    window.location.href = "auth.html";
-}
-
 let sellerData = {
-    id: currentUser.id,
-    store_name: currentUser.store_name || "متجري",
-    sales_count: currentUser.sales_count || 120,
+    id: null,
+    store_name: "متجري",
+    sales_count: 0,
     rating: 4.8,
-    debt: currentUser.platform_debt || 0,
-    wallet: currentUser.wallet_balance || 500
+    debt: 0,
+    wallet: 0
 };
 
-document.getElementById("storeTitleHeader").textContent = sellerData.store_name;
+// 🔒 حماية أمنية مشفرة (Auth Guard) للتاجر
+async function checkSellerAuth() {
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+    if (sessionError || !session) {
+        alert("⚠️ يرجى تسجيل الدخول للوصول إلى لوحة التحكم.");
+        window.location.href = "auth.html";
+        return;
+    }
+
+    const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+
+    if (profileError || !profile) {
+        alert("❌ خطأ في تحميل ملف المستخدم.");
+        window.location.href = "auth.html";
+        return;
+    }
+
+    if (profile.is_banned) {
+        alert("🚫 هذا الحساب محظور من قبل الإدارة.");
+        await supabase.auth.signOut();
+        window.location.href = "auth.html";
+        return;
+    }
+
+    if (profile.role !== 'seller' && profile.role !== 'admin') {
+        alert("⛔ عذراً، هذه اللوحة مخصصة للبائعين المعتمدين فقط.");
+        window.location.href = "index.html";
+        return;
+    }
+
+    sellerData = {
+        id: profile.id,
+        store_name: profile.store_name || "متجري",
+        sales_count: profile.sales_count || 0,
+        rating: 4.8,
+        debt: profile.platform_debt || 0,
+        wallet: profile.wallet_balance || 0
+    };
+
+    document.getElementById("storeTitleHeader").textContent = sellerData.store_name;
+    updateDashboardUI();
+    loadOrders();
+    listenForNewOrders();
+}
 
 function updateDashboardUI() {
     document.getElementById("totalSalesCount").textContent = sellerData.sales_count + " مبيعة";
@@ -449,7 +490,7 @@ async function loadOrders() {
                     </div>
                 </div>
 
-                ${!isUnlocked ? `
+                 ${!isUnlocked ? `
                 <div style="background:#fffbeb; border:1px dashed #f59e0b; padding:15px; border-radius:10px; text-align:center; margin-top:15px;">
                     <p style="color:#b45309; font-weight:bold;">🔒 معلومات الزبون ورقم الهاتف مغلقة!</p>
                     <p style="font-size:13px; color:#78350f; margin-top:3px;">فتح الطلبية يخصم عمولة المنصة (${order.platform_fee || 20} دج) من رصيد محفظتك أو يضيفها لديونك.</p>
@@ -486,7 +527,7 @@ async function unlockOrder(orderId, orderFee) {
         sellerData.sales_count += 1;
         updateDashboardUI();
         
-        await supabase.from('users').update({
+        await supabase.from('profiles').update({
             platform_debt: sellerData.debt,
             wallet_balance: sellerData.wallet,
             sales_count: sellerData.sales_count
@@ -499,7 +540,6 @@ async function unlockOrder(orderId, orderFee) {
     }
 }
 
-// 📌 معالجة تسديد الديون وشحن المحفظة أوتوماتيكياً
 async function handleSellerPaymentSubmit() {
     const amountPaid = parseFloat(document.getElementById('payAmount').value);
     const txRef = document.getElementById('payTxRef').value.trim();
@@ -545,7 +585,7 @@ async function handleSellerPaymentSubmit() {
         let finalWallet = sellerData.wallet + addedToWallet;
 
         const { error: updateErr } = await supabase
-            .from('users')
+            .from('profiles')
             .update({ 
                 platform_debt: newDebt,
                 wallet_balance: finalWallet
@@ -570,7 +610,6 @@ async function handleSellerPaymentSubmit() {
     }
 }
 
-// 🔔 تشغيل الاستماع اللحظي للطلبيات الجديدة (Realtime Alerts)
 function listenForNewOrders() {
     supabase
         .channel('realtime_seller_orders')
@@ -583,24 +622,14 @@ function listenForNewOrders() {
             },
             (payload) => {
                 const newOrder = payload.new;
-
-                // التحقق مما إذا كان الطلب يخص هذا التاجر أو عاما
-                if (newOrder.seller_id === currentUser.id || !newOrder.seller_id) {
-                    // 1. تشغيل صوت التنبيه
-                    playNotificationSound();
-
-                    // 2. تنبيه مرئي فوري
-                    alert(`🔔 طلب جديد قد وصل لمتجرك! \nرقم الطلبية: #${newOrder.id}\nالولاية: ${newOrder.wilaya}\nالمبلغ: ${newOrder.total_price} دج`);
-
-                    // 3. إعادة تحميل قائمة الطلبات أوتوماتيكياً
-                    loadOrders();
-                }
+                playNotificationSound();
+                alert(`🔔 طلب جديد قد وصل لمتجرك! \nرقم الطلبية: #${newOrder.id}\nالولاية: ${newOrder.wilaya}\nالمبلغ: ${newOrder.total_price} دج`);
+                loadOrders();
             }
         )
         .subscribe();
 }
 
-// دالة تشغيل صوت التنبيه التفاعلي
 function playNotificationSound() {
     try {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -608,13 +637,17 @@ function playNotificationSound() {
         const gain = audioContext.createGain();
         osc.connect(gain);
         gain.connect(audioContext.destination);
-        osc.frequency.value = 587.33; // نغمة مرتفعة للتنبيه
+        osc.frequency.value = 587.33;
         gain.gain.setValueAtTime(0.1, audioContext.currentTime);
         osc.start();
         osc.stop(audioContext.currentTime + 0.3);
-    } catch(e) {
-        console.log("Audio play blocked by browser policy");
-    }
+    } catch(e) {}
+}
+
+async function handleLogout() {
+    await supabase.auth.signOut();
+    localStorage.removeItem("marchi_user");
+    window.location.href = "auth.html";
 }
 
 function openChargeModal() {
@@ -625,13 +658,8 @@ function closeChargeModal() {
     document.getElementById("chargeModal").style.display = "none";
 }
 
-updateDashboardUI();
-loadOrders();
-
-// تفعيل الاستماع اللحظي فور فتح الصفحة
-document.addEventListener("DOMContentLoaded", () => {
-    listenForNewOrders();
-});
+// تنفيذ الحماية الأمنية عند تحميل الصفحة
+checkSellerAuth();
 </script>
 
 </body>
