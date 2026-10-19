@@ -145,7 +145,7 @@ th{ background:#f8fafc; color:#475569; }
 .btn-ban{ background:#fee2e2; color:#991b1b; }
 .btn-ban:hover{ background:#fecaca; }
 
-.btn-mod{ background:#e0f2fe; color:#0369a1; }
+.btn-green{ background:#16a34a; color:white; }
 
 @media(max-width:1024px){
     .admin-layout{ flex-direction:column; }
@@ -163,11 +163,8 @@ th{ background:#f8fafc; color:#475569; }
 <aside class="sidebar">
     <div class="sidebar-title">⚡ MARCHI DZ</div>
     <ul class="nav-menu">
-        <li class="active" onclick="showTab('dashboard')">📊 الإحصائيات والأرباح</li>
-        <li onclick="showTab('users')">👥 التجار والمشتريين</li>
-        <li onclick="showTab('products')">📦 إدارة المنتجات</li>
-        <li onclick="showTab('comments')">💬 التعليقات والتقييمات</li>
-        <li onclick="showTab('mods')">🛡️ المشرفين والصلحيات</li>
+        <li class="active">📊 الإحصائيات والأرباح</li>
+        <li onclick="window.location.href='moderator.html'">🛡️ لوحة المشرفين</li>
     </ul>
 </aside>
 
@@ -176,7 +173,10 @@ th{ background:#f8fafc; color:#475569; }
 
 <div class="header-bar">
     <h1>لوحة التحكم الإدارية العليا (General Manager)</h1>
-    <a href="index.html" style="text-decoration:none; color:#16a34a; font-weight:bold;">🏪 العودة للموقع</a>
+    <div style="display:flex; gap:15px; align-items:center;">
+        <a href="index.html" style="text-decoration:none; color:#16a34a; font-weight:bold;">🏪 العودة للموقع</a>
+        <button onclick="logoutAdmin()" style="background:#dc2626; color:white; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">خروج</button>
+    </div>
 </div>
 
 <!-- الإحصائيات الكبرى -->
@@ -206,7 +206,7 @@ th{ background:#f8fafc; color:#475569; }
         <thead>
             <tr>
                 <th>اسم المتجر / المستخدم</th>
-                <th>النوع</th>
+                <th>النوع / الرتبة</th>
                 <th>الديون الحالية</th>
                 <th>المبيعات</th>
                 <th>الحالة</th>
@@ -214,7 +214,7 @@ th{ background:#f8fafc; color:#475569; }
             </tr>
         </thead>
         <tbody id="usersTable">
-            <!-- تُعبأ ديناميكياً -->
+            <tr><td colspan="6" style="text-align:center;">جاري التحميل...</td></tr>
         </tbody>
     </table>
 </div>
@@ -233,28 +233,26 @@ th{ background:#f8fafc; color:#475569; }
             </tr>
         </thead>
         <tbody id="productsTable">
-            <!-- تُعبأ ديناميكياً -->
+            <tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr>
         </tbody>
     </table>
 </div>
 
 <!-- 3. إدارة التعليقات -->
 <div class="content-section" id="commentsTab">
-    <h2>💬 إدارة التعليقات والتقييمات</h2>
+    <h2>💬 تقييمات وآراء العملاء</h2>
     <table>
         <thead>
             <tr>
-                <th>المنتج</th>
                 <th>الزبون</th>
-                <th>التعليق</th>
                 <th>التقييم</th>
-                <th>حذف</th>
+                <th>التعليق</th>
+                <th>التاريخ</th>
+                <th>الإجراء</th>
             </tr>
         </thead>
         <tbody id="commentsTable">
-            <tr>
-                <td colspan="5" style="text-align:center; color:#777;">لا توجد تعليقات مشبوهة حالياً.</td>
-            </tr>
+            <tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr>
         </tbody>
     </table>
 </div>
@@ -269,63 +267,137 @@ const supabase = window.supabase.createClient(
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
-async function loadGeneralData() {
-    // جلب إحصائيات الطلبات والمنتجات
-    const { data: products } = await supabase.from('products').select('*');
-    const { data: orders } = await supabase.from('orders').select('*');
+// 🔒 حماية أمنية مشفرة لصفحة المدير (Auth Guard)
+async function checkAdminAuth() {
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
-    if(products) {
-        document.getElementById("totalProductsCount").textContent = products.length;
-        renderProductsTable(products);
+    if (sessionError || !session) {
+        alert("⚠️ يرجى تسجيل الدخول أولاً.");
+        window.location.href = "auth.html";
+        return;
     }
 
-    if(orders) {
-        document.getElementById("totalOrdersCount").textContent = orders.length;
-        document.getElementById("totalRevenue").textContent = (orders.length * 50).toLocaleString() + " دج";
+    const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+
+    if (profileError || !profile || profile.role !== 'admin') {
+        alert("⛔ هذه اللوحة مخصصة لمدير المنصة فقط!");
+        window.location.href = "index.html";
+        return;
     }
 
-    // محاكاة تحميل التجار
-    renderUsersTable();
+    loadGeneralData();
 }
 
-function renderUsersTable() {
+async function loadGeneralData() {
+    try {
+        // 1. جلب المنتجات
+        const { data: products } = await supabase.from('products').select('*');
+        if(products) {
+            document.getElementById("totalProductsCount").textContent = products.length;
+            renderProductsTable(products);
+        }
+
+        // 2. جلب الطلبات
+        const { data: orders } = await supabase.from('orders').select('*');
+        if(orders) {
+            document.getElementById("totalOrdersCount").textContent = orders.length;
+            document.getElementById("totalRevenue").textContent = (orders.length * 50).toLocaleString() + " دج";
+        }
+
+        // 3. جلب المستخدمين (التجار والمشترين) من جدول profiles
+        const { data: users } = await supabase.from('profiles').select('*');
+        if(users) {
+            const sellers = users.filter(u => u.role === 'seller');
+            document.getElementById("totalSellersCount").textContent = sellers.length;
+            renderUsersTable(users);
+        }
+
+        // 4. جلب التعليقات والتقييمات
+        const { data: reviews } = await supabase.from('product_reviews').select('*').order('created_at', { ascending: false });
+        if(reviews) {
+            renderCommentsTable(reviews);
+        }
+
+    } catch (err) {
+        console.error("Admin Panel Error:", err);
+    }
+}
+
+function renderUsersTable(users) {
     const tbody = document.getElementById("usersTable");
-    tbody.innerHTML = `
-        <tr>
-            <td><strong>متجر النجم العربي</strong></td>
-            <td><span class="badge badge-success">تاجر</span></td>
-            <td>150 دج</td>
-            <td>120 مبيعة</td>
-            <td><span class="badge badge-success">نشط</span></td>
-            <td>
-                <button class="btn-action btn-ban" onclick="banUser('متجر النجم العربي')">🚫 حظر الحساب</button>
-            </td>
-        </tr>
-        <tr>
-            <td><strong>متجر التكنولوجيا</strong></td>
-            <td><span class="badge badge-success">تاجر</span></td>
-            <td>500 دج</td>
-            <td>85 مبيعة</td>
-            <td><span class="badge badge-danger">موقوف (ديون)</span></td>
-            <td>
-                <button class="btn-action btn-ban" onclick="banUser('متجر التكنولوجيا')">🚫 حظر الحساب</button>
-            </td>
-        </tr>
-    `;
+    tbody.innerHTML = "";
+
+    if (users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">لا توجد حسابات مسجلة.</td></tr>`;
+        return;
+    }
+
+    users.forEach(u => {
+        const isBanned = u.is_banned || false;
+        const roleBadge = u.role === 'seller' ? `<span class="badge badge-success">تاجر</span>` : `<span class="badge badge-warning">مشتري</span>`;
+        const statusBadge = isBanned ? `<span class="badge badge-danger">موقوف (محظور)</span>` : `<span class="badge badge-success">نشط</span>`;
+
+        tbody.innerHTML += `
+            <tr>
+                <td><strong>${u.full_name}</strong><br><small style="color:#64748b;">${u.phone || ''}</small></td>
+                <td>${roleBadge}</td>
+                <td style="color:#dc2626; font-weight:bold;">${u.platform_debt || 0} دج</td>
+                <td>${u.sales_count || 0} مبيعة</td>
+                <td>${statusBadge}</td>
+                <td>
+                    <button class="btn-action ${isBanned ? 'btn-green' : 'btn-ban'}" onclick="toggleBanUser('${u.id}', ${!isBanned})">
+                        ${isBanned ? '🔓 إزالة الحظر' : '🚫 حظر الحساب'}
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
 }
 
 function renderProductsTable(products) {
     const tbody = document.getElementById("productsTable");
     let html = "";
+    if (!products || products.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">لا توجد منتجات.</td></tr>`;
+        return;
+    }
     products.forEach(p => {
         html += `
             <tr>
-                <td><img src="${p.image_url || 'logo.png'}" style="width:40px; height:40px; object-fit:cover; border-radius:6px;"></td>
+                <td><img src="${p.image_url || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e'}" style="width:40px; height:40px; object-fit:cover; border-radius:6px;"></td>
                 <td><strong>${p.name}</strong></td>
                 <td>${p.price.toLocaleString()} دج</td>
                 <td>${p.store_name || 'تاجر محلي'}</td>
                 <td>
                     <button class="btn-action btn-ban" onclick="deleteProduct('${p.id}')">🗑️ حذف المنتج</button>
+                </td>
+            </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+
+function renderCommentsTable(reviews) {
+    const tbody = document.getElementById("commentsTable");
+    let html = "";
+    if (!reviews || reviews.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">لا توجد تعليقات أو تقييمات.</td></tr>`;
+        return;
+    }
+    reviews.forEach(r => {
+        const stars = "⭐".repeat(r.rating || 5);
+        html += `
+            <tr>
+                <td><strong>${r.reviewer_name}</strong></td>
+                <td>${stars}</td>
+                <td>${r.comment}</td>
+                <td>${new Date(r.created_at).toLocaleDateString('ar-DZ')}</td>
+                <td>
+                    <button class="btn-action btn-ban" onclick="deleteReview('${r.id}')">🗑️ حذف</button>
                 </td>
             </tr>
         `;
@@ -341,13 +413,31 @@ async function deleteProduct(id) {
     }
 }
 
-function banUser(name) {
-    if(confirm(`هل تريد حظر ${name} نهائياً من منصة MARCHI DZ؟`)) {
-        alert(`تم حظر ${name} ومنعه من استخدام المنصة.`);
+async function deleteReview(id) {
+    if(confirm("هل تريد حذف هذا التقييم؟")) {
+        await supabase.from('product_reviews').delete().eq('id', id);
+        alert("تم الحذف بنجاح.");
+        loadGeneralData();
     }
 }
 
-loadGeneralData();
+async function toggleBanUser(userId, banStatus) {
+    const actionText = banStatus ? "حظر" : "إلغاء حظر";
+    if(confirm(`هل تريد ${actionText} هذا المستخدم من المنصة؟`)) {
+        await supabase.from('profiles').update({ is_banned: banStatus }).eq('id', userId);
+        alert(`تم تنفيذ الإجراء بنجاح.`);
+        loadGeneralData();
+    }
+}
+
+async function logoutAdmin() {
+    await supabase.auth.signOut();
+    localStorage.removeItem("marchi_user");
+    window.location.href = "index.html";
+}
+
+// تشغيل الفحص الأمني والتحميل
+checkAdminAuth();
 </script>
 
 </body>
