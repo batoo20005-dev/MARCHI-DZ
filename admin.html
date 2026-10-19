@@ -90,16 +90,49 @@ const supabase = window.supabase.createClient(
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
-const currentUser = JSON.parse(localStorage.getItem("marchi_user"));
+// 🔒 حماية أمنية مشفرة (Auth Guard) لصفحة الأدمن
+async function checkAdminAuth() {
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
-if (!currentUser || currentUser.role !== 'admin') {
-    alert("⚠️ هذه اللوحة مخصصة لمدير المنصة فقط!");
-    window.location.href = "index.html";
+    if (sessionError || !session) {
+        alert("⚠️ يرجى تسجيل الدخول أولاً.");
+        window.location.href = "auth.html";
+        return;
+    }
+
+    const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+
+    if (profileError || !profile) {
+        alert("❌ خطأ في التحقق من ملف الحساب.");
+        window.location.href = "auth.html";
+        return;
+    }
+
+    if (profile.is_banned) {
+        alert("🚫 هذا الحساب محظور من قبل الإدارة.");
+        await supabase.auth.signOut();
+        window.location.href = "auth.html";
+        return;
+    }
+
+    if (profile.role !== 'admin') {
+        alert("⛔ هذه اللوحة مخصصة لمدير المنصة فقط!");
+        window.location.href = "index.html";
+        return;
+    }
+
+    loadAdminData();
 }
 
 async function loadAdminData() {
     try {
-        const { data: users } = await supabase.from('users').select('*').order('created_at', { ascending: false });
+        const { data: users, error } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
+
+        if (error) throw error;
 
         if (users) {
             document.getElementById("totalUsers").textContent = users.length;
@@ -110,7 +143,7 @@ async function loadAdminData() {
             document.getElementById("totalMods").textContent = mods.length;
             document.getElementById("totalSellers").textContent = sellers.length;
 
-            let sumDebt = sellers.reduce((acc, s) => acc + (s.debt || 0), 0);
+            let sumDebt = sellers.reduce((acc, s) => acc + (s.platform_debt || 0), 0);
             document.getElementById("totalDebts").textContent = sumDebt.toLocaleString() + " دج";
 
             const tbody = document.getElementById("usersTableBody");
@@ -125,15 +158,15 @@ async function loadAdminData() {
                 tbody.innerHTML += `
                     <tr>
                         <td><strong>${u.full_name}</strong></td>
-                        <td>${u.phone}</td>
+                        <td>${u.phone || 'غير متوفر'}</td>
                         <td>${roleBadge}</td>
-                        <td style="color:${(u.debt || 0) >= 500 ? '#ef4444' : '#4ade80'}; font-weight:bold;">${u.role === 'seller' ? (u.debt || 0) + ' دج' : '-'}</td>
+                        <td style="color:${(u.platform_debt || 0) >= 500 ? '#ef4444' : '#4ade80'}; font-weight:bold;">${u.role === 'seller' ? (u.platform_debt || 0) + ' دج' : '-'}</td>
                         <td>
                             ${u.role !== 'admin' ? `
-                                <button class="btn-action btn-blue" onclick="changeRole(${u.id}, 'moderator')">🛡️ ترقية لمشرف</button>
-                                <button class="btn-action btn-purple" onclick="changeRole(${u.id}, 'seller')">🏪 تحويل لتاجر</button>
-                                <button class="btn-action btn-green" onclick="changeRole(${u.id}, 'buyer')">👤 تحويل لمشتري</button>
-                                ${u.role === 'seller' ? `<button class="btn-action btn-red" onclick="resetSellerDebt(${u.id})">⚡ تصفير الدين</button>` : ''}
+                                <button class="btn-action btn-blue" onclick="changeRole('${u.id}', 'moderator')">🛡️ ترقية لمشرف</button>
+                                <button class="btn-action btn-purple" onclick="changeRole('${u.id}', 'seller')">🏪 تحويل لتاجر</button>
+                                <button class="btn-action btn-green" onclick="changeRole('${u.id}', 'buyer')">👤 تحويل لمشتري</button>
+                                ${u.role === 'seller' ? `<button class="btn-action btn-red" onclick="resetSellerDebt('${u.id}')">⚡ تصفير الدين</button>` : ''}
                             ` : '<span style="color:#94a3b8; font-size:12px;">حساب المدير العام</span>'}
                         </td>
                     </tr>
@@ -154,8 +187,8 @@ async function changeRole(userId, newRole) {
         'buyer': 'مشتري / زبون'
     };
 
-    if (confirm(`هل أنت تأكد من تغيير رتبة هذا المستخدم إلى [${roleNames[newRole]}]؟`)) {
-        const { error } = await supabase.from('users').update({ role: newRole }).eq('id', userId);
+    if (confirm(`هل أنت متأكد من تغيير رتبة هذا المستخدم إلى [${roleNames[newRole]}]؟`)) {
+        const { error } = await supabase.from('profiles').update({ role: newRole }).eq('id', userId);
         if (error) {
             alert("❌ حدث خطأ أثناء التحديث: " + error.message);
         } else {
@@ -167,18 +200,24 @@ async function changeRole(userId, newRole) {
 
 async function resetSellerDebt(sellerId) {
     if (confirm("هل تريد تصفير ديون هذا التاجر فورياً؟")) {
-        await supabase.from('users').update({ debt: 0 }).eq('id', sellerId);
-        alert("✅ تم تصفير الدين بنجاح.");
-        loadAdminData();
+        const { error } = await supabase.from('profiles').update({ platform_debt: 0 }).eq('id', sellerId);
+        if (error) {
+            alert("❌ خطأ: " + error.message);
+        } else {
+            alert("✅ تم تصفير الدين بنجاح.");
+            loadAdminData();
+        }
     }
 }
 
-function logoutAdmin() {
+async function logoutAdmin() {
+    await supabase.auth.signOut();
     localStorage.removeItem("marchi_user");
     window.location.href = "index.html";
 }
 
-loadAdminData();
+// تشغيل التحقق الأمني عند تحميل الصفحة
+checkAdminAuth();
 </script>
 </body>
 </html>
