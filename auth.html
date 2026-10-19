@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تسجيل الدخول | MARCHI DZ</title>
+<title>تسجيل الدخول الآمن | MARCHI DZ</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{ margin:0; padding:0; box-sizing:border-box; }
 
-/* 🌌 خلفية عصرية مزودة بتقنية الجراديانت والأشكال التجريدية للمنتجات (إلكترونيات، ألبسة، أجهزة) */
 body {
     font-family: Arial, Tahoma, sans-serif;
     min-height: 100vh;
@@ -18,44 +17,19 @@ body {
     align-items: center;
     padding: 20px;
     background: 
-        radial-gradient(circle at 15% 15%, rgba(22, 163, 74, 0.25) 0%, transparent 45%),
-        radial-gradient(circle at 85% 85%, rgba(16, 42, 67, 0.8) 0%, transparent 50%),
+        radial-gradient(circle at 15% 15%, rgba(22, 163, 74, 0.2) 0%, transparent 45%),
         linear-gradient(135deg, #0a192f 0%, #102a43 50%, #0f172a 100%);
-    background-attachment: fixed;
-    position: relative;
-    overflow-x: hidden;
-}
-
-/* خلفية زخرفية للمنتجات بطريقة عصرية */
-body::before {
-    content: "🎧 📱 👕 👟 ⌚ 🎮 🚗 🏠 💻 🛍️";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 85px;
-    letter-spacing: 40px;
-    opacity: 0.05;
-    white-space: nowrap;
-    pointer-events: none;
-    user-select: none;
-    width: 100%;
-    text-align: center;
 }
 
 .auth-card {
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(10px);
+    background: #ffffff;
     padding: 35px 30px;
     border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     width: 100%;
     max-width: 480px;
-    position: relative;
-    z-index: 10;
 }
 
-/* 🎨 الشعار الرسمي والاحترافي لـ MARCHI DZ */
 .logo-header {
     text-align: center;
     margin-bottom: 22px;
@@ -63,32 +37,10 @@ body::before {
     padding-bottom: 18px;
 }
 
-.logo-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 5px;
-}
-
-.logo-name {
-    font-size: 32px;
-    font-weight: 900;
-    letter-spacing: 1px;
-    line-height: 1;
-}
-
+.logo-name { font-size: 32px; font-weight: 900; }
 .marchi { color: #102a43; }
 .dz { color: #16a34a; }
 
-.logo-slogan {
-    font-size: 13px;
-    color: #64748b;
-    margin-top: 6px;
-    font-weight: bold;
-}
-
-/* أزرار التبديل العلوية */
 .tab-header {
     display: flex;
     background: #f1f5f9;
@@ -108,7 +60,6 @@ body::before {
     border: none;
     background: transparent;
     font-size: 14px;
-    transition: all 0.2s ease;
 }
 
 .tab-btn.active {
@@ -144,21 +95,9 @@ input, select {
     font-size: 14px;
     outline: none;
     background: #ffffff;
-    transition: border-color 0.2s;
 }
 
 input:focus, select:focus { border-color: #16a34a; }
-
-.forgot-link {
-    display: block;
-    text-align: left;
-    font-size: 12px;
-    color: #0284c7;
-    font-weight: bold;
-    margin-top: 5px;
-    cursor: pointer;
-}
-.forgot-link:hover { text-decoration: underline; }
 
 .btn-submit {
     width: 100%;
@@ -171,88 +110,56 @@ input:focus, select:focus { border-color: #16a34a; }
     font-size: 15px;
     cursor: pointer;
     margin-top: 10px;
-    transition: background 0.2s;
 }
 .btn-submit:hover { background: #12813b; }
-.btn-submit:disabled { background: #94a3b8; cursor: not-allowed; }
-
-.age-warning {
-    color: #dc2626;
-    font-size: 11px;
-    font-weight: bold;
-    margin-top: 3px;
-    display: none;
-}
-
-.otp-box {
-    display: none;
-    background: #f0fdf4;
-    border: 1px dashed #16a34a;
-    padding: 12px;
-    border-radius: 8px;
-    margin-top: 10px;
-    text-align: center;
-}
 
 .msg {
     text-align: center;
-    margin-top: 12px;
+    margin-top: 15px;
     font-weight: bold;
     font-size: 13px;
+    padding: 10px;
+    border-radius: 8px;
+    display: none;
 }
 </style>
 </head>
 <body>
 
 <div class="auth-card">
-    <!-- 🛍️ الشعار الرسمي الأصلي لموقع MARCHI DZ -->
     <div class="logo-header">
-        <div class="logo-container">
-            <div class="logo-name">
-                <span class="marchi">MARCHI</span><span class="dz"> DZ</span>
-            </div>
+        <div class="logo-name">
+            <span class="marchi">MARCHI</span><span class="dz"> DZ</span>
         </div>
-        <div class="logo-slogan">تسوق بثقة، استلم براحة 🇩🇿</div>
+        <div style="font-size:12px; color:#64748b; margin-top:4px; font-weight:bold;">تسوق بثقة، استلم براحة 🇩🇿</div>
     </div>
 
     <!-- أزرار التبديل -->
-    <div class="tab-header" id="mainTabs">
+    <div class="tab-header">
         <button class="tab-btn active" id="btnTabLogin" type="button" onclick="switchTab('login')">تسجيل الدخول</button>
         <button class="tab-btn" id="btnTabRegister" type="button" onclick="switchTab('register')">حساب جديد</button>
     </div>
 
-    <!-- 1. نموذج تسجيل الدخول -->
+    <!-- 1. نموذج تسجيل الدخول الآمن -->
     <div id="sectionLogin" class="form-section active">
         <div class="form-group">
-            <label>رقم الهاتف *</label>
-            <input type="tel" id="loginPhone" placeholder="0661112233">
+            <label>البريد الإلكتروني / اسم الحساب *</label>
+            <input type="email" id="loginEmail" placeholder="example@domain.com">
         </div>
         <div class="form-group">
             <label>كلمة المرور *</label>
             <input type="password" id="loginPass" placeholder="******">
-            <a class="forgot-link" onclick="switchTab('forgot')">نسيت كلمة المرور؟</a>
+            <a onclick="handleResetPassword()" style="display:block; text-align:left; font-size:12px; color:#0284c7; cursor:pointer; margin-top:5px; font-weight:bold;">نسيت كلمة المرور؟ (إرسال رابط آمن)</a>
         </div>
-        <button class="btn-submit" type="button" onclick="handleLogin()">تسجيل الدخول</button>
+        <button class="btn-submit" type="button" onclick="handleSecureLogin()">تسجيل الدخول الآمن</button>
     </div>
 
-    <!-- 2. نموذج إنشاء حساب جديد -->
+    <!-- 2. نموذج إنشاء حساب جديد آمن -->
     <div id="sectionRegister" class="form-section">
         <div class="grid-2">
             <div class="form-group">
-                <label>الاسم *</label>
-                <input type="text" id="regFirstName" placeholder="محمد">
-            </div>
-            <div class="form-group">
-                <label>اللقب *</label>
-                <input type="text" id="regLastName" placeholder="بن علي">
-            </div>
-        </div>
-
-        <div class="grid-2">
-            <div class="form-group">
-                <label>تاريخ الميلاد *</label>
-                <input type="date" id="regBirthDate" onchange="validateAge()">
-                <div class="age-warning" id="ageWarning">يمنع أقل من 18 سنة.</div>
+                <label>الاسم الكامل *</label>
+                <input type="text" id="regFullName" placeholder="محمد بن علي">
             </div>
             <div class="form-group">
                 <label>رقم الهاتف *</label>
@@ -260,25 +167,9 @@ input:focus, select:focus { border-color: #16a34a; }
             </div>
         </div>
 
-        <div class="grid-2">
-            <div class="form-group">
-                <label>الولاية *</label>
-                <select id="regWilaya">
-                    <option value="">اختر الولاية</option>
-                    <option value="16 - الجزائر">16 - الجزائر</option>
-                    <option value="31 - وهران">31 - وهران</option>
-                    <option value="25 - قسنطينة">25 - قسنطينة</option>
-                    <option value="05 - باتنة">05 - باتنة</option>
-                    <option value="04 - أم البواقي">04 - أم البواقي</option>
-                    <option value="15 - تيزي وزو">15 - تيزي وزو</option>
-                    <option value="06 - بجاية">06 - بجاية</option>
-                    <option value="19 - سطيف">19 - سطيف</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>البلدية *</label>
-                <input type="text" id="regCommune" placeholder="البلدية">
-            </div>
+        <div class="form-group">
+            <label>البريد الإلكتروني *</label>
+            <input type="email" id="regEmail" placeholder="name@mail.com">
         </div>
 
         <div class="grid-2">
@@ -296,41 +187,11 @@ input:focus, select:focus { border-color: #16a34a; }
         </div>
 
         <div class="form-group">
-            <label>كلمة المرور *</label>
-            <input type="password" id="regPass" placeholder="******">
+            <label>كلمة المرور المشفرة *</label>
+            <input type="password" id="regPass" placeholder="6 أحرف أو أرقام على الأقل">
         </div>
 
-        <button class="btn-submit" id="sendOtpBtn" type="button" onclick="sendOtpCode()">إرسال رمز التحقق</button>
-
-        <div class="otp-box" id="regOtpBox">
-            <label style="color:#15803d; font-weight:bold;">رمز التحقق: <span id="regOtpDisplay" style="font-family:monospace;">1234</span></label>
-            <input type="text" id="regOtpInput" placeholder="أدخل الكود" style="text-align:center; letter-spacing:4px; font-weight:bold; margin:8px 0;">
-            <div style="font-size:12px; color:#b45309; margin-bottom:5px;">ينتهي خلال: <span id="regTimer">60</span> ثانية</div>
-            <button class="btn-submit" id="confirmRegBtn" type="button" onclick="handleRegister()">تأكيد وإنشاء الحساب</button>
-        </div>
-    </div>
-
-    <!-- 3. نموذج استرجاع كلمة المرور -->
-    <div id="sectionForgot" class="form-section">
-        <h3 style="color:#102a43; text-align:center; margin-bottom:12px; font-size:16px;">استرجاع كلمة المرور</h3>
-        <div class="form-group">
-            <label>رقم هاتفك المسجل *</label>
-            <input type="tel" id="forgotPhone" placeholder="06XXXXXXXX">
-        </div>
-        <button class="btn-submit" type="button" onclick="sendForgotOtp()">إرسال كود التحقق</button>
-
-        <div class="otp-box" id="forgotOtpBox">
-            <label style="color:#15803d; font-weight:bold;">رمز التحقق: <span id="forgotOtpDisplay" style="font-family:monospace;">5678</span></label>
-            <input type="text" id="forgotOtpInput" placeholder="أدخل الكود" style="text-align:center; letter-spacing:4px; font-weight:bold; margin:8px 0;">
-            <div style="font-size:12px; color:#b45309; margin-bottom:5px;">ينتهي خلال: <span id="forgotTimer">60</span> ثانية</div>
-            <div class="form-group" style="margin-top:10px; text-align:right;">
-                <label>كلمة المرور الجديدة *</label>
-                <input type="password" id="newPassInput" placeholder="كلمة مرور جديدة">
-            </div>
-            <button class="btn-submit" id="confirmForgotBtn" type="button" onclick="handleResetPassword()">تغيير كلمة المرور</button>
-        </div>
-        
-        <button onclick="switchTab('login')" type="button" style="background:none; border:none; color:#64748b; font-weight:bold; cursor:pointer; width:100%; margin-top:12px; font-size:13px;">← العودة لتسجيل الدخول</button>
+        <button class="btn-submit" type="button" onclick="handleSecureRegister()">إنشاء حساب آمن</button>
     </div>
 
     <div class="msg" id="authMsg"></div>
@@ -346,30 +207,27 @@ const supabase = window.supabase.createClient(
     "sb_publishable_KwXbluyy6qsqMsdIDag8Pg_5r3nK3pX"
 );
 
-let currentOtp = "";
-let regTimerInterval = null;
+function showMsg(text, isError = false) {
+    const msg = document.getElementById('authMsg');
+    msg.style.display = 'block';
+    msg.style.background = isError ? '#fee2e2' : '#dcfce7';
+    msg.style.color = isError ? '#991b1b' : '#166534';
+    msg.textContent = text;
+}
 
 function switchTab(tabName) {
-    document.getElementById('authMsg').textContent = "";
-    
+    document.getElementById('authMsg').style.display = 'none';
     document.getElementById('sectionLogin').classList.remove('active');
     document.getElementById('sectionRegister').classList.remove('active');
-    document.getElementById('sectionForgot').classList.remove('active');
-    
     document.getElementById('btnTabLogin').classList.remove('active');
     document.getElementById('btnTabRegister').classList.remove('active');
 
     if (tabName === 'login') {
         document.getElementById('sectionLogin').classList.add('active');
         document.getElementById('btnTabLogin').classList.add('active');
-        document.getElementById('mainTabs').style.display = 'flex';
-    } else if (tabName === 'register') {
+    } else {
         document.getElementById('sectionRegister').classList.add('active');
         document.getElementById('btnTabRegister').classList.add('active');
-        document.getElementById('mainTabs').style.display = 'flex';
-    } else if (tabName === 'forgot') {
-        document.getElementById('sectionForgot').classList.add('active');
-        document.getElementById('mainTabs').style.display = 'none';
     }
 }
 
@@ -378,175 +236,118 @@ function toggleStoreField() {
     document.getElementById('storeField').style.display = role === 'seller' ? 'block' : 'none';
 }
 
-function validateAge() {
-    const birthVal = document.getElementById('regBirthDate').value;
-    const warning = document.getElementById('ageWarning');
-    if (!birthVal) return false;
-
-    const birthDate = new Date(birthVal);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
-
-    if (age < 18) {
-        warning.style.display = 'block';
-        return false;
-    } else {
-        warning.style.display = 'none';
-        return true;
-    }
-}
-
-function sendOtpCode() {
+// 🛡️ إنشاء حساب عبر Supabase Auth المشفّر رسميًا
+async function handleSecureRegister() {
+    const fullName = document.getElementById('regFullName').value.trim();
     const phone = document.getElementById('regPhone').value.trim();
-    if (!phone || phone.length < 9) {
-        alert("أدخل رقم هاتف صحيح أولاً.");
-        return;
-    }
-    if (!validateAge()) {
-        alert("يجب أن يكون العمر 18 سنة فما فوق.");
-        return;
-    }
-
-    currentOtp = Math.floor(1000 + Math.random() * 9000).toString();
-    document.getElementById('regOtpDisplay').textContent = currentOtp;
-    document.getElementById('regOtpBox').style.display = 'block';
-    document.getElementById('sendOtpBtn').style.display = 'none';
-
-    let timeLeft = 60;
-    document.getElementById('regTimer').textContent = timeLeft;
-    clearInterval(regTimerInterval);
-
-    regTimerInterval = setInterval(() => {
-        timeLeft--;
-        document.getElementById('regTimer').textContent = timeLeft;
-        if (timeLeft <= 0) {
-            clearInterval(regTimerInterval);
-            currentOtp = "EXPIRED";
-            document.getElementById('confirmRegBtn').disabled = true;
-            alert("انتهت صلاحية الرمز.");
-        }
-    }, 1000);
-}
-
-async function handleRegister() {
-    const firstName = document.getElementById('regFirstName').value.trim();
-    const lastName = document.getElementById('regLastName').value.trim();
-    const phone = document.getElementById('regPhone').value.trim();
-    const wilaya = document.getElementById('regWilaya').value;
-    const commune = document.getElementById('regCommune').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
     const role = document.getElementById('regRole').value;
     const storeName = document.getElementById('regStoreName').value.trim();
     const pass = document.getElementById('regPass').value.trim();
-    const otpEntered = document.getElementById('regOtpInput').value.trim();
-    const msg = document.getElementById('authMsg');
 
-    if (!firstName || !lastName || !phone || !wilaya || !commune || !pass) {
-        alert("يرجى ملء جميع الحقول الأساسية.");
-        return;
-    }
-    if (otpEntered !== currentOtp) {
-        alert("رمز التحقق غير صحيح.");
+    if (!fullName || !email || !pass || !phone) {
+        showMsg("يرجى إدخال كافة البيانات الأساسية.", true);
         return;
     }
 
-    const { data, error } = await supabase.from('users').insert([{
-        full_name: `${firstName} ${lastName}`,
-        phone: phone,
+    showMsg("جاري إنشاء الحساب والمصادقة الآمنة...");
+
+    // 1. التسجيل بنظام التشغير الرسمي لـ Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: email,
         password: pass,
+    });
+
+    if (authError) {
+        showMsg("خطأ أمني: " + authError.message, true);
+        return;
+    }
+
+    const userId = authData.user.id;
+
+    // 2. إضافة البيانات الإضافية المضمونة في جدول profiles المكتوم بـ RLS
+    const { error: profileError } = await supabase.from('profiles').insert([{
+        id: userId,
+        full_name: fullName,
+        phone: phone,
         role: role,
         store_name: role === 'seller' ? storeName : null,
         wallet_balance: role === 'seller' ? 500 : 0
-    }]).select();
+    }]);
 
-    if (error) {
-        msg.style.color = '#dc2626';
-        msg.textContent = "خطأ في التسجيل: " + error.message;
+    if (profileError) {
+        showMsg("خطأ ملف المستخدم: " + profileError.message, true);
         return;
     }
 
-    msg.style.color = '#16a34a';
-    msg.textContent = "تم إنشاء الحساب بنجاح!";
+    showMsg("🎉 تم إنشاء حسابك المشفر بنجاح!");
     setTimeout(() => {
-        localStorage.setItem("marchi_user", JSON.stringify(data[0]));
         window.location.href = role === 'seller' ? "seller-dashboard.html" : "index.html";
     }, 1000);
 }
 
-async function handleLogin() {
-    const phone = document.getElementById('loginPhone').value.trim();
+// 🛡️ تسجيل الدخول بنظام المصادقة المشفر
+async function handleSecureLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
     const pass = document.getElementById('loginPass').value.trim();
-    const msg = document.getElementById('authMsg');
 
-    if (!phone || !pass) {
-        alert("أدخل الهاتف وكلمة المرور.");
+    if (!email || !pass) {
+        showMsg("أدخل البريد وكلمة المرور.", true);
         return;
     }
 
-    const { data, error } = await supabase.from('users').select('*').eq('phone', phone).single();
+    showMsg("جاري التحقق التشفيري من الحساب...");
 
-    if (error || !data) {
-        msg.style.color = '#dc2626';
-        msg.textContent = "رقم الهاتف غير مسجل.";
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: pass,
+    });
+
+    if (authError) {
+        showMsg("بيانات الدخول غير صحيحة أو الحساب غير موجود.", true);
         return;
     }
 
-    if (data.is_banned === true) {
-        msg.style.color = '#dc2626';
-        msg.textContent = "حسابك محظور من قبل الإدارة.";
+    // جلب ملف المستخدم وصلاحياته المضمونة من السيرفر
+    const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', authData.user.id)
+        .single();
+
+    if (profileError || !profile) {
+        showMsg("تعذر التحقق من صلاحيات الملف الشخصي.", true);
         return;
     }
 
-    if (data.password !== pass) {
-        msg.style.color = '#dc2626';
-        msg.textContent = "كلمة المرور غير صحيحة.";
+    if (profile.is_banned) {
+        showMsg("هذا الحساب محظور من قبل الإدارة.", true);
+        await supabase.auth.signOut();
         return;
     }
 
-    localStorage.setItem("marchi_user", JSON.stringify(data));
-    msg.style.color = '#16a34a';
-    msg.textContent = "أهلاً بك! يتم توجيهك...";
+    showMsg("✅ مرحباً بك! جاري التوجيه الآمن...");
 
     setTimeout(() => {
-        if (data.role === 'admin') window.location.href = "admin.html";
-        else if (data.role === 'moderator') window.location.href = "moderator.html";
-        else if (data.role === 'seller') window.location.href = "seller-dashboard.html";
+        if (profile.role === 'admin') window.location.href = "admin.html";
+        else if (profile.role === 'seller') window.location.href = "seller-dashboard.html";
         else window.location.href = "index.html";
     }, 1000);
 }
 
-function sendForgotOtp() {
-    const phone = document.getElementById('forgotPhone').value.trim();
-    if (!phone) {
-        alert("أدخل هاتفك أولاً.");
-        return;
-    }
-    currentOtp = "5678";
-    document.getElementById('forgotOtpBox').style.display = 'block';
-}
-
+// 🔐 إعادة تعيين كلمة المرور عبر رابط محمي يُرسل للبريد
 async function handleResetPassword() {
-    const phone = document.getElementById('forgotPhone').value.trim();
-    const otpEntered = document.getElementById('forgotOtpInput').value.trim();
-    const newPass = document.getElementById('newPassInput').value.trim();
+    const email = prompt("أدخل بريدك الإلكتروني المسجل لإرسال رابط إعادة التعيين الآمن:");
+    if (!email) return;
 
-    if (otpEntered !== currentOtp || !newPass) {
-        alert("الرمز غير صحيح أو كلمة المرور فارغة.");
-        return;
-    }
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
 
-    const { data, error } = await supabase.from('users').update({ password: newPass }).eq('phone', phone).select();
     if (error) {
-        alert("حدث خطأ أثناء التغيير.");
-        return;
+        alert("حدث خطأ: " + error.message);
+    } else {
+        alert("📧 تم إرسال رابط آمن لإعادة تعيين كلمة المرور إلى بريدك الإلكتروني.");
     }
-
-    alert("تم تغيير كلمة المرور بنجاح!");
-    localStorage.setItem("marchi_user", JSON.stringify(data[0]));
-    window.location.href = "index.html";
 }
 </script>
-
 </body>
 </html>
