@@ -1111,3 +1111,84 @@ function sendBotReply(type) {
 
 </body>
 </html>
+<!-- ================= خدمة العملاء العائمة المضمونة ================= -->
+<div class="support-float-btn" onclick="toggleSupportChat()" title="خدمة العملاء">
+    💬
+</div>
+
+<div class="support-chat-box" id="supportChatBox" style="display: none;">
+    <div class="chat-header">
+        <div>
+            <strong>خدمة عملاء MARCHI DZ</strong>
+            <div style="font-size: 11px; color: #4ade80;">● متواجدون للإجابة الآن</div>
+        </div>
+        <button onclick="toggleSupportChat()" style="background:none; border:none; color:white; font-size:18px; cursor:pointer;">✕</button>
+    </div>
+
+    <div class="chat-body" id="chatBody">
+        <div class="chat-msg bot">
+            أهلاً بك في <strong>MARCHI DZ</strong> 🇩🇿! كيف يمكنني مساعدتك اليوم؟ اختر أحد الأسئلة الشائعة أدناه:
+        </div>
+    </div>
+
+    <div class="chat-options">
+        <button class="chat-option-btn" onclick="sendBotReply('delivery')">🚚 كيف يتم التوصيل وكم المدة؟</button>
+        <button class="chat-option-btn" onclick="sendBotReply('deposit')">💳 ما هو تسقاع / عربون الضمان؟</button>
+        <button class="chat-option-btn" onclick="sendBotReply('seller')">🏪 كيف أصبح بائعاً وأعرض سلعاً؟</button>
+        <button class="chat-option-btn" onclick="sendBotReply('contact')">📞 كيف أتواصل مع الدعم مباشرة؟</button>
+    </div>
+</div>
+
+<script>
+// دالة فتح وإغلاق النافذة بنجاح
+function toggleSupportChat() {
+    const box = document.getElementById('supportChatBox');
+    if (!box) return;
+    
+    if (box.style.display === 'none' || box.style.display === '') {
+        box.style.display = 'flex';
+    } else {
+        box.style.display = 'none';
+    }
+}
+
+// دالة الرد الآلي الفوري
+function sendBotReply(type) {
+    const chatBody = document.getElementById('chatBody');
+    if (!chatBody) return;
+
+    let userText = "";
+    let botReply = "";
+
+    if (type === 'delivery') {
+        userText = "🚚 كيف يتم التوصيل وكم المدة؟";
+        botReply = "نقدم توصيلاً سريعاً إلى جميع الولايات الـ 58 في الجزائر 🇩🇿. التوصيل متوفر للمنزل أو لمكتب شركة التوصيل (Stop Desk) خلال 2 إلى 4 أيام عمل.";
+    } else if (type === 'deposit') {
+        userText = "💳 ما هو تسقاع / عربون الضمان؟";
+        botReply = "تسقاع (عربون الضمان) هو مبلغ رمزي يطلبه بعض التجار عبر BaridiMob كجدية لضمان عدم رفض الطلب عند الاستلام (الـ Retour).";
+    } else if (type === 'seller') {
+        userText = "🏪 كيف أصبح بائعاً وأعرض سلعاً؟";
+        botReply = "اضغط على زر 'تسجيل الدخول / حساب جديد'، اختر نوع الحساب **'بائع / تاجر'**، أدخل اسم متجرك، وستباشر فوراً في إضافة منتجاتك.";
+    } else if (type === 'contact') {
+        userText = "📞 كيف أتواصل مع الدعم مباشرة؟";
+        botReply = "يمكنك التواصل معنا عبر رقم الهاتف الرسمي للدعم أو مراسلتنا عبر صفحتنا.";
+    }
+
+    // إضافة سؤال المستخدم
+    const userMsgDiv = document.createElement('div');
+    userMsgDiv.className = 'chat-msg user';
+    userMsgDiv.textContent = userText;
+    chatBody.appendChild(userMsgDiv);
+
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    // إضافة رد البوت بعد لحظة
+    setTimeout(() => {
+        const botMsgDiv = document.createElement('div');
+        botMsgDiv.className = 'chat-msg bot';
+        botMsgDiv.innerHTML = botReply;
+        chatBody.appendChild(botMsgDiv);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }, 300);
+}
+</script>
