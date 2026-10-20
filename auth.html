@@ -43,6 +43,14 @@
 #authForm .primary{grid-column:1/-1;min-height:46px;font-size:15px;border-radius:10px}
 .signup{margin-top:12px;font-size:12px}
 .security{margin-top:12px;font-size:11px}
+
+/* تنسيق أزرار السوشيال ميديا */
+.social-box{display:flex;flex-direction:column;gap:10px;margin-top:12px;grid-column:1/-1}
+.social-btn{width:100%;height:46px;border-radius:10px;border:1px solid var(--line);background:white;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;gap:10px;color:var(--navy);transition:0.2s}
+.social-btn:hover{background:#f8fafc;border-color:#08b85a}
+.google-ico{color:#ea4335;font-weight:bold;font-size:16px}
+.fb-ico{color:#1877f2;font-weight:bold;font-size:16px}
+
 @media(max-width:1050px){.layout{grid-template-columns:1fr 1fr}.hero{min-height:850px}.panel{min-height:850px;padding:24px 18px}.welcome h2{font-size:25px}}
 @media(max-width:800px){.layout{direction:rtl;display:flex;flex-direction:column;padding:10px 13px 22px;gap:0}.panel{order:1;min-height:0;border-radius:24px;padding:25px 20px;margin:0}.hero{order:2;min-height:560px;border-radius:22px;margin-top:14px;background-position:center center;padding:26px 20px}.hero>*{display:flex}.welcome{padding-right:62px}.welcome:before{width:50px;height:50px}.welcome h2{font-size:25px}.signup{margin-top:18px}.security{margin-top:14px}}
 @media(max-width:480px){.panel{padding:21px 15px}.layout{padding:8px 9px 18px}#authForm{column-gap:8px}#authForm .input{padding:0 8px}.birth-grid{gap:5px}.birth-grid select{padding:0 5px;font-size:11px}.role-option{padding:7px 6px;grid-template-columns:28px 1fr;gap:0 5px}.role-option b{font-size:12px}.role-option small{font-size:9px}.hero{min-height:470px}}
@@ -51,7 +59,7 @@
 </head>
 <body>
 <header class="top">
- <nav><a href="index.html">⌂　الرئيسية</a><a href="index.html#productGrid">تصفح المنتجات</a></nav>
+ <nav><a href="index.html">⌂ الرئيسية</a><a href="index.html#productGrid">تصفح المنتجات</a></nav>
  <a class="brand" href="index.html" aria-label="MARCHI DZ"><img src="marchi-logo.svg" alt="" width="32" height="32" style="vertical-align:middle;margin-inline-end:7px">MARCHI <span>DZ</span></a>
 </header>
 <main class="layout">
@@ -69,16 +77,27 @@
   </div></div>
   <div class="field hide" id="contactTypeWrap"><label>طريقة التسجيل</label><div class="contact-toggle"><button type="button" class="contact-option active" data-contact="phone">☎ رقم الهاتف</button><button type="button" class="contact-option" data-contact="email">✉ البريد الإلكتروني</button></div></div>
   <div class="field"><label id="emailLabel" for="email">البريد الإلكتروني</label><div class="input"><span class="ico" id="contactIcon">✉</span><input id="email" type="email" autocomplete="email" placeholder="أدخل بريدك الإلكتروني" required></div></div>
-  <button type="button" id="sendCode" class="send-code hide">إرسال رمز التحقق　➤</button>
+  <button type="button" id="sendCode" class="send-code hide">إرسال رمز التحقق ➤</button>
   <div class="field hide" id="codeWrap"><label for="verificationCode">رمز التحقق</label><div class="input"><span class="ico">♧</span><input id="verificationCode" inputmode="numeric" autocomplete="one-time-code" placeholder="أدخل رمز التحقق المرسل إليك"></div><small style="display:block;color:#61738a;margin-top:6px;font-size:12px">أدخل الرمز الذي وصلك عبر وسيلة التسجيل المختارة.</small></div>
   <div class="field" id="passWrap"><label for="password">كلمة المرور</label><div class="input"><span class="ico">♙</span><input id="password" type="password" autocomplete="current-password" minlength="8" placeholder="أدخل كلمة المرور" required><button class="eye" id="eye" type="button" aria-label="إظهار كلمة المرور">◉</button></div></div>
   <div class="field hide" id="confirmWrap"><label for="confirmPassword">تأكيد كلمة المرور</label><div class="input"><span class="ico">♙</span><input id="confirmPassword" type="password" autocomplete="new-password" minlength="8" placeholder="أعد إدخال كلمة المرور"></div></div>
   <div class="field hide" id="roleWrap"><label for="accountType">نوع الحساب</label><div class="role-grid"><button type="button" class="role-option active" data-role="buyer"><span>♟</span><b>مشتري</b><small>تسوّق بكل راحة</small></button><button type="button" class="role-option" data-role="seller"><span>▣</span><b>بائع</b><small>اعرض منتجاتك وابدأ البيع</small></button><input id="accountType" type="hidden" value="buyer"></div></div>
   <div class="options" id="options"><label class="remember"><input id="remember" type="checkbox" checked><span>تذكرني</span></label><button class="link" id="forgot" type="button">نسيت كلمة المرور؟</button></div>
-  <button class="primary" id="submit" type="submit">إنشاء الحساب　♙+</button>
+  <button class="primary" id="submit" type="submit">إنشاء الحساب ♙+</button>
+
+  <!-- أزرار التسجيل والدخول بـ Google و Facebook -->
+  <div class="divider">أو المتابعة عبر</div>
+  <div class="social-box">
+    <button type="button" class="social-btn" onclick="signInWithSocial('google')">
+      <span class="google-ico">G</span> المتابعة باستخدام Google
+    </button>
+    <button type="button" class="social-btn" onclick="signInWithSocial('facebook')">
+      <span class="fb-ico">f</span> المتابعة باستخدام Facebook
+    </button>
+  </div>
  </form>
- <div class="signup" id="signup"><span id="signupPrompt">ليس لديك حساب؟</span><button id="switch" type="button">إنشاء حساب جديد　♙+</button></div>
- <div class="security">🔒　بياناتك محمية وتُعالج بأمان عبر نظام المصادقة.</div>
+ <div class="signup" id="signup"><span id="signupPrompt">ليس لديك حساب؟</span><button id="switch" type="button">إنشاء حساب جديد ♙+</button></div>
+ <div class="security">🔒 بياناتك محمية وتُعالج بأمان عبر نظام المصادقة.</div>
 </div></section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -100,14 +119,29 @@ fillBirthDates();
 function setContact(method){contactMethod=method;document.querySelectorAll("[data-contact]").forEach(b=>b.classList.toggle("active",b.dataset.contact===method));$("emailLabel").textContent=method==="phone"?"رقم الهاتف مع رمز الدولة":"البريد الإلكتروني";$("email").type=method==="phone"?"tel":"email";$("email").placeholder=method==="phone"?"+213XXXXXXXXX":"أدخل بريدك الإلكتروني";$("email").autocomplete=method==="phone"?"tel":"email";$("email").value="";clearMsg()}
 document.querySelectorAll("[data-contact]").forEach(b=>b.addEventListener("click",()=>setContact(b.dataset.contact)));
 document.querySelectorAll("[data-role]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-role]").forEach(x=>x.classList.toggle("active",x===b));$("accountType").value=b.dataset.role;}));
+
+// دالة ربط التسجيل والدخول عبر Google أو Facebook باستخدام Supabase OAuth
+async function signInWithSocial(providerName) {
+ if(!sb) return msg("يلزم إعداد Supabase أولًا بوضع رابط المشروع وPublishable key في نهاية الملف.");
+ try {
+  const { error } = await sb.auth.signInWithOAuth({
+   provider: providerName,
+   options: { redirectTo: window.location.origin + '/index.html' }
+  });
+  if(error) throw error;
+ } catch(err) {
+  msg("خطأ في المصادقة: " + err.message);
+ }
+}
+
 function setMode(next){
  mode=next;clearMsg();
  show("firstNameWrap",mode==="signup");show("lastNameWrap",mode==="signup");show("birthWrap",mode==="signup");show("roleWrap",mode==="signup");show("confirmWrap",mode==="signup");show("contactTypeWrap",mode==="signup");
  show("codeWrap",mode==="verify");show("sendCode",mode==="signup");show("passWrap",mode!=="reset"&&mode!=="verify");show("options",mode==="login");show("signup",mode!=="reset"&&mode!=="verify");
- $("password").required=mode==="login"||mode==="signup";$("confirmPassword").required=mode==="signup";$("firstName").required=mode==="signup";$("lastName").required=mode==="signup";
+ $("password").required=mode==="login"\vert{}\vert{}mode==="signup";$("confirmPassword").required=mode==="signup";$("firstName").required=mode==="signup";$("lastName").required=mode==="signup";
  $("birthDay").required=mode==="signup";$("birthMonth").required=mode==="signup";$("birthYear").required=mode==="signup";
  $("email").required=mode!=="verify";
- if(mode==="login"){$("title").textContent="مرحبًا بك مجددًا 👋";$("descForm").textContent="سجّل دخولك إلى حسابك للمتابعة في التسوق واستكشاف أحدث العروض.";$("submit").textContent="تسجيل الدخول　↪";$("signupPrompt").textContent="ليس لديك حساب؟";$("switch").textContent="إنشاء حساب جديد　♙+";$("emailLabel").textContent="البريد الإلكتروني أو رقم الهاتف";$("email").type="text";$("email").placeholder="أدخل بريدك الإلكتروني أو رقم هاتفك"}
+ if(mode==="login"){$("title").textContent="مرحبًا بك مجددًا 👋";$("descForm").textContent="سجّل دخولك إلى حسابك للمتابعة في التسوق واستكشاف أحدث العروض.";$("submit").textContent="تسجيل الدخول ↪";$("signupPrompt").textContent="ليس لديك حساب؟";$("switch").textContent="إنشاء حساب جديد ♙+";$("emailLabel").textContent="البريد الإلكتروني أو رقم الهاتف";$("email").type="text";$("email").placeholder="أدخل بريدك الإلكتروني أو رقم هاتفك"}
  else if(mode==="signup"){$("title").textContent="أنشئ حسابك الآن ✨";$("descForm").textContent="أدخل بياناتك واختر طريقة التسجيل ونوع الحساب.";$("submit").textContent="إنشاء الحساب وإرسال الرمز";$("signupPrompt").textContent="لديك حساب بالفعل؟";$("switch").textContent="تسجيل الدخول";setContact(contactMethod)}
  else if(mode==="verify"){$("title").textContent="تأكيد الحساب 🔐";$("descForm").textContent="أدخل رمز التحقق الذي وصلك لإكمال إنشاء حسابك.";$("submit").textContent="تأكيد الرمز وإنشاء الحساب";$("emailLabel").textContent="";$("email").required=false}
  else{$("title").textContent="استعادة كلمة المرور 🔐";$("descForm").textContent="أدخل بريدك الإلكتروني وسنرسل لك رابطًا آمنًا لإعادة تعيين كلمة المرور.";$("submit").textContent="إرسال رابط الاستعادة";$("emailLabel").textContent="البريد الإلكتروني";$("email").type="email";$("email").placeholder="أدخل بريدك الإلكتروني"}
