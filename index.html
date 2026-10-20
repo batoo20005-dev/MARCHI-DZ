@@ -934,7 +934,7 @@ footer{
     <!-- نموذج كتابة ورفع البلاغ للمشرفين والمدراء -->
     <div class="chat-ticket-section" id="ticketSection" style="display: none;">
         <div class="ticket-header-note">
-            📩 سيتم تحويل بلاغك مباشرة للوحة إدارة المشرفين والمدراء لمراجعته وحل مشكلتك.
+            📩 سيتم تحويل بلاغك مباشرة لوحة إدارة المشرفين والمدراء لمراجعته وحل مشكلتك.
         </div>
         <form id="ticketForm" onsubmit="submitCustomerTicket(event)">
             <div class="ticket-field">
@@ -974,54 +974,108 @@ const supabase = window.supabase.createClient(
 // تخزين مؤقت للمنتجات المجلوبة
 let loadedProducts = [];
 
-function checkUserLogin() {
-    const user = JSON.parse(localStorage.getItem("marchi_user"));
+// التحقق من حالة المستخدم (سواء محلياً أو عبر Supabase Auth للغوغل وفيسبوك)
+async function checkUserLogin() {
+    const localUser = JSON.parse(localStorage.getItem("marchi_user"));
     const accountSec = document.getElementById("userAccountSection");
 
-    if (!user) {
+    // فحص إذا كان مسجلاً عبر Supabase (Google / Facebook)
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (user) {
+        // جلب الاسم والصورة من ميتداتا جوجل أو فيسبوك
+        const fullName = user.user_metadata?.full_name || user.user_metadata?.name || "مستخدم جديد";
+        const avatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture || "";
+
+        // التحقق هل حدد نوع الحساب من قبل في جدول profiles أم لا
+        let { data: profile } = await supabase
+            .from('profiles')
+            .select('account_type')
+            .eq('id', user.id)
+            .single();
+
+        if (!profile || !profile.account_type) {
+            // إذا لم يحدد بعد، نظهر له النافذة المنبثقة لاختيار (مشتري / بائع)
+            showRoleSelectionModal(user, fullName, avatarUrl);
+        }
+
+        // عرض معلومات المستخدم في الهيدر مع صورة حسابه واسمه
+        accountSec.innerHTML = `
+            <div style="display:flex; align-items:center; gap:10px;">
+                ${avatarUrl ? `<img src="${avatarUrl}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid #16a34a;">` : '👤'}
+                <span class="header-action" style="color: #102a43; font-weight: bold;">
+                    <span>أهلاً، ${fullName}</span>
+                </span>
+                <button onclick="logoutSupabase()" style="background:#fee2e2; color:#991b1b; border:none; padding:5px 8px; border-radius:6px; font-weight:bold; font-size:11px;">خروج</button>
+            </div>
+        `;
+        return;
+    }
+
+    // الطريقة القديمة (المستخدمون العاديون المخزنون في localStorage)
+    if (!localUser) {
         accountSec.innerHTML = `
             <a href="auth.html" class="header-action" style="color: #102a43; font-weight: bold;">
                 <span class="action-icon">👤</span>
                 <span>تسجيل الدخول / حساب جديد</span>
             </a>
         `;
-    } else if (user.role === 'admin') {
-        accountSec.innerHTML = `
-            <div style="display:flex; align-items:center; gap:10px;">
-                <a href="admin.html" class="header-action" style="color: #ef4444; font-weight: bold;">
-                    <span>👑 لوحة المدير</span>
-                </a>
-                <button onclick="logout()" style="background:#fee2e2; color:#991b1b; border:none; padding:5px 8px; border-radius:6px; font-weight:bold; font-size:11px;">خروج</button>
-            </div>
-        `;
-    } else if (user.role === 'moderator') {
-        accountSec.innerHTML = `
-            <div style="display:flex; align-items:center; gap:10px;">
-                <a href="moderator.html" class="header-action" style="color: #0284c7; font-weight: bold;">
-                    <span>🛡️ لوحة المشرف</span>
-                </a>
-                <button onclick="logout()" style="background:#fee2e2; color:#991b1b; border:none; padding:5px 8px; border-radius:6px; font-weight:bold; font-size:11px;">خروج</button>
-            </div>
-        `;
-    } else if (user.role === 'seller') {
-        accountSec.innerHTML = `
-            <div style="display:flex; align-items:center; gap:10px;">
-                <a href="seller-dashboard.html" class="header-action" style="color: #16a34a; font-weight: bold;">
-                    <span>🏪 لوحة البائع</span>
-                </a>
-                <button onclick="logout()" style="background:#fee2e2; color:#991b1b; border:none; padding:5px 8px; border-radius:6px; font-weight:bold; font-size:11px;">خروج</button>
-            </div>
-        `;
     } else {
         accountSec.innerHTML = `
             <div style="display:flex; align-items:center; gap:10px;">
                 <span class="header-action" style="color: #102a43; font-weight: bold;">
-                    <span>👤 أهلاً، ${user.full_name}</span>
+                    <span>👤 أهلاً، ${localUser.full_name}</span>
                 </span>
                 <button onclick="logout()" style="background:#fee2e2; color:#991b1b; border:none; padding:5px 8px; border-radius:6px; font-weight:bold; font-size:11px;">خروج</button>
             </div>
         `;
     }
+}
+
+// نافذة اختيار نوع الحساب للمستخدمين القادمين من Google/Facebook
+function showRoleSelectionModal(user, fullName, avatarUrl) {
+    if (document.getElementById('roleModal')) return;
+
+    const modalHTML = `
+    <div id="roleModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(16,42,67,0.85);display:flex;align-items:center;justify-content:center;z-index:99999;direction:rtl;font-family:Cairo,sans-serif;">
+        <div style="background:white;padding:35px;border-radius:24px;max-width:450px;width:90%;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.3);">
+            ${avatarUrl ? `<img src="${avatarUrl}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:15px;border:3px solid #16a34a;">` : ''}
+            <h2 style="color:#102a43;margin:0 0 10px;font-size:22px;">مرحباً بك يا ${fullName}! 👋</h2>
+            <p style="color:#61738a;font-size:14px;margin-bottom:25px;">لكي نكمل إعداد حسابك في <b>MARCHI DZ</b>، يرجى اختيار طبيعة استخدامك للمنصة:</p>
+            
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
+                <button onclick="saveUserRoleAndClose('${user.id}', 'buyer')" style="padding:15px;border:2px solid #cbd7e5;background:white;border-radius:14px;cursor:pointer;font-weight:bold;font-size:15px;color:#102a43;transition:0.2s;" onmouseover="this.style.borderColor='#16a34a';this.style.background='#effcf5'" onmouseout="this.style.borderColor='#cbd7e5';this.style.background='white'">
+                    ♟ مشتري<br><small style="font-size:11px;color:#61738a;font-weight:normal;">أبحث عن منتجات للشراء</small>
+                </button>
+                <button onclick="saveUserRoleAndClose('${user.id}', 'seller')" style="padding:15px;border:2px solid #cbd7e5;background:white;border-radius:14px;cursor:pointer;font-weight:bold;font-size:15px;color:#102a43;transition:0.2s;" onmouseover="this.style.borderColor='#16a34a';this.style.background='#effcf5'" onmouseout="this.style.borderColor='#cbd7e5';this.style.background='white'">
+                    ▣ بائع<br><small style="font-size:11px;color:#61738a;font-weight:normal;">أريد عرض منتجات للبيع</small>
+                </button>
+            </div>
+        </div>
+    </div>`;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+// حفظ نوع الحساب في جدول profiles في Supabase
+async function saveUserRoleAndClose(userId, role) {
+    const { error } = await supabase
+        .from('profiles')
+        .upsert({ id: userId, account_type: role, updated_at: new Date() });
+
+    if (error) {
+        alert("حدث خطأ أثناء حفظ الاختيار: " + error.message);
+    } else {
+        document.getElementById('roleModal').remove();
+        alert("🎉 تم حفظ إعدادات حسابك بنجاح!");
+        location.reload();
+    }
+}
+
+async function logoutSupabase() {
+    await supabase.auth.signOut();
+    alert("تم تسجيل الخروج بنجاح 👋");
+    window.location.reload();
 }
 
 function logout() {
