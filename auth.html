@@ -93,8 +93,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* أضف رابط Supabase وPublishable/anon key. لا تستخدم service_role key في المتصفح. */
-const SUPABASE_URL="PASTE_YOUR_SUPABASE_PROJECT_URL_HERE";
-const SUPABASE_ANON_KEY="PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
+const SUPABASE_URL = "https://lifxjoofdlcmbuskvsbg.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxpZnhqb29mZGxjbWJ1c2t2c2JnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NzMwOTAsImV4cCI6MjEwMzI0OTA5MH0.AHq2WENh5KOHy2a-MDtaNUesLZ2KtBHCAmuk-MiCNQs";
 const configured=SUPABASE_URL.startsWith("https://")&&!SUPABASE_URL.includes("PASTE_YOUR")&&SUPABASE_ANON_KEY&&!SUPABASE_ANON_KEY.includes("PASTE_YOUR");
 const sb=configured&&window.supabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY):null;
 const $=id=>document.getElementById(id);let mode="signup",pendingContact=null;
