@@ -180,7 +180,7 @@ h1{
 .description{
     color:#666;
     line-height:1.9;
-    margin-bottom:25px;
+    margin-bottom:20px;
     white-space:pre-line;
 }
 
@@ -188,6 +188,29 @@ h1{
     font-size:32px;
     font-weight:bold;
     color:#102a43;
+}
+
+/* خيارات المقاسات والألوان */
+.options-group{
+    margin:18px 0;
+}
+
+.options-group label{
+    display:block;
+    font-weight:bold;
+    margin-bottom:8px;
+    font-size:14px;
+    color:#102a43;
+}
+
+.options-select{
+    width:100%;
+    padding:12px;
+    border:1px solid #dfe5e9;
+    border-radius:8px;
+    outline:none;
+    font-size:14px;
+    background:white;
 }
 
 .delivery-options-view{
@@ -222,7 +245,7 @@ h1{
     display:flex;
     align-items:center;
     gap:15px;
-    margin:25px 0;
+    margin:20px 0;
 }
 
 .quantity button{
@@ -451,6 +474,32 @@ function renderUI(p) {
 
     document.title = `${safeName} | MARCHI DZ`;
 
+    // 👕 توليد قائمة المقاسات إذا وجدت
+    let sizesHTML = "";
+    if (p.sizes && p.sizes.length > 0) {
+        sizesHTML = `
+            <div class="options-group">
+                <label>اختر المقاس:</label>
+                <select id="selectedSize" class="options-select">
+                    ${p.sizes.map(s => `<option value="${escapeHTML(s)}">${escapeHTML(s)}</option>`).join('')}
+                </select>
+            </div>
+        `;
+    }
+
+    // 🎨 توليد قائمة الألوان إذا وجدت
+    let colorsHTML = "";
+    if (p.colors && p.colors.length > 0) {
+        colorsHTML = `
+            <div class="options-group">
+                <label>اختر اللون:</label>
+                <select id="selectedColor" class="options-select">
+                    ${p.colors.map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join('')}
+                </select>
+            </div>
+        `;
+    }
+
     let depositHTML = "";
     if (p.require_deposit) {
         depositHTML = `
@@ -485,6 +534,9 @@ function renderUI(p) {
                 <div>
                     <span class="price">${Number(p.price).toLocaleString()} دج</span>
                 </div>
+
+                ${sizesHTML}
+                ${colorsHTML}
 
                 <div class="delivery-options-view">
                     <div class="del-card">🏠 توصيل للمنزل<br><strong>${homePrice.toLocaleString()} دج</strong></div>
@@ -541,7 +593,6 @@ async function loadReviews(productId) {
 
 function increaseQuantity(){
     if (!currentProduct) return;
-    // عدم تجاوز كمية المخزون المتاحة إذا كانت معرفة
     if (currentProduct.stock !== undefined && currentProduct.stock !== null && quantity >= currentProduct.stock) {
         alert(`عذراً، أقصى كمية متوفرة في المخزون هي ${currentProduct.stock}`);
         return;
@@ -565,8 +616,18 @@ function addToCart(){
         return;
     }
 
+    // جلب المقاس واللون المختارين من الزبون
+    const selectedSize = document.getElementById("selectedSize")?.value || null;
+    const selectedColor = document.getElementById("selectedColor")?.value || null;
+
     let cart = JSON.parse(localStorage.getItem("marchiCart")) || [];
-    const existingIndex = cart.findIndex(item => item.id === currentProduct.id);
+    
+    // التحقق من وجود نفس المنتج بنفس المقاس واللون مسبقاً في السلة
+    const existingIndex = cart.findIndex(item => 
+        item.id === currentProduct.id && 
+        item.selectedSize === selectedSize && 
+        item.selectedColor === selectedColor
+    );
 
     if (existingIndex > -1) {
         const totalReq = cart[existingIndex].quantity + quantity;
@@ -586,6 +647,8 @@ function addToCart(){
             desk_price: currentProduct.desk_price,
             require_deposit: currentProduct.require_deposit,
             rip_number: currentProduct.rip_number,
+            selectedSize: selectedSize,
+            selectedColor: selectedColor,
             quantity: quantity
         });
     }
