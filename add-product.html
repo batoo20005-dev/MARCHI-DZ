@@ -136,7 +136,7 @@ textarea{
     box-shadow:0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* تنسيق أزرار المقاسات السريعة */
+/* تنسيق أزرار المقاسات */
 .size-chips{
     display:flex;
     flex-wrap:wrap;
@@ -162,7 +162,7 @@ textarea{
     border-color:#16a34a;
 }
 
-/* تنسيق دوائر الألوان العصرية */
+/* دوائر الألوان */
 .colors-container{
     display:flex;
     flex-wrap:wrap;
@@ -191,6 +191,8 @@ textarea{
     display:flex;
     align-items:center;
     justify-content:center;
+    font-size:12px;
+    font-weight:bold;
 }
 
 .color-circle-option.selected .color-circle{
@@ -214,7 +216,7 @@ textarea{
 }
 
 .conditional-section {
-    display: none;
+    display: block; /* ظاهر دائماً بالنسبة للألوان */
     background: #f8fafc;
     padding: 20px;
     border-radius: 12px;
@@ -342,32 +344,25 @@ textarea{
 </select>
 </div>
 
-<!-- 👕 قسم المقاسات والألوان (يظهر للملابس والأحذية) -->
-<div class="conditional-section" id="clothingOptionsSection">
-    <label style="color:#16a34a; font-weight:700; margin-bottom:12px;">👕 اختر المقاسات والألوان المتوفرة</label>
+<!-- 👕 قسم المقاسات والألوان (تظهر الألوان لكل المنتجات والمقاسات للملابس/الأحذية) -->
+<div class="conditional-section" id="optionsSection">
     
-    <div class="form-group">
-        <label>المقاسات المتوفرة (اضغط للاختيار السريع):</label>
-        <div class="size-chips" id="sizeChipsContainer">
-            <div class="size-chip" onclick="toggleSizeChip(this, 'S')">S</div>
-            <div class="size-chip" onclick="toggleSizeChip(this, 'M')">M</div>
-            <div class="size-chip" onclick="toggleSizeChip(this, 'L')">L</div>
-            <div class="size-chip" onclick="toggleSizeChip(this, 'XL')">XL</div>
-            <div class="size-chip" onclick="toggleSizeChip(this, 'XXL')">XXL</div>
-            <div class="size-chip" onclick="toggleSizeChip(this, '38')">38</div>
-            <div class="size-chip" onclick="toggleSizeChip(this, '39')">39</div>
-            <div class="size-chip" onclick="toggleSizeChip(this, '40')">40</div>
-            <div class="size-chip" onclick="toggleSizeChip(this, '41')">41</div>
-            <div class="size-chip" onclick="toggleSizeChip(this, '42')">42</div>
-            <div class="size-chip" onclick="toggleSizeChip(this, '43')">43</div>
-            <div class="size-chip" onclick="toggleSizeChip(this, '44')">44</div>
-        </div>
+    <!-- قسم المقاسات (يظهر فقط إذا تم اختيار ملابس أو أحذية) -->
+    <div class="form-group" id="sizesWrapper" style="display:none;">
+        <label id="sizeLabel">المقاسات المتوفرة (اضغط للاختيار السريع):</label>
+        <div class="size-chips" id="sizeChipsContainer"></div>
         <input type="text" id="customSizesInput" placeholder="أو اكتب مقاسات أخرى مخصصة (مثال: 36, 37, 45)">
     </div>
 
+    <!-- قسم الألوان (يظهر دائماً لكافة أنواع المنتجات) -->
     <div class="form-group">
-        <label>الألوان المتوفرة (اختر الألوان المتاحة لهذا المنتج):</label>
+        <label>🎨 الألوان المتوفرة لهذا المنتج:</label>
         <div class="colors-container">
+            <label class="color-circle-option selected">
+                <input type="checkbox" value="بدون لون محدد" checked onchange="toggleColorCircle(this)">
+                <div class="color-circle" style="background:#e2e8f0; color:#475569;">🚫</div>
+                <span class="color-label">بدون</span>
+            </label>
             <label class="color-circle-option"><input type="checkbox" value="أسود" onchange="toggleColorCircle(this)"><div class="color-circle" style="background:#000;"></div><span class="color-label">أسود</span></label>
             <label class="color-circle-option"><input type="checkbox" value="أبيض" onchange="toggleColorCircle(this)"><div class="color-circle" style="background:#fff; border-color:#ccc;"></div><span class="color-label">أبيض</span></label>
             <label class="color-circle-option"><input type="checkbox" value="رمادي" onchange="toggleColorCircle(this)"><div class="color-circle" style="background:#64748b;"></div><span class="color-label">رمادي</span></label>
@@ -480,11 +475,35 @@ if (!currentUser || (currentUser.role !== 'seller' && currentUser.role !== 'admi
 
 function handleCategoryChange() {
     const category = document.getElementById("productCategory").value;
-    const section = document.getElementById("clothingOptionsSection");
-    if (category === "ملابس" || category === "أحذية") {
-        section.style.display = "block";
+    const sizesWrapper = document.getElementById("sizesWrapper");
+    const container = document.getElementById("sizeChipsContainer");
+    
+    selectedSizesSet.clear();
+    
+    if (category === "ملابس") {
+        sizesWrapper.style.display = "block";
+        container.innerHTML = `
+            <div class="size-chip" onclick="toggleSizeChip(this, 'S')">S</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, 'M')">M</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, 'L')">L</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, 'XL')">XL</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, 'XXL')">XXL</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, '3XL')">3XL</div>
+        `;
+    } else if (category === "أحذية") {
+        sizesWrapper.style.display = "block";
+        container.innerHTML = `
+            <div class="size-chip" onclick="toggleSizeChip(this, '38')">38</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, '39')">39</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, '40')">40</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, '41')">41</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, '42')">42</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, '43')">43</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, '44')">44</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, '45')">45</div>
+        `;
     } else {
-        section.style.display = "none";
+        sizesWrapper.style.display = "none";
     }
 }
 
@@ -547,7 +566,7 @@ async function addProduct(){
     const storeName = currentUser.store_name || currentUser.full_name || 'متجر معتمد';
     const category = document.getElementById("productCategory").value;
     
-    // جمع المقاسات المختارة
+    // جمع المقاسات
     let sizes = Array.from(selectedSizesSet);
     const customSizesStr = document.getElementById("customSizesInput").value.trim();
     if (customSizesStr) {
