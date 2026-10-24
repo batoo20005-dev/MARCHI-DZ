@@ -96,7 +96,9 @@ header{
 }
 
 .item-details{ flex:1; }
-.item-name{ font-size:16px; font-weight:bold; margin-bottom:6px; }
+.item-name{ font-size:16px; font-weight:bold; margin-bottom:4px; }
+.item-options{ font-size:13px; color:#555; margin-bottom:6px; }
+.item-options span{ background:#f1f5f9; padding:2px 8px; border-radius:4px; margin-left:5px; }
 .item-price{ color:#16a34a; font-weight:bold; }
 
 .item-qty{
@@ -405,7 +407,7 @@ input:focus, select:focus{ border-color:#16a34a; }
 <!-- صندوق دفع العربون -->
 <div class="deposit-box" id="depositBox">
     <h4>⚠️ تنبيه: ضمان حجز الطلب (عربون التسقاع)</h4>
-    <p style="font-size: 12px; color: #78350f;">يشترط البائع تحويل مبلغ تسقاع عبر BaridiMob لضمان جدية الطلب. يتم خصم هذا المبلغ عند الاستلام.</p>
+    <p style="font-size: 12px; color: #78350f;">يشترط البائع تحويل مبلغ تسقاع عبر BaridiMob لضمان جدية الطلب. يتم خصم هذا المبلغ عند الاستلاستلام.</p>
     <div class="rip-number" id="ripDisplay">CCP / RIP البائع: ...</div>
     
     <label style="margin-top: 10px;">إرفاق صورة وصل التحويل (BaridiMob) *</label>
@@ -448,7 +450,16 @@ let selectedDeliveryType = 'home';
 let homeDeliveryPrice = 600;
 let deskDeliveryPrice = 400;
 
-// 🛡️ التعبئة التلقائية لبيانات المشتري من الجلسة الآمنة الحقيقية
+function escapeHTML(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 async function loadBuyerProfile() {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
@@ -471,7 +482,6 @@ async function loadBuyerProfile() {
     }
 }
 
-// حساب عمولة المنصة للعرض المبدئي في الواجهة
 function calculatePlatformFee(amount) {
     if (amount < 1000) return 0;
     if (amount < 10000) return 20;
@@ -530,12 +540,22 @@ function renderCart() {
             ripNumber = item.rip_number || "";
         }
 
+        // 👕 عرض المقاس واللون المختارين إن وجدا
+        let optionsHTML = "";
+        if (item.selectedSize || item.selectedColor) {
+            optionsHTML = `<div class="item-options">`;
+            if (item.selectedSize) optionsHTML += `<span>المقاس: ${escapeHTML(item.selectedSize)}</span>`;
+            if (item.selectedColor) optionsHTML += `<span>اللون: ${escapeHTML(item.selectedColor)}</span>`;
+            optionsHTML += `</div>`;
+        }
+
         itemsHTML += `
             <div class="cart-item">
-                <img src="${item.image || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80'}" alt="${item.name}">
+                <img src="${escapeHTML(item.image || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80')}" alt="${escapeHTML(item.name)}">
                 <div class="item-details">
-                    <div class="item-name">${item.name}</div>
-                    <div class="item-price">${item.price.toLocaleString()} دج</div>
+                    <div class="item-name">${escapeHTML(item.name)}</div>
+                    ${optionsHTML}
+                    <div class="item-price">${Number(item.price).toLocaleString()} دج</div>
                     <div class="item-qty">
                         <button onclick="changeQty(${index}, -1)">-</button>
                         <span>${item.quantity}</span>
@@ -603,7 +623,6 @@ function removeItem(index) {
 }
 
 async function submitOrder() {
-    // 🔒 التحقق الأمني من الجلسة المشفرة في خادم Supabase
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
         alert("⚠️ يجب عليك تسجيل الدخول أولاً قبل تأكيد الطلب!");
@@ -641,7 +660,7 @@ async function submitOrder() {
             if (!receiptUrl) throw new Error("فشل رفع صورة الوصل.");
         }
 
-        // 🛡️ معالجة كل منتج بحساب السعر والعمولة الآمن من الخادم (Server-Side RPC)
+        // إرسال كل منتج في السلة (مع تفاصيل المقاس واللون المختارين)
         for (const item of cart) {
             const { error } = await supabase.rpc('create_secure_order', {
                 p_product_id: item.id,
