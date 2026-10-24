@@ -79,9 +79,6 @@ header{
     margin:30px 0 15px;
     padding-bottom:10px;
     border-bottom:2px solid #f1f5f9;
-    display:flex;
-    align-items:center;
-    gap:8px;
 }
 
 .form-group{ margin-bottom:20px; }
@@ -111,7 +108,7 @@ input:focus, select:focus, textarea:focus{
 }
 
 textarea{
-    min-height:120px;
+    min-height:110px;
     resize:vertical;
 }
 
@@ -127,10 +124,7 @@ textarea{
     padding:25px;
     text-align:center;
     background:#f8fafc;
-    transition:all .2s;
 }
-
-.image-box:hover{ border-color:#16a34a; background:#f0fdf4; }
 
 .image-preview{
     display:none;
@@ -142,42 +136,81 @@ textarea{
     box-shadow:0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* تنسيق دوائر الألوان */
+/* تنسيق أزرار المقاسات السريعة */
+.size-chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:10px;
+}
+
+.size-chip{
+    padding:6px 14px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    background:#fff;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    user-select:none;
+    transition:all .2s;
+}
+
+.size-chip.selected{
+    background:#16a34a;
+    color:white;
+    border-color:#16a34a;
+}
+
+/* تنسيق دوائر الألوان العصرية */
 .colors-container{
     display:flex;
     flex-wrap:wrap;
-    gap:10px;
+    gap:12px;
     margin-top:8px;
 }
 
-.color-option{
+.color-circle-option{
     display:flex;
+    flex-direction:column;
     align-items:center;
-    gap:6px;
-    background:#f1f5f9;
-    padding:6px 12px;
-    border-radius:20px;
+    gap:4px;
     cursor:pointer;
-    font-size:13px;
-    font-weight:600;
-    border:1px solid #cbd5e1;
-    transition:all .2s;
     user-select:none;
 }
 
-.color-option input{ display:none; }
+.color-circle-option input{ display:none; }
 
-.color-dot{
-    width:16px;
-    height:16px;
+.color-circle{
+    width:36px;
+    height:36px;
     border-radius:50%;
-    border:1px solid rgba(0,0,0,0.15);
+    border:2px solid #e2e8f0;
+    transition:all .2s;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
-.color-option.selected{
-    background:#f0fdf4;
+.color-circle-option.selected .color-circle{
     border-color:#16a34a;
-    color:#166534;
+    transform:scale(1.1);
+    box-shadow:0 0 0 3px rgba(22,163,74,0.2);
+}
+
+.color-circle-option.selected .color-circle::after{
+    content:'✓';
+    color:white;
+    font-weight:bold;
+    font-size:14px;
+    text-shadow:0 1px 2px rgba(0,0,0,0.6);
+}
+
+.color-label{
+    font-size:11px;
+    font-weight:600;
+    color:#475569;
 }
 
 .conditional-section {
@@ -288,7 +321,7 @@ textarea{
 
 <div class="form-group">
 <label>اسم المنتج *</label>
-<input type="text" id="productName" placeholder="مثال: حذاء رياضي مريح / ساعة يد أنيقة">
+<input type="text" id="productName" placeholder="مثال: حذاء رياضي مريح / قميص كلاسيكي">
 </div>
 
 <div class="form-group">
@@ -309,26 +342,45 @@ textarea{
 </select>
 </div>
 
-<!-- 🎽 قسم المقاسات والألوان (يظهر فقط للملابس والأحذية) -->
+<!-- 👕 قسم المقاسات والألوان (يظهر للملابس والأحذية) -->
 <div class="conditional-section" id="clothingOptionsSection">
-    <label style="color:#16a34a; font-weight:700; margin-bottom:12px;">✨ خيارات إضافية خاصة بالملابس والأحذية</label>
+    <label style="color:#16a34a; font-weight:700; margin-bottom:12px;">👕 اختر المقاسات والألوان المتوفرة</label>
     
     <div class="form-group">
-        <label>المقاسات المتاحة (افصل بينها بفاصلة)</label>
-        <input type="text" id="productSizes" placeholder="مثال: S, M, L, XL أو 39, 40, 41, 42">
+        <label>المقاسات المتوفرة (اضغط للاختيار السريع):</label>
+        <div class="size-chips" id="sizeChipsContainer">
+            <div class="size-chip" onclick="toggleSizeChip(this, 'S')">S</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, 'M')">M</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, 'L')">L</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, 'XL')">XL</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, 'XXL')">XXL</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, '38')">38</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, '39')">39</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, '40')">40</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, '41')">41</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, '42')">42</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, '43')">43</div>
+            <div class="size-chip" onclick="toggleSizeChip(this, '44')">44</div>
+        </div>
+        <input type="text" id="customSizesInput" placeholder="أو اكتب مقاسات أخرى مخصصة (مثال: 36, 37, 45)">
     </div>
 
     <div class="form-group">
-        <label>الألوان المتوفرة (اختر الألوان المتاحة)</label>
-        <div class="colors-container" id="colorsContainer">
-            <label class="color-option"><input type="checkbox" value="أسود" onchange="toggleColor(this)"><span class="color-dot" style="background:#000;"></span>أسود</label>
-            <label class="color-option"><input type="checkbox" value="أبيض" onchange="toggleColor(this)"><span class="color-dot" style="background:#fff; border:1px solid #ccc;"></span>أبيض</label>
-            <label class="color-option"><input type="checkbox" value="رمادي" onchange="toggleColor(this)"><span class="color-dot" style="background:#808080;"></span>رمادي</label>
-            <label class="color-option"><input type="checkbox" value="أزرق" onchange="toggleColor(this)"><span class="color-dot" style="background:#2563eb;"></span>أزرق</label>
-            <label class="color-option"><input type="checkbox" value="أحمر" onchange="toggleColor(this)"><span class="color-dot" style="background:#dc2626;"></span>أحمر</label>
-            <label class="color-option"><input type="checkbox" value="أخضر" onchange="toggleColor(this)"><span class="color-dot" style="background:#16a34a;"></span>أخضر</label>
-            <label class="color-option"><input type="checkbox" value="بيج" onchange="toggleColor(this)"><span class="color-dot" style="background:#f5deb3;"></span>بيج</label>
-            <label class="color-option"><input type="checkbox" value="بني" onchange="toggleColor(this)"><span class="color-dot" style="background:#8b4513;"></span>بني</label>
+        <label>الألوان المتوفرة (اختر الألوان المتاحة لهذا المنتج):</label>
+        <div class="colors-container">
+            <label class="color-circle-option"><input type="checkbox" value="أسود" onchange="toggleColorCircle(this)"><div class="color-circle" style="background:#000;"></div><span class="color-label">أسود</span></label>
+            <label class="color-circle-option"><input type="checkbox" value="أبيض" onchange="toggleColorCircle(this)"><div class="color-circle" style="background:#fff; border-color:#ccc;"></div><span class="color-label">أبيض</span></label>
+            <label class="color-circle-option"><input type="checkbox" value="رمادي" onchange="toggleColorCircle(this)"><div class="color-circle" style="background:#64748b;"></div><span class="color-label">رمادي</span></label>
+            <label class="color-circle-option"><input type="checkbox" value="أزرق" onchange="toggleColorCircle(this)"><div class="color-circle" style="background:#2563eb;"></div><span class="color-label">أزرق</span></label>
+            <label class="color-circle-option"><input type="checkbox" value="كحلي" onchange="toggleColorCircle(this)"><div class="color-circle" style="background:#1e3a8a;"></div><span class="color-label">كحلي</span></label>
+            <label class="color-circle-option"><input type="checkbox" value="أحمر" onchange="toggleColorCircle(this)"><div class="color-circle" style="background:#dc2626;"></div><span class="color-label">أحمر</span></label>
+            <label class="color-circle-option"><input type="checkbox" value="عنابي" onchange="toggleColorCircle(this)"><div class="color-circle" style="background:#800020;"></div><span class="color-label">عنابي</span></label>
+            <label class="color-circle-option"><input type="checkbox" value="أخضر" onchange="toggleColorCircle(this)"><div class="color-circle" style="background:#16a34a;"></div><span class="color-label">أخضر</span></label>
+            <label class="color-circle-option"><input type="checkbox" value="زيتي" onchange="toggleColorCircle(this)"><div class="color-circle" style="background:#556b2f;"></div><span class="color-label">زيتي</span></label>
+            <label class="color-circle-option"><input type="checkbox" value="بيج" onchange="toggleColorCircle(this)"><div class="color-circle" style="background:#f5deb3;"></div><span class="color-label">بيج</span></label>
+            <label class="color-circle-option"><input type="checkbox" value="بني" onchange="toggleColorCircle(this)"><div class="color-circle" style="background:#8b4513;"></div><span class="color-label">بني</span></label>
+            <label class="color-circle-option"><input type="checkbox" value="وردي" onchange="toggleColorCircle(this)"><div class="color-circle" style="background:#ec4899;"></div><span class="color-label">وردي</span></label>
+            <label class="color-circle-option"><input type="checkbox" value="أصفر" onchange="toggleColorCircle(this)"><div class="color-circle" style="background:#eab308;"></div><span class="color-label">أصفر</span></label>
         </div>
     </div>
 </div>
@@ -347,7 +399,7 @@ textarea{
 <div class="form-group">
 <label>صورة المنتج *</label>
 <div class="image-box">
-<p style="color:#64748b; font-size:13px; margin-bottom:8px;">اسحب الصورة هنا أو اختر ملفاً من جهازك</p>
+<p style="color:#64748b; font-size:13px; margin-bottom:8px;">اختر صورة المنتج من جهازك</p>
 <input type="file" id="productImageFile" accept="image/*" style="margin-bottom: 10px;">
 <div style="font-size: 12px; color: #94a3b8; margin: 5px 0;">أو ضع رابط صورة مباشر</div>
 <input type="url" id="productImageUrl" placeholder="https://example.com/image.jpg">
@@ -357,7 +409,7 @@ textarea{
 
 <div class="form-group">
 <label>وصف المنتج *</label>
-<textarea id="productDescription" placeholder="اكتب وصفاً جذاباً ومفصلاً للمنتج..."></textarea>
+<textarea id="productDescription" placeholder="اكتب وصفاً مفصلاً وجذاباً للمنتج..."></textarea>
 </div>
 
 <div class="form-section-title">🚚 خيارات التوصيل</div>
@@ -390,7 +442,6 @@ textarea{
 </div>
 </div>
 
-<!-- القوانين -->
 <div class="rules-box">
 <h3>📜 شروط وقوانين النشر في MARCHI DZ</h3>
 <ul>
@@ -420,13 +471,13 @@ const supabase = window.supabase.createClient(
 );
 
 let currentUser = JSON.parse(localStorage.getItem("marchi_user"));
+let selectedSizesSet = new Set();
 
 if (!currentUser || (currentUser.role !== 'seller' && currentUser.role !== 'admin')) {
     alert("⚠️ هذه الصفحة خاصة بالتجار المعتمدين فقط!");
     window.location.href = "auth.html";
 }
 
-// إظهار/إخفاء حقول المقاسات والألوان حسب الفئة
 function handleCategoryChange() {
     const category = document.getElementById("productCategory").value;
     const section = document.getElementById("clothingOptionsSection");
@@ -437,9 +488,18 @@ function handleCategoryChange() {
     }
 }
 
-// تفعيل مظهر دائرية الألوان عند الاختيار
-function toggleColor(checkbox) {
-    const parent = checkbox.closest('.color-option');
+function toggleSizeChip(chip, sizeValue) {
+    if (selectedSizesSet.has(sizeValue)) {
+        selectedSizesSet.delete(sizeValue);
+        chip.classList.remove('selected');
+    } else {
+        selectedSizesSet.add(sizeValue);
+        chip.classList.add('selected');
+    }
+}
+
+function toggleColorCircle(checkbox) {
+    const parent = checkbox.closest('.color-circle-option');
     if (checkbox.checked) {
         parent.classList.add('selected');
     } else {
@@ -487,12 +547,17 @@ async function addProduct(){
     const storeName = currentUser.store_name || currentUser.full_name || 'متجر معتمد';
     const category = document.getElementById("productCategory").value;
     
-    // جمع المقاسات والألوان المتاحة
-    const sizesInput = document.getElementById("productSizes").value.trim();
-    const sizes = sizesInput ? sizesInput.split(",").map(s => s.trim()).filter(Boolean) : [];
+    // جمع المقاسات المختارة
+    let sizes = Array.from(selectedSizesSet);
+    const customSizesStr = document.getElementById("customSizesInput").value.trim();
+    if (customSizesStr) {
+        const customArr = customSizesStr.split(",").map(s => s.trim()).filter(Boolean);
+        sizes = [...sizes, ...customArr];
+    }
     
+    // جمع الألوان المختارة
     const selectedColors = [];
-    document.querySelectorAll('.color-option input:checked').forEach(cb => {
+    document.querySelectorAll('.color-circle-option input:checked').forEach(cb => {
         selectedColors.push(cb.value);
     });
 
