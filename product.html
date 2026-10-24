@@ -164,6 +164,19 @@ h1{
     margin-bottom:15px;
 }
 
+.stock-badge{
+    display:inline-block;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:15px;
+    margin-right:8px;
+}
+
+.stock-in{ background:#dcfce7; color:#15803d; }
+.stock-out{ background:#fee2e2; color:#991b1b; }
+
 .description{
     color:#666;
     line-height:1.9;
@@ -222,6 +235,12 @@ h1{
     cursor:pointer;
 }
 
+.quantity button:disabled{
+    background:#f1f5f9;
+    cursor:not-allowed;
+    color:#ccc;
+}
+
 .quantity span{
     font-size:18px;
     font-weight:bold;
@@ -242,6 +261,11 @@ h1{
 
 .add-cart:hover{
     background:#12813b;
+}
+
+.add-cart:disabled{
+    background:#94a3b8;
+    cursor:not-allowed;
 }
 
 .info{
@@ -373,13 +397,7 @@ async function loadProductDetails() {
     const productId = urlParams.get('id');
 
     if (!productId) {
-        document.getElementById("productMainContainer").innerHTML = `
-            <div style="text-align:center; padding:50px; background:white; border-radius:16px;">
-                <h2>❌ لم يتم تحديد المنتج المطلوبة</h2>
-                <br>
-                <a href="index.html" class="back">العودة للتسوق</a>
-            </div>
-        `;
+        showError("❌ لم يتم تحديد المنتج المطلوب");
         return;
     }
 
@@ -390,13 +408,13 @@ async function loadProductDetails() {
         .single();
 
     if (error || !product) {
-        document.getElementById("productMainContainer").innerHTML = `
-            <div style="text-align:center; padding:50px; background:white; border-radius:16px;">
-                <h2>❌ عذراً، المنتج غير موجود أو تم حذفه من المنصة</h2>
-                <br>
-                <a href="index.html" class="back">العودة للتسوق</a>
-            </div>
-        `;
+        showError("❌ عذراً، المنتج غير موجود أو تم حذفه من المنصة");
+        return;
+    }
+
+    // 🛡️ التحقق من حالة المنتج ومنع العرض في حال عدم الموافقة أو الرفض
+    if (product.status && product.status !== 'published' && product.status !== 'active') {
+        showError("⚠️ هذا المنتج قيد المراجعة أو غير متاح للبيع حالياً");
         return;
     }
 
@@ -408,12 +426,28 @@ async function loadProductDetails() {
     loadReviews(productId);
 }
 
+function showError(message) {
+    document.getElementById("productMainContainer").innerHTML = `
+        <div style="text-align:center; padding:50px; background:white; border-radius:16px;">
+            <h2>${message}</h2>
+            <br>
+            <a href="index.html" class="back">العودة للتسوق</a>
+        </div>
+    `;
+}
+
 function renderUI(p) {
     const safeName = escapeHTML(p.name);
     const safeDesc = escapeHTML(p.description || "لا يوجد وصف إضافي لهذا المنتج.");
     const safeStore = escapeHTML(p.store_name || "متجر معتمد");
     const safeCategory = escapeHTML(p.category || "إلكترونيات ومنتجات عامة");
     const safeImg = p.image_url ? escapeHTML(p.image_url) : 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1000&q=85';
+    
+    // 📦 التحقق من حالة المخزون
+    const isOutOfStock = (p.stock !== undefined && p.stock !== null) ? (p.stock <= 0) : false;
+    const stockBadge = isOutOfStock 
+        ? `<span class="stock-badge stock-out">❌ نفد المخزون</span>`
+        : `<span class="stock-badge stock-in">✔ متوفر في المخزون (${p.stock ?? 'متوفر'})</span>`;
 
     document.title = `${safeName} | MARCHI DZ`;
 
@@ -436,7 +470,10 @@ function renderUI(p) {
 
             <div>
                 <div class="category">${safeCategory}</div>
-                <div class="store-badge">🏪 متجر: ${safeStore}</div>
+                <div style="display:flex; align-items:center; flex-wrap:wrap;">
+                    <div class="store-badge">🏪 متجر: ${safeStore}</div>
+                    ${stockBadge}
+                </div>
                 <h1>${safeName}</h1>
 
                 <div class="rating">
@@ -446,7 +483,7 @@ function renderUI(p) {
                 <p class="description">${safeDesc}</p>
 
                 <div>
-                    <span class="price">${p.price.toLocaleString()} دج</span>
+                    <span class="price">${Number(p.price).toLocaleString()} دج</span>
                 </div>
 
                 <div class="delivery-options-view">
@@ -458,12 +495,14 @@ function renderUI(p) {
 
                 <div class="quantity">
                     <strong>الكمية:</strong>
-                    <button onclick="decreaseQuantity()">−</button>
+                    <button onclick="decreaseQuantity()" ${isOutOfStock ? 'disabled' : ''}>−</button>
                     <span id="quantity">1</span>
-                    <button onclick="increaseQuantity()">+</button>
+                    <button onclick="increaseQuantity()" ${isOutOfStock ? 'disabled' : ''}>+</button>
                 </div>
 
-                <button class="add-cart" onclick="addToCart()">🛒 أضف إلى السلة</button>
+                <button class="add-cart" id="addCartBtn" onclick="addToCart()" ${isOutOfStock ? 'disabled' : ''}>
+                    ${isOutOfStock ? '❌ غير متوفر حالياً' : '🛒 أضف إلى السلة'}
+                </button>
 
                 <div class="info">
                     <div class="info-box">🚚<br>توصيل سريع 58 ولاية</div>
@@ -501,6 +540,12 @@ async function loadReviews(productId) {
 }
 
 function increaseQuantity(){
+    if (!currentProduct) return;
+    // عدم تجاوز كمية المخزون المتاحة إذا كانت معرفة
+    if (currentProduct.stock !== undefined && currentProduct.stock !== null && quantity >= currentProduct.stock) {
+        alert(`عذراً، أقصى كمية متوفرة في المخزون هي ${currentProduct.stock}`);
+        return;
+    }
     quantity++;
     document.getElementById("quantity").textContent = quantity;
 }
@@ -515,11 +560,21 @@ function decreaseQuantity(){
 function addToCart(){
     if (!currentProduct) return;
 
+    if (currentProduct.stock !== undefined && currentProduct.stock !== null && currentProduct.stock <= 0) {
+        alert("عذراً، هذا المنتج نفد من المخزون ولا يمكن إضافته للسلة.");
+        return;
+    }
+
     let cart = JSON.parse(localStorage.getItem("marchiCart")) || [];
     const existingIndex = cart.findIndex(item => item.id === currentProduct.id);
 
     if (existingIndex > -1) {
-        cart[existingIndex].quantity += quantity;
+        const totalReq = cart[existingIndex].quantity + quantity;
+        if (currentProduct.stock !== undefined && currentProduct.stock !== null && totalReq > currentProduct.stock) {
+            alert(`لا يمكنك إضافة المزيد. الكمية المطلوبة تتجاوز المخزون المتاح (${currentProduct.stock}).`);
+            return;
+        }
+        cart[existingIndex].quantity = totalReq;
     } else {
         cart.push({
             id: currentProduct.id,
