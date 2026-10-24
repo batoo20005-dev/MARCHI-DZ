@@ -228,7 +228,7 @@ textarea{
 <main class="container">
 <div class="title">
 <h1>➕ إضافة منتج جديد لمتجرك</h1>
-<p>أدخل التفاصيل، خيارات التوصيل، وشروط حجز الطلب</p>
+<p>أدخل التفاصيل، المقاسات، الألوان، وخيارات التوصيل</p>
 </div>
 
 <div class="form-box">
@@ -237,7 +237,7 @@ textarea{
 
 <div class="form-group">
 <label>اسم المنتج *</label>
-<input type="text" id="productName" placeholder="مثال: سماعات لاسلكية عالية الجودة">
+<input type="text" id="productName" placeholder="مثال: حذاء رياضي / قميص كلاسيكي">
 </div>
 
 <div class="form-group">
@@ -257,6 +257,18 @@ textarea{
 </select>
 </div>
 
+<!-- 👕 قسم المقاسات والألوان للملابس والأحذية -->
+<div class="grid-2">
+<div class="form-group">
+<label>المقاسات المتاحة (اختياري - مفصولة بفواصل)</label>
+<input type="text" id="productSizes" placeholder="مثال: S, M, L, XL أو 40, 41, 42">
+</div>
+<div class="form-group">
+<label>الألوان المتاحة (اختياري - مفصولة بفواصل)</label>
+<input type="text" id="productColors" placeholder="مثال: أسود, أبيض, أحمر">
+</div>
+</div>
+
 <div class="grid-2">
 <div class="form-group">
 <label>السعر بالدينار (DZD) *</label>
@@ -267,21 +279,11 @@ textarea{
 <input type="number" id="oldPrice" placeholder="5300" min="1">
 </div>
 </div>
-<!-- قسم المقاسات والألوان -->
-<div class="grid-2">
-  <div class="form-group">
-    <label>المقاسات المتاحة (فصل بينها بفواصل)</label>
-    <input type="text" id="productSizes" placeholder="مثال: S, M, L, XL أو 38, 39, 40">
-  </div>
-  <div class="form-group">
-    <label>الألوان المتاحة (فصل بينها بفواصل)</label>
-    <input type="text" id="productColors" placeholder="مثال: أسود, أبيض, أزرق">
-  </div>
-</div>
+
 <div class="form-group">
 <label>صورة المنتج *</label>
 <div class="image-box">
-<p>اختر صورة من جهازك (سيتم رفعها لسيرفر المبادلة) أو ضع رابط صورة مباشر</p>
+<p>اختر صورة من جهازك أو ضع رابط صورة مباشر</p>
 <input type="file" id="productImageFile" accept="image/*" style="margin-bottom: 10px;">
 <div style="font-size: 12px; color: #888; margin: 5px 0;">أو</div>
 <input type="url" id="productImageUrl" placeholder="https://example.com/image.jpg">
@@ -330,7 +332,7 @@ textarea{
 <ul>
 <li>🚫 يمنع بيع أي منتج غير قانوني أو مقلد.</li>
 <li>📦 البائع مسؤول عن صحة رقم الـ RIP وسرعة شحن الطلب.</li>
-<li>💰 رسوم المنصة هي 50 دج عن كل فتح معلومات طلبية.</li>
+<li>💰 رسوم المنصة تطبق أوتوماتيكياً حسب قيمة المنتجات.</li>
 </ul>
 
 <label class="agree-rules">
@@ -383,7 +385,7 @@ function toggleDepositFields(){
     document.getElementById("depositFields").style.display = val === 'yes' ? 'block' : 'none';
 }
 
-// 📌 دالة رفع الصورة الحقيقية إلى Supabase Storage Bucket (product-images)
+// 📌 دالة رفع الصورة الحقيقية إلى Supabase Storage Bucket
 async function uploadImageToStorage(file) {
     if (!file) return null;
 
@@ -410,6 +412,13 @@ async function addProduct(){
     const name = document.getElementById("productName").value.trim();
     const storeName = currentUser.store_name || currentUser.full_name || 'متجر معتمد';
     const category = document.getElementById("productCategory").value;
+    
+    // 👕 قراءة المقاسات والألوان وتحويلها إلى مصفوفات
+    const sizesInput = document.getElementById("productSizes").value.trim();
+    const colorsInput = document.getElementById("productColors").value.trim();
+    const sizes = sizesInput ? sizesInput.split(",").map(s => s.trim()).filter(Boolean) : [];
+    const colors = colorsInput ? colorsInput.split(",").map(c => c.trim()).filter(Boolean) : [];
+
     const price = Number(document.getElementById("productPrice").value);
     const oldPrice = Number(document.getElementById("oldPrice").value) || null;
     const description = document.getElementById("productDescription").value.trim();
@@ -455,7 +464,6 @@ async function addProduct(){
     try{
         let finalImageUrl = directUrl;
 
-        // إذا قام المستخدم باختيار ملف صورة من جهازه، نرفعه لـ Supabase Storage
         if (imageFile) {
             const uploadedUrl = await uploadImageToStorage(imageFile);
             if (uploadedUrl) {
@@ -474,6 +482,8 @@ async function addProduct(){
             store_name: storeName,
             seller_id: currentUser.id,
             category: category,
+            sizes: sizes,       // 👈 إضافة المقاسات
+            colors: colors,     // 👈 إضافة الألوان
             price: price,
             old_price: oldPrice,
             image_url: finalImageUrl,
@@ -482,6 +492,8 @@ async function addProduct(){
             desk_price: deskPrice,
             require_deposit: requireDeposit,
             rip_number: ripNumber,
+            status: 'published', // 👈 لتتوافق مع سياسة الأمان والظهور
+            stock: 10,           // 👈 المخزون الافتراضي
             sales_count: 0,
             rating: 5.0
         };
